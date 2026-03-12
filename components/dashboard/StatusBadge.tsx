@@ -17,12 +17,17 @@ const config = {
     label: "Scheduled",
     className: "text-zinc-400 bg-zinc-400/10 border-zinc-400/20",
   },
+  completed: {
+    icon: CheckCircle2,
+    label: "Completed",
+    className: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+  },
 } as const;
 
-type Status = keyof typeof config;
+export type ProjectStatusBadge = keyof typeof config;
 
 interface StatusBadgeProps {
-  status: Status;
+  status: ProjectStatusBadge;
   label?: string;
   className?: string;
 }

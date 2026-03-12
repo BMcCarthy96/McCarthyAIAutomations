@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { CURRENT_CLIENT_ID, getSupportRequestsForClient, supportRequestStatusLabels } from "@/lib/data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { formatDisplayDate } from "@/lib/utils";
+import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { Mail, MessageCircle } from "lucide-react";
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardSupportPage() {
+  const requests = getSupportRequestsForClient(CURRENT_CLIENT_ID);
   return (
     <div className="space-y-8">
       <PageHeader
@@ -49,6 +52,28 @@ export default function DashboardSupportPage() {
           </p>
         </GlassCard>
       </div>
+      {requests.length > 0 && (
+        <section>
+          <SectionTitle>Recent requests</SectionTitle>
+          <ul className="mt-4 space-y-2">
+            {requests.map((r) => (
+              <li key={r.id}>
+                <GlassCard hover={false}>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-medium text-white">{r.subject}</span>
+                    <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-400">
+                      {supportRequestStatusLabels[r.status] ?? r.status}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {formatDisplayDate(r.createdAt)}
+                  </p>
+                </GlassCard>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   );
 }

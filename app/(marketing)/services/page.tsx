@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
-import {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-  ArrowRight,
-} from "lucide-react";
-import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { services } from "@/lib/data";
+import { getServiceIcon } from "@/lib/serviceIcons";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SectionHeading } from "@/components/home/SectionHeading";
 import { Button } from "@/components/ui/Button";
-
-const iconMap = {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-};
 
 export const metadata: Metadata = {
   title: "Services",
@@ -39,8 +22,7 @@ export default function ServicesPage() {
         />
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
-            const Icon =
-              iconMap[service.icon as keyof typeof iconMap] ?? Globe;
+            const Icon = getServiceIcon(service.icon);
             return (
               <GlassCard key={service.id} href={`/services/${service.slug}`}>
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/20 text-indigo-400">

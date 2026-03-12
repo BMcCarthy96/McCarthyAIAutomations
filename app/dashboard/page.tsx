@@ -1,52 +1,33 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
-  dashboardServices,
-  dashboardProjectUpdates,
+  CURRENT_CLIENT_ID,
+  getProjectsWithDetails,
+  getProjectUpdatesForClient,
   dashboardQuickActions,
 } from "@/lib/data";
+import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
+import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
 import { ArrowRight, Calendar, FileText, HelpCircle, Layers } from "lucide-react";
+
+const quickActionIcons = { HelpCircle, Layers, FileText } as const;
 
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Your active services and project status.",
 };
 
-const recentUpdates = dashboardProjectUpdates.slice(0, 3);
-const overviewServices = dashboardServices.slice(0, 2);
-
-function SectionTitle({
-  children,
-  action,
-}: {
-  children: React.ReactNode;
-  action?: { label: string; href: string };
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
-        {children}
-      </h2>
-      {action && (
-        <Link
-          href={action.href}
-          className="text-sm font-medium text-indigo-400 transition-colors hover:text-indigo-300"
-        >
-          {action.label}
-        </Link>
-      )}
-    </div>
-  );
-}
-
 export default function DashboardOverviewPage() {
-  const activeCount = dashboardServices.filter((s) => s.status === "active").length;
-  const inProgressCount = dashboardServices.filter(
-    (s) => s.status === "in_progress"
-  ).length;
+  const projects = getProjectsWithDetails(CURRENT_CLIENT_ID);
+  const allUpdates = getProjectUpdatesForClient(CURRENT_CLIENT_ID);
+  const recentUpdates = allUpdates.slice(0, 3);
+  const overviewProjects = projects.slice(0, 2);
+
+  const activeCount = projects.filter((p) => p.status === "active").length;
+  const inProgressCount = projects.filter((p) => p.status === "in_progress").length;
 
   return (
     <div className="space-y-10">
@@ -57,7 +38,7 @@ export default function DashboardOverviewPage() {
           <div className="flex flex-wrap items-center gap-8">
             <div>
               <p className="text-3xl font-bold tabular-nums text-white">
-                {dashboardServices.length}
+                {projects.length}
               </p>
               <p className="mt-0.5 text-sm text-zinc-500">Active services</p>
             </div>
@@ -96,7 +77,7 @@ export default function DashboardOverviewPage() {
           Your services
         </SectionTitle>
         <div className="mt-4 space-y-4">
-          {overviewServices.map((project) => (
+          {overviewProjects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}
         </div>
@@ -108,24 +89,27 @@ export default function DashboardOverviewPage() {
             Next milestones
           </SectionTitle>
           <ul className="mt-4 space-y-2">
-            {dashboardServices.map((project) => (
-              <li key={project.id}>
-                <Link
-                  href="/dashboard/services"
-                  className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                >
-                  <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                  <div className="min-w-0">
-                    <p className="font-medium text-white">
-                      {project.nextMilestone}
-                    </p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
-                      {project.name} · {project.nextMilestoneDate}
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            ))}
+            {projects.map((project) => {
+              const next = project.nextMilestone;
+              return (
+                <li key={project.id}>
+                  <Link
+                    href="/dashboard/services"
+                    className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
+                  >
+                    <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                    <div className="min-w-0">
+                      <p className="font-medium text-white">
+                        {next?.title ?? "—"}
+                      </p>
+                      <p className="mt-0.5 text-xs text-zinc-500">
+                        {project.name} · {next ? formatDisplayDate(next.dueDate) : "—"}
+                      </p>
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
         <div>
@@ -145,7 +129,7 @@ export default function DashboardOverviewPage() {
                   <div className="min-w-0">
                     <p className="font-medium text-white">{update.title}</p>
                     <p className="mt-0.5 text-xs text-zinc-500">
-                      {update.projectName} · {update.date}
+                      {update.projectName} · {formatDisplayDate(update.createdAt)}
                     </p>
                   </div>
                 </Link>
@@ -159,9 +143,7 @@ export default function DashboardOverviewPage() {
         <SectionTitle>Quick actions</SectionTitle>
         <div className="mt-4 grid gap-4 sm:grid-cols-3">
           {dashboardQuickActions.map((action) => {
-            const icon =
-              action.href === "/dashboard/support" ? HelpCircle : action.href === "/dashboard/services" ? Layers : FileText;
-            const Icon = icon;
+            const Icon = quickActionIcons[action.icon];
             return (
               <GlassCard key={action.id} href={action.href}>
                 <Icon className="h-5 w-5 text-indigo-400" />

@@ -1,24 +1,8 @@
-import {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { services } from "@/lib/data";
+import { getServiceIcon } from "@/lib/serviceIcons";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SectionHeading } from "./SectionHeading";
-
-const iconMap = {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-};
 
 export function ServicesGrid() {
   return (
@@ -30,7 +14,7 @@ export function ServicesGrid() {
         />
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
-            const Icon = iconMap[service.icon as keyof typeof iconMap] ?? Globe;
+            const Icon = getServiceIcon(service.icon);
             return (
               <GlassCard key={service.id} href={`/services/${service.slug}`}>
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/20 text-indigo-400">

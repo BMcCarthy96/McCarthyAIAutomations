@@ -66,8 +66,8 @@ export function Footer() {
               Legal
             </h3>
             <ul className="mt-4 space-y-2">
-              {footerLinks.legal.map((link, index) => (
-                <li key={`${link.href}-${link.label}-${index}`}>
+              {footerLinks.legal.map((link) => (
+                <li key={link.href}>
                   <Link
                     href={link.href}
                     className="text-sm text-zinc-400 hover:text-white"

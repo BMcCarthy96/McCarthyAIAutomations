@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { dashboardProjectUpdates } from "@/lib/data";
+import { CURRENT_CLIENT_ID, getProjectUpdatesForClient } from "@/lib/data";
+import { formatDisplayDate } from "@/lib/utils";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { GlassCard } from "@/components/ui/GlassCard";
 
@@ -9,6 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardUpdatesPage() {
+  const updates = getProjectUpdatesForClient(CURRENT_CLIENT_ID);
   return (
     <div className="space-y-8">
       <PageHeader
@@ -16,14 +18,16 @@ export default function DashboardUpdatesPage() {
         subtitle="Recent updates and progress on your projects."
       />
       <ul className="space-y-4">
-        {dashboardProjectUpdates.map((update) => (
+        {updates.map((update) => (
           <li key={update.id}>
             <GlassCard hover={false}>
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
                   {update.projectName}
                 </span>
-                <span className="text-xs text-zinc-500">{update.date}</span>
+                <span className="text-xs text-zinc-500">
+                  {formatDisplayDate(update.createdAt)}
+                </span>
               </div>
               <h3 className="mt-2 text-lg font-semibold text-white">
                 {update.title}

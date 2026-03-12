@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { dashboardServices } from "@/lib/data";
+import { CURRENT_CLIENT_ID, getProjectsWithDetails } from "@/lib/data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 
@@ -9,6 +9,7 @@ export const metadata: Metadata = {
 };
 
 export default function DashboardServicesPage() {
+  const projects = getProjectsWithDetails(CURRENT_CLIENT_ID);
   return (
     <div className="space-y-8">
       <PageHeader
@@ -16,7 +17,7 @@ export default function DashboardServicesPage() {
         subtitle="Project status, next milestones, and recent updates."
       />
       <div className="space-y-6">
-        {dashboardServices.map((project) => (
+        {projects.map((project) => (
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>

@@ -1,4 +1,20 @@
-import type { Service, PricingTier, Testimonial, FAQItem, Stat, DashboardService, DashboardProjectUpdate, DashboardQuickAction, HowItWorksStep } from "@/lib/types";
+import type {
+  Service,
+  PricingTier,
+  Testimonial,
+  FAQItem,
+  Stat,
+  DashboardQuickAction,
+  HowItWorksStep,
+  Client,
+  ClientService,
+  Project,
+  Milestone,
+  ProjectUpdate,
+  SupportRequest,
+  BillingRecord,
+  ProjectWithDetails,
+} from "@/lib/types";
 
 export const services: Service[] = [
   {
@@ -232,81 +248,131 @@ export const howItWorksSteps: HowItWorksStep[] = [
   },
 ];
 
-export const dashboardServices: DashboardService[] = [
+// ---------------------------------------------------------------------------
+// Client portal mock data
+// All date fields use ISO 8601 (YYYY-MM-DD or full datetime). Format for display via formatDisplayDate() in lib/utils.
+// ---------------------------------------------------------------------------
+
+/** Mock current user; replace with Clerk/Supabase user or tenant id when wiring auth. */
+export const CURRENT_CLIENT_ID = "client-1";
+
+export const clients: Client[] = [
   {
-    id: "1",
-    name: "Website AI Chatbot",
-    status: "active",
-    statusLabel: "Live",
-    progress: 100,
-    nextMilestone: "Monthly performance review",
-    nextMilestoneDate: "Apr 15, 2025",
-    recentUpdate: "Chatbot live on homepage and contact page. Lead capture form connected to HubSpot.",
-    recentUpdateDate: "Mar 1, 2025",
-  },
-  {
-    id: "2",
-    name: "Lead Capture & Scheduling",
-    status: "in_progress",
-    statusLabel: "In progress",
-    progress: 65,
-    nextMilestone: "Calendar sync and reminder automation",
-    nextMilestoneDate: "Mar 22, 2025",
-    recentUpdate: "Calendly integration complete. Reminder sequences in development.",
-    recentUpdateDate: "Mar 8, 2025",
-  },
-  {
-    id: "3",
-    name: "AI Voice Agent",
-    status: "pending",
-    statusLabel: "Scheduled",
-    progress: 10,
-    nextMilestone: "Kickoff and script design",
-    nextMilestoneDate: "Apr 1, 2025",
-    recentUpdate: "Contract signed. Kickoff call scheduled for Apr 1.",
-    recentUpdateDate: "Mar 10, 2025",
+    id: "client-1",
+    name: "Acme Corp",
+    email: "contact@acme.example.com",
+    company: "Acme Corp",
   },
 ];
 
-export const dashboardProjectUpdates: DashboardProjectUpdate[] = [
+export const clientServices: ClientService[] = [
+  {
+    id: "cs-1",
+    clientId: "client-1",
+    serviceId: "4",
+    engagementName: "Website AI Chatbot",
+    status: "active",
+    progress: 100,
+  },
+  {
+    id: "cs-2",
+    clientId: "client-1",
+    serviceId: "3",
+    engagementName: "Lead Capture & Scheduling",
+    status: "in_progress",
+    progress: 65,
+  },
+  {
+    id: "cs-3",
+    clientId: "client-1",
+    serviceId: "2",
+    engagementName: "AI Voice Agent",
+    status: "pending",
+    progress: 10,
+  },
+];
+
+export const projects: Project[] = [
+  { id: "proj-1", clientServiceId: "cs-1", name: "Website AI Chatbot", status: "active", progress: 100 },
+  { id: "proj-2", clientServiceId: "cs-2", name: "Lead Capture & Scheduling", status: "in_progress", progress: 65 },
+  { id: "proj-3", clientServiceId: "cs-3", name: "AI Voice Agent", status: "pending", progress: 10 },
+];
+
+export const milestones: Milestone[] = [
+  { id: "m1", projectId: "proj-1", title: "Monthly performance review", dueDate: "2025-04-15" },
+  { id: "m2", projectId: "proj-2", title: "Calendar sync and reminder automation", dueDate: "2025-03-22" },
+  { id: "m3", projectId: "proj-2", title: "Go-live and training", dueDate: "2025-04-05" },
+  { id: "m4", projectId: "proj-3", title: "Kickoff and script design", dueDate: "2025-04-01" },
+];
+
+export const projectUpdates: ProjectUpdate[] = [
   {
     id: "u1",
-    projectId: "1",
-    projectName: "Website AI Chatbot",
+    projectId: "proj-1",
     title: "Chatbot live and connected",
     body: "Chatbot is now live on homepage and contact page. Lead capture form is connected to HubSpot. You can review conversations in your HubSpot pipeline.",
-    date: "Mar 1, 2025",
+    createdAt: "2025-03-01",
   },
   {
     id: "u2",
-    projectId: "2",
-    projectName: "Lead Capture & Scheduling",
+    projectId: "proj-2",
     title: "Calendly integration complete",
     body: "Calendly integration is complete. Reminder sequences are in development and will be ready for testing by next week.",
-    date: "Mar 8, 2025",
+    createdAt: "2025-03-08",
   },
   {
     id: "u3",
-    projectId: "3",
-    projectName: "AI Voice Agent",
+    projectId: "proj-3",
     title: "Kickoff scheduled",
     body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover script design and call flows.",
-    date: "Mar 10, 2025",
+    createdAt: "2025-03-10",
   },
   {
     id: "u4",
-    projectId: "1",
-    projectName: "Website AI Chatbot",
+    projectId: "proj-1",
     title: "Training and handoff",
     body: "Final training session completed. Your team has access to the dashboard and documentation.",
-    date: "Feb 28, 2025",
+    createdAt: "2025-02-28",
+  },
+];
+
+export const supportRequests: SupportRequest[] = [
+  {
+    id: "sr-1",
+    clientId: "client-1",
+    projectId: "proj-1",
+    subject: "Chatbot response tuning",
+    status: "resolved",
+    createdAt: "2025-03-05",
+  },
+];
+
+export const billingRecords: BillingRecord[] = [
+  {
+    id: "inv-1",
+    clientId: "client-1",
+    amount: 2500,
+    currency: "USD",
+    description: "Website AI Chatbot – Phase 1",
+    status: "paid",
+    dueDate: "2025-02-15",
+    paidAt: "2025-02-14",
+  },
+  {
+    id: "inv-2",
+    clientId: "client-1",
+    amount: 1800,
+    currency: "USD",
+    description: "Lead Capture & Scheduling – Setup",
+    status: "pending",
+    dueDate: "2025-04-01",
   },
 ];
 
 export const dashboardQuickActions: DashboardQuickAction[] = [
-  { id: "1", label: "Contact support", href: "/dashboard/support", description: "Get help or request changes" },
-  { id: "2", label: "View all services", href: "/dashboard/services", description: "See project status and milestones" },
-  { id: "3", label: "Project updates", href: "/dashboard/updates", description: "Latest updates from our team" },
+  { id: "1", label: "Contact support", href: "/dashboard/support", description: "Get help or request changes", icon: "HelpCircle" },
+  { id: "2", label: "View all services", href: "/dashboard/services", description: "See project status and milestones", icon: "Layers" },
+  { id: "3", label: "Project updates", href: "/dashboard/updates", description: "Latest updates from our team", icon: "FileText" },
 ];
 
 export function getServiceBySlug(slug: string): Service | undefined {
@@ -316,3 +382,75 @@ export function getServiceBySlug(slug: string): Service | undefined {
 export function getAllServiceSlugs(): string[] {
   return services.map((s) => s.slug);
 }
+
+export function getServiceById(id: string): Service | undefined {
+  return services.find((s) => s.id === id);
+}
+
+// ---------------------------------------------------------------------------
+// Client portal helpers
+// ---------------------------------------------------------------------------
+
+function getNextMilestoneForProject(projectId: string): Milestone | null {
+  const projectMilestones = milestones
+    .filter((m) => m.projectId === projectId && !m.completedAt)
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  return projectMilestones[0] ?? null;
+}
+
+function getLatestUpdateForProject(projectId: string): ProjectUpdate | null {
+  const updates = projectUpdates
+    .filter((u) => u.projectId === projectId)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  return updates[0] ?? null;
+}
+
+export function getProjectsWithDetails(clientId: string): ProjectWithDetails[] {
+  const clientProjects = projects.filter((p) => {
+    const cs = clientServices.find((c) => c.id === p.clientServiceId);
+    return cs?.clientId === clientId;
+  });
+  return clientProjects.map((p) => ({
+    ...p,
+    nextMilestone: getNextMilestoneForProject(p.id),
+    recentUpdate: getLatestUpdateForProject(p.id),
+  }));
+}
+
+export function getProjectUpdatesForClient(clientId: string): (ProjectUpdate & { projectName: string })[] {
+  const clientProjectIds = new Set(
+    projects
+      .filter((p) => clientServices.some((cs) => cs.clientId === clientId && cs.id === p.clientServiceId))
+      .map((p) => p.id)
+  );
+  return projectUpdates
+    .filter((u) => clientProjectIds.has(u.projectId))
+    .map((u) => {
+      const project = projects.find((p) => p.id === u.projectId);
+      return { ...u, projectName: project?.name ?? "Project" };
+    })
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+}
+
+export function getSupportRequestsForClient(clientId: string): SupportRequest[] {
+  return supportRequests.filter((r) => r.clientId === clientId);
+}
+
+export function getBillingRecordsForClient(clientId: string): BillingRecord[] {
+  return billingRecords.filter((r) => r.clientId === clientId);
+}
+
+/** Human-readable labels for support request status (single source of truth). */
+export const supportRequestStatusLabels: Record<SupportRequest["status"], string> = {
+  open: "Open",
+  in_progress: "In progress",
+  resolved: "Resolved",
+  closed: "Closed",
+};
+
+/** Human-readable labels for billing status (single source of truth). */
+export const billingStatusLabels: Record<BillingRecord["status"], string> = {
+  pending: "Pending",
+  paid: "Paid",
+  overdue: "Overdue",
+};

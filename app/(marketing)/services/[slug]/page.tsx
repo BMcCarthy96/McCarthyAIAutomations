@@ -1,27 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-  ArrowRight,
-  Check,
-} from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { getServiceBySlug, getAllServiceSlugs } from "@/lib/data";
+import { getServiceIcon } from "@/lib/serviceIcons";
 import { Button } from "@/components/ui/Button";
-
-const iconMap = {
-  Globe,
-  Phone,
-  Calendar,
-  MessageCircle,
-  Workflow,
-  Cpu,
-};
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -44,7 +27,7 @@ export default async function ServiceDetailPage({ params }: Props) {
   const service = getServiceBySlug(slug);
   if (!service) notFound();
 
-  const Icon = iconMap[service.icon as keyof typeof iconMap] ?? Globe;
+  const Icon = getServiceIcon(service.icon);
 
   return (
     <div className="px-4 py-16 sm:px-6 lg:px-8">

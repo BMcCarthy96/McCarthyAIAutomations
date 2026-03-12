@@ -1,20 +1,31 @@
 import { Calendar, MessageSquare } from "lucide-react";
-import type { DashboardService } from "@/lib/types";
+import type { ProjectWithDetails } from "@/lib/types";
+import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { StatusBadge } from "./StatusBadge";
 
+const statusLabel: Record<ProjectWithDetails["status"], string> = {
+  active: "Live",
+  in_progress: "In progress",
+  pending: "Scheduled",
+  completed: "Completed",
+};
+
 interface ProjectCardProps {
-  project: DashboardService;
+  project: ProjectWithDetails;
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const nextMilestone = project.nextMilestone;
+  const recentUpdate = project.recentUpdate;
+
   return (
     <GlassCard hover={false}>
       <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-lg font-semibold text-white">{project.name}</h2>
-            <StatusBadge status={project.status} label={project.statusLabel} />
+            <StatusBadge status={project.status} label={statusLabel[project.status]} />
           </div>
           <div className="mt-2 h-2 w-full max-w-xs overflow-hidden rounded-full bg-white/10">
             <div
@@ -31,8 +42,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
               Next milestone
             </p>
-            <p className="mt-0.5 font-medium text-white">{project.nextMilestone}</p>
-            <p className="text-sm text-zinc-400">{project.nextMilestoneDate}</p>
+            <p className="mt-0.5 font-medium text-white">
+              {nextMilestone?.title ?? "—"}
+            </p>
+            <p className="text-sm text-zinc-400">
+              {nextMilestone ? formatDisplayDate(nextMilestone.dueDate) : "—"}
+            </p>
           </div>
         </div>
         <div className="flex gap-3">
@@ -41,8 +56,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
               Recent update
             </p>
-            <p className="mt-0.5 text-sm text-zinc-300">{project.recentUpdate}</p>
-            <p className="text-xs text-zinc-500">{project.recentUpdateDate}</p>
+            <p className="mt-0.5 text-sm text-zinc-300">
+              {recentUpdate?.title ?? "—"}
+            </p>
+            <p className="text-xs text-zinc-500">
+              {recentUpdate ? formatDisplayDate(recentUpdate.createdAt) : "—"}
+            </p>
           </div>
         </div>
       </div>
