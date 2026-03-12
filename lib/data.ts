@@ -1,4 +1,4 @@
-import type { Service, PricingTier, Testimonial, FAQItem, Stat, DashboardService, HowItWorksStep } from "@/lib/types";
+import type { Service, PricingTier, Testimonial, FAQItem, Stat, DashboardService, DashboardProjectUpdate, DashboardQuickAction, HowItWorksStep } from "@/lib/types";
 
 export const services: Service[] = [
   {
@@ -266,6 +266,47 @@ export const dashboardServices: DashboardService[] = [
     recentUpdate: "Contract signed. Kickoff call scheduled for Apr 1.",
     recentUpdateDate: "Mar 10, 2025",
   },
+];
+
+export const dashboardProjectUpdates: DashboardProjectUpdate[] = [
+  {
+    id: "u1",
+    projectId: "1",
+    projectName: "Website AI Chatbot",
+    title: "Chatbot live and connected",
+    body: "Chatbot is now live on homepage and contact page. Lead capture form is connected to HubSpot. You can review conversations in your HubSpot pipeline.",
+    date: "Mar 1, 2025",
+  },
+  {
+    id: "u2",
+    projectId: "2",
+    projectName: "Lead Capture & Scheduling",
+    title: "Calendly integration complete",
+    body: "Calendly integration is complete. Reminder sequences are in development and will be ready for testing by next week.",
+    date: "Mar 8, 2025",
+  },
+  {
+    id: "u3",
+    projectId: "3",
+    projectName: "AI Voice Agent",
+    title: "Kickoff scheduled",
+    body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover script design and call flows.",
+    date: "Mar 10, 2025",
+  },
+  {
+    id: "u4",
+    projectId: "1",
+    projectName: "Website AI Chatbot",
+    title: "Training and handoff",
+    body: "Final training session completed. Your team has access to the dashboard and documentation.",
+    date: "Feb 28, 2025",
+  },
+];
+
+export const dashboardQuickActions: DashboardQuickAction[] = [
+  { id: "1", label: "Contact support", href: "/dashboard/support", description: "Get help or request changes" },
+  { id: "2", label: "View all services", href: "/dashboard/services", description: "See project status and milestones" },
+  { id: "3", label: "Project updates", href: "/dashboard/updates", description: "Latest updates from our team" },
 ];
 
 export function getServiceBySlug(slug: string): Service | undefined {

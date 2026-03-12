@@ -53,6 +53,22 @@ export interface DashboardService {
   recentUpdateDate: string;
 }
 
+export interface DashboardProjectUpdate {
+  id: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  body: string;
+  date: string;
+}
+
+export interface DashboardQuickAction {
+  id: string;
+  label: string;
+  href: string;
+  description: string;
+}
+
 export interface HowItWorksStep {
   step: number;
   title: string;
