@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { dashboardQuickActions } from "@/lib/data";
 import {
-  CURRENT_CLIENT_ID,
-  getProjectsWithDetails,
-  getProjectUpdatesForClient,
-  dashboardQuickActions,
-} from "@/lib/data";
+  fetchProjectsWithDetails,
+  fetchProjectUpdatesForClient,
+} from "@/lib/portal-data";
 import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
@@ -20,9 +19,9 @@ export const metadata: Metadata = {
   description: "Your active services and project status.",
 };
 
-export default function DashboardOverviewPage() {
-  const projects = getProjectsWithDetails(CURRENT_CLIENT_ID);
-  const allUpdates = getProjectUpdatesForClient(CURRENT_CLIENT_ID);
+export default async function DashboardOverviewPage() {
+  const projects = await fetchProjectsWithDetails();
+  const allUpdates = await fetchProjectUpdatesForClient();
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
 

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CURRENT_CLIENT_ID, getProjectUpdatesForClient } from "@/lib/data";
+import { fetchProjectUpdatesForClient } from "@/lib/portal-data";
 import { formatDisplayDate } from "@/lib/utils";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: "Latest updates from the McCarthy AI Automations team.",
 };
 
-export default function DashboardUpdatesPage() {
-  const updates = getProjectUpdatesForClient(CURRENT_CLIENT_ID);
+export default async function DashboardUpdatesPage() {
+  const updates = await fetchProjectUpdatesForClient();
   return (
     <div className="space-y-8">
       <PageHeader

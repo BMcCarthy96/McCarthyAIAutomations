@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { CURRENT_CLIENT_ID, getBillingRecordsForClient, billingStatusLabels } from "@/lib/data";
+import { billingStatusLabels } from "@/lib/data";
+import { fetchBillingRecordsForClient } from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
@@ -10,8 +11,8 @@ export const metadata: Metadata = {
   description: "Billing and invoices.",
 };
 
-export default function DashboardBillingPage() {
-  const records = getBillingRecordsForClient(CURRENT_CLIENT_ID);
+export default async function DashboardBillingPage() {
+  const records = await fetchBillingRecordsForClient();
   return (
     <div className="space-y-8">
       <PageHeader

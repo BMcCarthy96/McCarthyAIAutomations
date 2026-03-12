@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CURRENT_CLIENT_ID, getProjectsWithDetails } from "@/lib/data";
+import { fetchProjectsWithDetails } from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: "Your active services and project status.",
 };
 
-export default function DashboardServicesPage() {
-  const projects = getProjectsWithDetails(CURRENT_CLIENT_ID);
+export default async function DashboardServicesPage() {
+  const projects = await fetchProjectsWithDetails();
   return (
     <div className="space-y-8">
       <PageHeader

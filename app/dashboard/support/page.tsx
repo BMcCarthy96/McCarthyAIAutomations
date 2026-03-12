@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { CURRENT_CLIENT_ID, getSupportRequestsForClient, supportRequestStatusLabels } from "@/lib/data";
+import { supportRequestStatusLabels } from "@/lib/data";
+import { fetchSupportRequestsForClient } from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   description: "Get help or request changes for your projects.",
 };
 
-export default function DashboardSupportPage() {
-  const requests = getSupportRequestsForClient(CURRENT_CLIENT_ID);
+export default async function DashboardSupportPage() {
+  const requests = await fetchSupportRequestsForClient();
   return (
     <div className="space-y-8">
       <PageHeader
