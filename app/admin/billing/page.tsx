@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { getAllBillingRecords } from "@/lib/admin-data";
+import { BillingRecordStatusForm } from "@/components/admin/BillingRecordStatusForm";
+import { billingStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -30,6 +32,7 @@ export default async function AdminBillingPage() {
               <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Due</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Paid</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -46,12 +49,20 @@ export default async function AdminBillingPage() {
                   {(r.amountCents / 100).toLocaleString()}{" "}
                   {r.currency ?? "USD"}
                 </td>
-                <td className="px-4 py-3 text-zinc-400">{r.status}</td>
+                <td className="px-4 py-3 text-zinc-400">
+                  {(billingStatusLabels as Record<string, string>)[r.status] ?? r.status}
+                </td>
                 <td className="px-4 py-3 text-zinc-500">
                   {formatDisplayDate(r.dueDate)}
                 </td>
                 <td className="px-4 py-3 text-zinc-500">
                   {r.paidAt ? formatDisplayDate(r.paidAt) : "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <BillingRecordStatusForm
+                    recordId={r.id}
+                    currentStatus={r.status}
+                  />
                 </td>
               </tr>
             ))}

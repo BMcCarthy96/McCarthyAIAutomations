@@ -206,3 +206,50 @@ export async function updateSupportRequestStatusAction(
   revalidatePath("/dashboard/support");
   return { success: true };
 }
+
+const BILLING_STATUSES = ["pending", "paid", "overdue"] as const;
+
+export type UpdateBillingStatusState =
+  | { success: false; error: string }
+  | { success: true };
+
+export async function updateBillingStatusAction(
+  _prevState: UpdateBillingStatusState | null,
+  formData: FormData
+): Promise<UpdateBillingStatusState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const recordId = (formData.get("recordId") as string)?.trim();
+  const status = (formData.get("status") as string)?.trim();
+
+  if (!recordId) {
+    return { success: false, error: "Record is required." };
+  }
+  if (
+    !status ||
+    !(BILLING_STATUSES as readonly string[]).includes(status)
+  ) {
+    return { success: false, error: "Invalid status." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { error } = await supabase
+    .from("billing_records")
+    .update({ status, updated_at: new Date().toISOString() })
+    .eq("id", recordId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/admin/billing");
+  revalidatePath("/dashboard/billing");
+  return { success: true };
+}
