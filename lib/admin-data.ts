@@ -147,14 +147,29 @@ export async function getMilestonesForProject(
   }));
 }
 
-export async function getAllSupportRequests(): Promise<AdminSupportRow[]> {
+export type SupportRequestListView = "active" | "resolved" | "closed" | "all";
+
+export async function getAllSupportRequests(
+  view: SupportRequestListView = "active"
+): Promise<AdminSupportRow[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return [];
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("support_requests")
     .select("id, subject, status, created_at, clients(name)")
     .order("created_at", { ascending: false });
+
+  if (view === "active") {
+    query = query.in("status", ["open", "in_progress"]);
+  } else if (view === "resolved") {
+    query = query.eq("status", "resolved");
+  } else if (view === "closed") {
+    query = query.eq("status", "closed");
+  }
+  // "all" = no status filter
+
+  const { data, error } = await query;
 
   if (error || !data) return [];
 
