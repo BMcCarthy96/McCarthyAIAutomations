@@ -215,6 +215,10 @@ CREATE INDEX idx_billing_records_client_id ON billing_records (client_id);
 4. **Clerk + Supabase**  
    On sign-in, get the Clerk user id; ensure a `clients` row exists with that `clerk_user_id` (create one if you use “sign up = new client”). Use Supabase auth only if you later move off Clerk; until then, use Clerk for auth and Supabase as the data store, with `clerk_user_id` as the link.
 
+   **Linking a Clerk user to the seed client (one-time):** So the dashboard shows real data for a signed-in user, set `clerk_user_id` on the seed client to your Clerk user id (e.g. from Clerk Dashboard → Users → user id like `user_2abc...`). In Supabase SQL Editor:  
+   `UPDATE clients SET clerk_user_id = 'user_2abc...' WHERE email = 'contact@acme.example.com';`  
+   (Use the actual Clerk user id; the app uses it to resolve `getCurrentClientId()` and run dashboard queries.)
+
 5. **Stripe**  
    When you add billing, store Stripe invoice/payment intent ids in `billing_records.stripe_invoice_id` (and similar if needed). Store amounts in cents from Stripe. Webhooks can create or update `billing_records` and set `paid_at` when payment succeeds.
 

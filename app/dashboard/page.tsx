@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { dashboardQuickActions } from "@/lib/data";
 import {
+  getCurrentClientId,
   fetchProjectsWithDetails,
   fetchProjectUpdatesForClient,
 } from "@/lib/portal-data";
@@ -20,8 +21,11 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardOverviewPage() {
-  const projects = await fetchProjectsWithDetails();
-  const allUpdates = await fetchProjectUpdatesForClient();
+  const clientId = await getCurrentClientId();
+  const [projects, allUpdates] = await Promise.all([
+    fetchProjectsWithDetails(clientId),
+    fetchProjectUpdatesForClient(clientId),
+  ]);
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
 

@@ -1,3 +1,4 @@
+import { auth } from "@clerk/nextjs/server";
 import {
   type BillingRecord,
   type ProjectWithDetails,
@@ -11,7 +12,31 @@ import {
   getSupportRequestsForClient,
   getBillingRecordsForClient,
 } from "@/lib/data";
-import { getSupabaseClient } from "@/lib/supabase";
+import { getSupabaseServiceClient } from "@/lib/supabase";
+
+/**
+ * Resolves the current client id for dashboard reads:
+ * 1. Gets the current Clerk user (server-side).
+ * 2. Looks up the clients row in Supabase where clerk_user_id = Clerk userId.
+ * 3. Returns that client's id (uuid), or null if not found / no user / Supabase unavailable.
+ * Callers should fall back to mock data when this returns null.
+ */
+export async function getCurrentClientId(): Promise<string | null> {
+  const { userId } = await auth();
+  if (!userId) return null;
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("clients")
+    .select("id")
+    .eq("clerk_user_id", userId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return data.id;
+}
 
 interface DbProject {
   id: string;
@@ -57,26 +82,27 @@ interface DbBillingRecord {
   paid_at: string | null;
 }
 
-async function getCurrentClientId(): Promise<string> {
-  // For now we keep the mock CURRENT_CLIENT_ID as the single tenant id.
-  // When Clerk is wired to clients, this helper can be updated to look up
-  // the real client row from Supabase using clerk_user_id.
-  return CURRENT_CLIENT_ID;
-}
-
-export async function fetchProjectsWithDetails(): Promise<ProjectWithDetails[]> {
-  const supabase = getSupabaseClient();
+/**
+ * Optional: pass a pre-resolved client id (e.g. from getCurrentClientId()) to avoid resolving twice.
+ * When omitted, the helper resolves the current client internally.
+ */
+export async function fetchProjectsWithDetails(
+  clientId?: string | null
+): Promise<ProjectWithDetails[]> {
+  const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return getProjectsWithDetails(CURRENT_CLIENT_ID);
   }
 
   try {
-    const clientId = await getCurrentClientId();
+    const resolvedId =
+      clientId !== undefined ? clientId : await getCurrentClientId();
+    if (resolvedId === null) return getProjectsWithDetails(CURRENT_CLIENT_ID);
 
     const { data: projects, error: projectsError } = await supabase
       .from("projects")
       .select("id, name, status, progress, client_services!inner(client_id)")
-      .eq("client_services.client_id", clientId);
+      .eq("client_services.client_id", resolvedId);
 
     if (projectsError || !projects) {
       return getProjectsWithDetails(CURRENT_CLIENT_ID);
@@ -161,23 +187,29 @@ export async function fetchProjectsWithDetails(): Promise<ProjectWithDetails[]> 
   }
 }
 
-export async function fetchProjectUpdatesForClient(): Promise<
-  (ProjectUpdate & { projectName: string })[]
-> {
-  const supabase = getSupabaseClient();
+/**
+ * Optional: pass a pre-resolved client id to avoid resolving twice.
+ */
+export async function fetchProjectUpdatesForClient(
+  clientId?: string | null
+): Promise<(ProjectUpdate & { projectName: string })[]> {
+  const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
   }
 
   try {
-    const clientId = await getCurrentClientId();
+    const resolvedId =
+      clientId !== undefined ? clientId : await getCurrentClientId();
+    if (resolvedId === null)
+      return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
 
     const { data, error } = await supabase
       .from("project_updates")
       .select(
         "id, project_id, title, body, created_at, projects!inner(id, name, client_services!inner(client_id))"
       )
-      .eq("projects.client_services.client_id", clientId)
+      .eq("projects.client_services.client_id", resolvedId)
       .order("created_at", { ascending: false });
 
     if (error || !data) {
@@ -199,13 +231,14 @@ export async function fetchProjectUpdatesForClient(): Promise<
 }
 
 export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return getSupportRequestsForClient(CURRENT_CLIENT_ID);
   }
 
   try {
     const clientId = await getCurrentClientId();
+    if (clientId === null) return getSupportRequestsForClient(CURRENT_CLIENT_ID);
 
     const { data, error } = await supabase
       .from("support_requests")
@@ -236,13 +269,14 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
 }
 
 export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
-  const supabase = getSupabaseClient();
+  const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return getBillingRecordsForClient(CURRENT_CLIENT_ID);
   }
 
   try {
     const clientId = await getCurrentClientId();
+    if (clientId === null) return getBillingRecordsForClient(CURRENT_CLIENT_ID);
 
     const { data, error } = await supabase
       .from("billing_records")
