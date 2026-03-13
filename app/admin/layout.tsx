@@ -1,22 +1,16 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
-import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { NoClientAccount } from "@/components/dashboard/NoClientAccount";
-import { getCurrentClientId } from "@/lib/portal-data";
-import { getSupabaseServiceClient } from "@/lib/supabase";
+import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { isAdminUser } from "@/lib/admin-auth";
 
-export default async function DashboardLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = getSupabaseServiceClient();
-  const [clientId, isAdmin] = await Promise.all([
-    getCurrentClientId(),
-    isAdminUser(),
-  ]);
-  const showNoClientState = supabase !== null && clientId === null;
+  const allowed = await isAdminUser();
+  if (!allowed) redirect("/");
 
   return (
     <div className="min-h-screen bg-premium">
@@ -24,35 +18,33 @@ export default async function DashboardLayout({
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:pl-8 lg:pr-8">
           <div className="flex min-w-0 items-center gap-4 lg:pl-64">
             <Link
-              href="/dashboard"
+              href="/admin"
               className="truncate text-xl font-bold tracking-tight text-white"
             >
-              Client portal
+              Admin
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-3">
-            {isAdmin && (
-              <Link
-                href="/admin"
-                className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:inline"
-              >
-                Admin
-              </Link>
-            )}
+            <Link
+              href="/dashboard"
+              className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:inline"
+            >
+              Client portal
+            </Link>
             <Link
               href="/"
               className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:inline"
             >
-              Back to site
+              Site
             </Link>
             <UserButton />
           </div>
         </div>
       </header>
-      <DashboardSidebar />
+      <AdminSidebar />
       <div className="lg:pl-64">
         <div className="mx-auto max-w-5xl px-4 py-8 pl-14 sm:px-6 sm:pl-6 lg:px-8 lg:pl-8">
-          {showNoClientState ? <NoClientAccount /> : children}
+          {children}
         </div>
       </div>
     </div>
