@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getAllSupportRequests } from "@/lib/admin-data";
 import { formatDisplayDate } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Support | Admin",
@@ -36,7 +38,14 @@ export default async function AdminSupportPage() {
                 key={r.id}
                 className="border-b border-white/5 last:border-0"
               >
-                <td className="px-4 py-3 font-medium text-white">{r.subject}</td>
+                <td className="px-4 py-3 font-medium text-white">
+                  <Link
+                    href={`/admin/support/${r.id}`}
+                    className="transition-colors hover:text-indigo-400"
+                  >
+                    {r.subject}
+                  </Link>
+                </td>
                 <td className="px-4 py-3 text-zinc-300">{r.clientName}</td>
                 <td className="px-4 py-3 text-zinc-400">{r.status}</td>
                 <td className="px-4 py-3 text-zinc-500">

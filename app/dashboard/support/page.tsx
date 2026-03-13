@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import { supportRequestStatusLabels } from "@/lib/data";
-import { fetchSupportRequestsForClient } from "@/lib/portal-data";
+import {
+  fetchSupportRequestsForClient,
+  fetchProjectsWithDetails,
+} from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { CreateSupportRequestForm } from "@/components/dashboard/CreateSupportRequestForm";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
-import { Mail, MessageCircle } from "lucide-react";
+import { Mail, MessageCircle, Send } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Support",
@@ -14,13 +18,31 @@ export const metadata: Metadata = {
 };
 
 export default async function DashboardSupportPage() {
-  const requests = await fetchSupportRequestsForClient();
+  const [requests, projectsWithDetails] = await Promise.all([
+    fetchSupportRequestsForClient(),
+    fetchProjectsWithDetails(),
+  ]);
+  const projects = projectsWithDetails.map((p) => ({ id: p.id, name: p.name }));
+
   return (
     <div className="space-y-8">
       <PageHeader
         title="Support"
         subtitle="Get help, request changes, or ask questions about your projects."
       />
+      <section>
+        <SectionTitle>New request</SectionTitle>
+        <GlassCard hover={false} className="mt-4 max-w-xl">
+          <Send className="h-10 w-10 text-indigo-400" />
+          <p className="mt-4 text-sm text-zinc-400">
+            Submit a support request. We’ll respond via email or through this
+            portal.
+          </p>
+          <div className="mt-6">
+            <CreateSupportRequestForm projects={projects} />
+          </div>
+        </GlassCard>
+      </section>
       <div className="grid gap-6 sm:grid-cols-2">
         <GlassCard hover={false}>
           <Mail className="h-10 w-10 text-indigo-400" />
