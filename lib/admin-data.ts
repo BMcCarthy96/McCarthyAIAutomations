@@ -106,6 +106,36 @@ export async function getProjectById(
   };
 }
 
+/** Milestone row for admin edit page. */
+export interface AdminMilestoneRow {
+  id: string;
+  title: string;
+  dueDate: string;
+  completedAt: string | null;
+}
+
+export async function getMilestonesForProject(
+  projectId: string
+): Promise<AdminMilestoneRow[]> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return [];
+
+  const { data, error } = await supabase
+    .from("milestones")
+    .select("id, title, due_date, completed_at")
+    .eq("project_id", projectId)
+    .order("due_date");
+
+  if (error || !data) return [];
+
+  return data.map((row: { id: string; title: string; due_date: string; completed_at: string | null }) => ({
+    id: row.id,
+    title: row.title,
+    dueDate: row.due_date,
+    completedAt: row.completed_at,
+  }));
+}
+
 export async function getAllSupportRequests(): Promise<AdminSupportRow[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return [];

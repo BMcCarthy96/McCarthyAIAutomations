@@ -51,6 +51,7 @@ interface DbMilestone {
   project_id: string;
   title: string;
   due_date: string;
+  completed_at: string | null;
 }
 
 interface DbProjectUpdate {
@@ -114,7 +115,7 @@ export async function fetchProjectsWithDetails(
     const [{ data: milestones }, { data: updates }] = await Promise.all([
       supabase
         .from("milestones")
-        .select("id, project_id, title, due_date")
+        .select("id, project_id, title, due_date, completed_at")
         .in("project_id", projectIds),
       supabase
         .from("project_updates")
@@ -142,6 +143,7 @@ export async function fetchProjectsWithDetails(
 
       const nextMilestone =
         dbMilestones
+          .filter((m) => !m.completed_at)
           .slice()
           .sort((a, b) => a.due_date.localeCompare(b.due_date))[0] ?? null;
 
@@ -166,7 +168,7 @@ export async function fetchProjectsWithDetails(
               projectId: p.id,
               title: nextMilestone.title,
               dueDate: nextMilestone.due_date,
-              completedAt: null,
+              completedAt: nextMilestone.completed_at ?? null,
               createdAt: null,
               updatedAt: null,
             }

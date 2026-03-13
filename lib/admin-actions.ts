@@ -96,3 +96,59 @@ export async function updateProjectAction(
 
   return { success: true };
 }
+
+export type UpdateMilestoneState =
+  | { success: false; error: string }
+  | { success: true };
+
+export async function updateMilestoneAction(
+  _prevState: UpdateMilestoneState | null,
+  formData: FormData
+): Promise<UpdateMilestoneState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const milestoneId = (formData.get("milestoneId") as string)?.trim();
+  const dueDateRaw = (formData.get("dueDate") as string)?.trim();
+  const markComplete = formData.get("markComplete") === "true";
+
+  if (!milestoneId) {
+    return { success: false, error: "Milestone is required." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const updates: { due_date?: string; completed_at?: string | null } = {};
+
+  if (dueDateRaw) {
+    const date = new Date(dueDateRaw);
+    if (Number.isNaN(date.getTime())) {
+      return { success: false, error: "Invalid due date." };
+    }
+    updates.due_date = dueDateRaw.slice(0, 10);
+  }
+
+  if (markComplete) {
+    updates.completed_at = new Date().toISOString();
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { success: false, error: "No change specified." };
+  }
+
+  const { error } = await supabase
+    .from("milestones")
+    .update(updates)
+    .eq("id", milestoneId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
+}
