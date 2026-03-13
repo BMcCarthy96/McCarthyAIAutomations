@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getAllProjects } from "@/lib/admin-data";
+import { Pencil } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Projects | Admin",
@@ -27,6 +29,7 @@ export default async function AdminProjectsPage() {
               <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Progress</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -39,6 +42,15 @@ export default async function AdminProjectsPage() {
                 <td className="px-4 py-3 text-zinc-300">{p.clientName}</td>
                 <td className="px-4 py-3 text-zinc-400">{p.status}</td>
                 <td className="px-4 py-3 text-zinc-400">{p.progress}%</td>
+                <td className="px-4 py-3">
+                  <Link
+                    href={`/admin/projects/${p.id}/edit`}
+                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"
+                  >
+                    <Pencil className="h-4 w-4" />
+                    Edit
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -84,6 +84,28 @@ export async function getAllProjects(): Promise<AdminProjectRow[]> {
   }));
 }
 
+/** Single project for edit form. */
+export async function getProjectById(
+  id: string
+): Promise<{ id: string; name: string; status: string; progress: number } | null> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("projects")
+    .select("id, name, status, progress")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  return {
+    id: data.id,
+    name: data.name,
+    status: data.status,
+    progress: data.progress,
+  };
+}
+
 export async function getAllSupportRequests(): Promise<AdminSupportRow[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return [];

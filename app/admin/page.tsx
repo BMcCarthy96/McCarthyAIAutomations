@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Users, FolderKanban, HelpCircle, CreditCard } from "lucide-react";
+import { getAllProjects } from "@/lib/admin-data";
+import { CreateProjectUpdateForm } from "@/components/admin/CreateProjectUpdateForm";
 
 export const metadata: Metadata = {
   title: "Admin",
@@ -14,7 +16,9 @@ const links = [
   { href: "/admin/billing", label: "Billing", icon: CreditCard },
 ];
 
-export default function AdminOverviewPage() {
+export default async function AdminOverviewPage() {
+  const projects = await getAllProjects();
+
   return (
     <div className="space-y-8">
       <div>
@@ -41,6 +45,22 @@ export default function AdminOverviewPage() {
           );
         })}
       </div>
+
+      <section>
+        <h2 className="text-lg font-semibold text-white">Create project update</h2>
+        <p className="mt-0.5 text-sm text-zinc-400">
+          Add an update that appears on the client’s project updates page.
+        </p>
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-6">
+          {projects.length === 0 ? (
+            <p className="text-sm text-zinc-500">
+              No projects yet. Create a client and project first.
+            </p>
+          ) : (
+            <CreateProjectUpdateForm projects={projects} />
+          )}
+        </div>
+      </section>
     </div>
   );
 }
