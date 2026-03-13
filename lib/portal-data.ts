@@ -19,7 +19,8 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
  * 1. Gets the current Clerk user (server-side).
  * 2. Looks up the clients row in Supabase where clerk_user_id = Clerk userId.
  * 3. Returns that client's id (uuid), or null if not found / no user / Supabase unavailable.
- * Callers should fall back to mock data when this returns null.
+ * When Supabase is configured and this returns null, the user has no linked client (show empty state).
+ * When Supabase is not configured, null means use mock fallback for local dev.
  */
 export async function getCurrentClientId(): Promise<string | null> {
   const { userId } = await auth();
@@ -97,7 +98,7 @@ export async function fetchProjectsWithDetails(
   try {
     const resolvedId =
       clientId !== undefined ? clientId : await getCurrentClientId();
-    if (resolvedId === null) return getProjectsWithDetails(CURRENT_CLIENT_ID);
+    if (resolvedId === null) return [];
 
     const { data: projects, error: projectsError } = await supabase
       .from("projects")
@@ -201,8 +202,7 @@ export async function fetchProjectUpdatesForClient(
   try {
     const resolvedId =
       clientId !== undefined ? clientId : await getCurrentClientId();
-    if (resolvedId === null)
-      return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
+    if (resolvedId === null) return [];
 
     const { data, error } = await supabase
       .from("project_updates")
@@ -238,7 +238,7 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
 
   try {
     const clientId = await getCurrentClientId();
-    if (clientId === null) return getSupportRequestsForClient(CURRENT_CLIENT_ID);
+    if (clientId === null) return [];
 
     const { data, error } = await supabase
       .from("support_requests")
@@ -276,7 +276,7 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
 
   try {
     const clientId = await getCurrentClientId();
-    if (clientId === null) return getBillingRecordsForClient(CURRENT_CLIENT_ID);
+    if (clientId === null) return [];
 
     const { data, error } = await supabase
       .from("billing_records")

@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
+import { NoClientAccount } from "@/components/dashboard/NoClientAccount";
+import { getCurrentClientId } from "@/lib/portal-data";
+import { getSupabaseServiceClient } from "@/lib/supabase";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = getSupabaseServiceClient();
+  const clientId = await getCurrentClientId();
+  const showNoClientState = supabase !== null && clientId === null;
+
   return (
     <div className="min-h-screen bg-premium">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[var(--background)]/90 backdrop-blur-xl">
@@ -33,7 +40,7 @@ export default function DashboardLayout({
       <DashboardSidebar />
       <div className="lg:pl-64">
         <div className="mx-auto max-w-5xl px-4 py-8 pl-14 sm:px-6 sm:pl-6 lg:px-8 lg:pl-8">
-          {children}
+          {showNoClientState ? <NoClientAccount /> : children}
         </div>
       </div>
     </div>
