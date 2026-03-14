@@ -17,8 +17,8 @@ import type {
 } from "@/lib/types";
 
 /**
- * Static and mock data: service catalog, marketing content, and fallback data for the portal.
- * Portal (lib/portal-data) uses getProjectsWithDetails, getSupportRequestsForClient, etc. when Supabase is unavailable.
+ * Static and mock data: service catalog, marketing content, and in-memory helpers for tests/local use.
+ * Client portal reads come from Supabase only (lib/portal-data); no mock fallback in production.
  */
 
 export const services: Service[] = [

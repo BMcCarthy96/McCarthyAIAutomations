@@ -5,19 +5,12 @@ import {
   type SupportRequest,
   type ProjectUpdate,
 } from "@/lib/types";
-import {
-  CURRENT_CLIENT_ID,
-  getProjectsWithDetails,
-  getProjectUpdatesForClient,
-  getSupportRequestsForClient,
-  getBillingRecordsForClient,
-} from "@/lib/data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
 /**
  * Portal data: dashboard reads for the client portal.
  * Resolves the current client via Clerk → clients.clerk_user_id, then queries Supabase.
- * Falls back to mock data (lib/data) when Supabase is unavailable or user has no linked client.
+ * Returns empty arrays when Supabase is unavailable or on error (no mock data in production).
  */
 
 /**
@@ -25,8 +18,7 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
  * 1. Gets the current Clerk user (server-side).
  * 2. Looks up the clients row in Supabase where clerk_user_id = Clerk userId.
  * 3. Returns that client's id (uuid), or null if not found / no user / Supabase unavailable.
- * When Supabase is configured and this returns null, the user has no linked client (show empty state).
- * When Supabase is not configured, null means use mock fallback for local dev.
+ * When this returns null, the user has no linked client (dashboard shows NoClientAccount or empty states).
  */
 export async function getCurrentClientId(): Promise<string | null> {
   const { userId } = await auth();
@@ -102,9 +94,7 @@ export async function fetchProjectsWithDetails(
   clientId?: string | null
 ): Promise<ProjectWithDetails[]> {
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return getProjectsWithDetails(CURRENT_CLIENT_ID);
-  }
+  if (!supabase) return [];
 
   try {
     const resolvedId =
@@ -116,9 +106,7 @@ export async function fetchProjectsWithDetails(
       .select("id, name, status, progress, client_services!inner(client_id)")
       .eq("client_services.client_id", resolvedId);
 
-    if (projectsError || !projects) {
-      return getProjectsWithDetails(CURRENT_CLIENT_ID);
-    }
+    if (projectsError || !projects) return [];
 
     const projectIds = projects.map((p) => p.id);
 
@@ -196,7 +184,7 @@ export async function fetchProjectsWithDetails(
       };
     });
   } catch {
-    return getProjectsWithDetails(CURRENT_CLIENT_ID);
+    return [];
   }
 }
 
@@ -211,9 +199,7 @@ export async function fetchProjectUpdatesForClient(
   clientId?: string | null
 ): Promise<(ProjectUpdate & { projectName: string })[]> {
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
-  }
+  if (!supabase) return [];
 
   try {
     const resolvedId =
@@ -228,9 +214,7 @@ export async function fetchProjectUpdatesForClient(
       .eq("projects.client_services.client_id", resolvedId)
       .order("created_at", { ascending: false });
 
-    if (error || !data) {
-      return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
-    }
+    if (error || !data) return [];
 
     return data.map((row: any) => ({
       id: row.id,
@@ -242,7 +226,7 @@ export async function fetchProjectUpdatesForClient(
       projectName: row.projects?.name ?? "Project",
     }));
   } catch {
-    return getProjectUpdatesForClient(CURRENT_CLIENT_ID);
+    return [];
   }
 }
 
@@ -252,9 +236,7 @@ export async function fetchProjectUpdatesForClient(
 
 export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]> {
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return getSupportRequestsForClient(CURRENT_CLIENT_ID);
-  }
+  if (!supabase) return [];
 
   try {
     const clientId = await getCurrentClientId();
@@ -268,9 +250,7 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
       .eq("client_id", clientId)
       .order("created_at", { ascending: false });
 
-    if (error || !data) {
-      return getSupportRequestsForClient(CURRENT_CLIENT_ID);
-    }
+    if (error || !data) return [];
 
     return data.map((row: DbSupportRequest) => ({
       id: row.id,
@@ -284,7 +264,7 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
       updatedAt: null,
     }));
   } catch {
-    return getSupportRequestsForClient(CURRENT_CLIENT_ID);
+    return [];
   }
 }
 
@@ -294,9 +274,7 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
 
 export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return getBillingRecordsForClient(CURRENT_CLIENT_ID);
-  }
+  if (!supabase) return [];
 
   try {
     const clientId = await getCurrentClientId();
@@ -310,9 +288,7 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
       .eq("client_id", clientId)
       .order("due_date", { ascending: false });
 
-    if (error || !data) {
-      return getBillingRecordsForClient(CURRENT_CLIENT_ID);
-    }
+    if (error || !data) return [];
 
     return data.map((row: DbBillingRecord) => ({
       id: row.id,
@@ -328,7 +304,7 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
       updatedAt: null,
     }));
   } catch {
-    return getBillingRecordsForClient(CURRENT_CLIENT_ID);
+    return [];
   }
 }
 
