@@ -11,6 +11,7 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import { ArrowRight, Calendar, FileText, HelpCircle, Layers } from "lucide-react";
 
 const quickActionIcons = { HelpCircle, Layers, FileText } as const;
@@ -59,6 +60,11 @@ export default async function DashboardOverviewPage() {
               <p className="mt-0.5 text-sm text-zinc-500">In progress</p>
             </div>
           </div>
+          {projects.length === 0 && (
+            <p className="mt-4 border-t border-white/10 pt-4 text-sm text-zinc-500">
+              Your services will appear here once they’re set up. Need access? Contact your account manager.
+            </p>
+          )}
         </GlassCard>
         <GlassCard href="/dashboard/support" className="flex flex-col justify-center">
           <HelpCircle className="h-5 w-5 text-indigo-400" />
@@ -75,45 +81,64 @@ export default async function DashboardOverviewPage() {
 
       <section>
         <SectionTitle
-          action={{ label: "View all", href: "/dashboard/services" }}
+          action={projects.length > 0 ? { label: "View all", href: "/dashboard/services" } : undefined}
         >
           Your services
         </SectionTitle>
         <div className="mt-4 space-y-4">
-          {overviewProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
+          {overviewProjects.length > 0 ? (
+            overviewProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))
+          ) : (
+            <EmptyState
+              icon={Layers}
+              title="No services yet"
+              description="Your active services and projects will show up here once they’re set up. If you expect to see something, contact your account manager."
+            />
+          )}
         </div>
       </section>
 
       <section className="grid gap-8 lg:grid-cols-2">
         <div>
-          <SectionTitle action={{ label: "View all", href: "/dashboard/services" }}>
+          <SectionTitle action={projects.length > 0 ? { label: "View all", href: "/dashboard/services" } : undefined}>
             Next milestones
           </SectionTitle>
-          <ul className="mt-4 space-y-2">
-            {projects.map((project) => {
-              const next = project.nextMilestone;
-              return (
-                <li key={project.id}>
-                  <Link
-                    href="/dashboard/services"
-                    className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                  >
-                    <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                    <div className="min-w-0">
-                      <p className="font-medium text-white">
-                        {next?.title ?? "—"}
-                      </p>
-                      <p className="mt-0.5 text-xs text-zinc-500">
-                        {project.name} · {next ? formatDisplayDate(next.dueDate) : "—"}
-                      </p>
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <div className="mt-4">
+            {projects.length > 0 ? (
+              <ul className="space-y-2">
+                {projects.map((project) => {
+                  const next = project.nextMilestone;
+                  return (
+                    <li key={project.id}>
+                      <Link
+                        href="/dashboard/services"
+                        className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
+                      >
+                        <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                        <div className="min-w-0">
+                          <p className="font-medium text-white">
+                            {next?.title ?? "—"}
+                          </p>
+                          <p className="mt-0.5 text-xs text-zinc-500">
+                            {project.name} · {next ? formatDisplayDate(next.dueDate) : "—"}
+                          </p>
+                        </div>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <EmptyState
+                icon={Calendar}
+                title="No milestones yet"
+                description="Upcoming milestones will appear here once your services and projects are set up."
+                compact
+              />
+            )}
+          </div>
         </div>
         <div>
           <SectionTitle
@@ -121,24 +146,35 @@ export default async function DashboardOverviewPage() {
           >
             Recent updates
           </SectionTitle>
-          <ul className="mt-4 space-y-2">
-            {recentUpdates.map((update) => (
-              <li key={update.id}>
-                <Link
-                  href="/dashboard/updates"
-                  className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                >
-                  <FileText className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                  <div className="min-w-0">
-                    <p className="font-medium text-white">{update.title}</p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
-                      {update.projectName} · {formatDisplayDate(update.createdAt)}
-                    </p>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          <div className="mt-4">
+            {recentUpdates.length > 0 ? (
+              <ul className="space-y-2">
+                {recentUpdates.map((update) => (
+                  <li key={update.id}>
+                    <Link
+                      href="/dashboard/updates"
+                      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
+                    >
+                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-white">{update.title}</p>
+                        <p className="mt-0.5 text-xs text-zinc-500">
+                          {update.projectName} · {formatDisplayDate(update.createdAt)}
+                        </p>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyState
+                icon={FileText}
+                title="No updates yet"
+                description="Project updates from your team will show up here. Check back later or contact your project manager if you’re expecting an update."
+                compact
+              />
+            )}
+          </div>
         </div>
       </section>
 

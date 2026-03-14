@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getAllProjects } from "@/lib/admin-data";
+import { getAllProjects, getAllClients } from "@/lib/admin-data";
+import { CreateProjectSetupForm } from "@/components/admin/CreateProjectSetupForm";
+import { services } from "@/lib/data";
 import { Pencil } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -9,10 +11,13 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminProjectsPage() {
-  const projects = await getAllProjects();
+  const [projects, clients] = await Promise.all([
+    getAllProjects(),
+    getAllClients(),
+  ]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">
           Projects
@@ -21,7 +26,20 @@ export default async function AdminProjectsPage() {
           {projects.length} project{projects.length !== 1 ? "s" : ""}
         </p>
       </div>
-      <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+
+      <section>
+        <h2 className="text-lg font-semibold text-white">New project</h2>
+        <p className="mt-1 text-sm text-zinc-400">
+          Create a client engagement and project. Select client and service, then set name and status.
+        </p>
+        <div className="mt-4 max-w-xl rounded-xl border border-white/10 bg-white/5 p-6">
+          <CreateProjectSetupForm clients={clients} services={services} />
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-lg font-semibold text-white">All projects</h2>
+        <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-white/5">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
@@ -55,10 +73,11 @@ export default async function AdminProjectsPage() {
             ))}
           </tbody>
         </table>
-      </div>
-      {projects.length === 0 && (
-        <p className="text-sm text-zinc-500">No projects yet.</p>
-      )}
+        </div>
+        {projects.length === 0 && (
+          <p className="mt-4 text-sm text-zinc-500">No projects yet.</p>
+        )}
+      </section>
     </div>
   );
 }

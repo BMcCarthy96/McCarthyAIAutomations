@@ -8,6 +8,7 @@ import {
 } from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { CreateSupportRequestForm } from "@/components/dashboard/CreateSupportRequestForm";
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -107,53 +108,62 @@ export default async function DashboardSupportPage({
           </p>
         </GlassCard>
       </div>
-      {requests.length > 0 && (
-        <section>
-          <SectionTitle>Your requests</SectionTitle>
-          <p className="mt-1 text-sm text-zinc-500">
-            {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""}
-            {view !== "all" && ` (${view})`}
-          </p>
-          <div className="mt-3 flex flex-wrap gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
-            {VIEWS.map((v) => (
-              <Link
-                key={v.value}
-                href={`/dashboard/support?view=${v.value}`}
-                className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                  view === v.value
-                    ? "bg-white/10 text-white"
-                    : "text-zinc-400 hover:text-white"
-                }`}
-              >
-                {v.label}
-              </Link>
-            ))}
-          </div>
-          {filteredRequests.length > 0 ? (
-            <ul className="mt-4 space-y-2">
-              {filteredRequests.map((r) => (
-                <li key={r.id}>
-                  <GlassCard hover={false}>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-medium text-white">{r.subject}</span>
-                      <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-400">
-                        {supportRequestStatusLabels[r.status] ?? r.status}
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-zinc-500">
-                      {formatDisplayDate(r.createdAt)}
-                    </p>
-                  </GlassCard>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="mt-4 text-sm text-zinc-500">
-              No requests in this view.
+      <section>
+        <SectionTitle>Your requests</SectionTitle>
+        {requests.length > 0 ? (
+          <>
+            <p className="mt-1 text-sm text-zinc-500">
+              {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""}
+              {view !== "all" && ` (${view})`}
             </p>
-          )}
-        </section>
-      )}
+            <div className="mt-3 flex flex-wrap gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+              {VIEWS.map((v) => (
+                <Link
+                  key={v.value}
+                  href={`/dashboard/support?view=${v.value}`}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                    view === v.value
+                      ? "bg-white/10 text-white"
+                      : "text-zinc-400 hover:text-white"
+                  }`}
+                >
+                  {v.label}
+                </Link>
+              ))}
+            </div>
+            {filteredRequests.length > 0 ? (
+              <ul className="mt-4 space-y-2">
+                {filteredRequests.map((r) => (
+                  <li key={r.id}>
+                    <GlassCard hover={false}>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-medium text-white">{r.subject}</span>
+                        <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs text-zinc-400">
+                          {supportRequestStatusLabels[r.status] ?? r.status}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs text-zinc-500">
+                        {formatDisplayDate(r.createdAt)}
+                      </p>
+                    </GlassCard>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm text-zinc-500">
+                No requests in this view.
+              </p>
+            )}
+          </>
+        ) : (
+          <EmptyState
+            icon={MessageCircle}
+            title="No requests yet"
+            description="You haven’t submitted any support requests. Use the form above to get help, request changes, or ask a question—we’ll respond via email or through this portal."
+            className="mt-4"
+          />
+        )}
+      </section>
     </div>
   );
 }

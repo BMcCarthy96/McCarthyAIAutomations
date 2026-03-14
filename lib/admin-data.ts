@@ -65,6 +65,29 @@ export async function getAllClients(): Promise<Client[]> {
   }));
 }
 
+export async function getClientById(id: string): Promise<Client | null> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("clients")
+    .select("id, name, email, company, clerk_user_id, created_at, updated_at")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error || !data) return null;
+  const row = data as DbClient;
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    company: row.company ?? undefined,
+    clerkUserId: row.clerk_user_id,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Projects
 // ---------------------------------------------------------------------------

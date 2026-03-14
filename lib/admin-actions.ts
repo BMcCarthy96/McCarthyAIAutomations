@@ -9,6 +9,10 @@ import type {
   UpdateMilestoneState,
   UpdateBillingStatusState,
   UpdateSupportRequestStatusState,
+  CreateClientState,
+  UpdateClientState,
+  CreateProjectSetupState,
+  UpdateClientClerkLinkState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
@@ -222,6 +226,175 @@ export async function updateBillingStatusAction(
 
   revalidatePath("/admin/billing");
   revalidatePath("/dashboard/billing");
+  return { success: true };
+}
+
+// ---------------------------------------------------------------------------
+// Clients
+// ---------------------------------------------------------------------------
+
+export async function createClientAction(
+  _prevState: CreateClientState | null,
+  formData: FormData
+): Promise<CreateClientState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const name = (formData.get("name") as string)?.trim() ?? "";
+  const email = (formData.get("email") as string)?.trim() ?? "";
+  const company = (formData.get("company") as string)?.trim() || null;
+  const clerkUserId = (formData.get("clerkUserId") as string)?.trim() || null;
+
+  if (!name) return { success: false, error: "Name is required." };
+  if (!email) return { success: false, error: "Email is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase.from("clients").insert({
+    name,
+    email,
+    company,
+    clerk_user_id: clerkUserId,
+  });
+
+  if (error) return { success: false, error: error.message };
+  revalidatePath("/admin/clients");
+  return { success: true };
+}
+
+export async function updateClientAction(
+  _prevState: UpdateClientState | null,
+  formData: FormData
+): Promise<UpdateClientState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  const name = (formData.get("name") as string)?.trim() ?? "";
+  const email = (formData.get("email") as string)?.trim() ?? "";
+  const company = (formData.get("company") as string)?.trim() || null;
+  const clerkUserId = (formData.get("clerkUserId") as string)?.trim() || null;
+
+  if (!clientId) return { success: false, error: "Client is required." };
+  if (!name) return { success: false, error: "Name is required." };
+  if (!email) return { success: false, error: "Email is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("clients")
+    .update({
+      name,
+      email,
+      company,
+      clerk_user_id: clerkUserId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", clientId);
+
+  if (error) return { success: false, error: error.message };
+  revalidatePath("/admin/clients");
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/admin/clients/${clientId}/edit`);
+  return { success: true };
+}
+
+/** Update only clerk_user_id for linking portal sign-in. */
+export async function updateClientClerkLinkAction(
+  _prevState: UpdateClientClerkLinkState | null,
+  formData: FormData
+): Promise<UpdateClientClerkLinkState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  const clerkUserId = (formData.get("clerkUserId") as string)?.trim() ?? "";
+
+  if (!clientId) return { success: false, error: "Client is required." };
+  if (!clerkUserId) return { success: false, error: "Clerk user ID is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("clients")
+    .update({
+      clerk_user_id: clerkUserId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", clientId);
+
+  if (error) return { success: false, error: error.message };
+  revalidatePath("/admin/clients");
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/admin/clients/${clientId}/edit`);
+  revalidatePath(`/admin/clients/${clientId}/link`);
+  return { success: true };
+}
+
+// ---------------------------------------------------------------------------
+// Project setup (client_service + project)
+// ---------------------------------------------------------------------------
+
+const PROJECT_SETUP_STATUSES = ["active", "in_progress", "pending", "completed"] as const;
+
+export async function createProjectSetupAction(
+  _prevState: CreateProjectSetupState | null,
+  formData: FormData
+): Promise<CreateProjectSetupState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  const serviceId = (formData.get("serviceId") as string)?.trim();
+  const engagementName = (formData.get("engagementName") as string)?.trim() ?? "";
+  const projectName = (formData.get("projectName") as string)?.trim() ?? "";
+  const status = (formData.get("status") as string)?.trim();
+  const progressRaw = formData.get("progress");
+
+  if (!clientId) return { success: false, error: "Client is required." };
+  if (!serviceId) return { success: false, error: "Service is required." };
+  if (!engagementName) return { success: false, error: "Engagement name is required." };
+  if (!projectName) return { success: false, error: "Project name is required." };
+  if (!status || !(PROJECT_SETUP_STATUSES as readonly string[]).includes(status)) {
+    return { success: false, error: "Invalid status." };
+  }
+
+  const progress = progressRaw !== null && progressRaw !== "" ? Number(progressRaw) : 0;
+  if (Number.isNaN(progress) || progress < 0 || progress > 100) {
+    return { success: false, error: "Progress must be 0–100." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { data: csRow, error: csError } = await supabase
+    .from("client_services")
+    .insert({
+      client_id: clientId,
+      service_id: serviceId,
+      engagement_name: engagementName,
+      status,
+      progress: Math.round(progress),
+    })
+    .select("id")
+    .single();
+
+  if (csError || !csRow) return { success: false, error: csError?.message ?? "Failed to create engagement." };
+
+  const { error: projError } = await supabase.from("projects").insert({
+    client_service_id: csRow.id,
+    name: projectName,
+    status,
+    progress: Math.round(progress),
+  });
+
+  if (projError) return { success: false, error: projError.message };
+
+  revalidatePath("/admin/projects");
+  revalidatePath("/admin/clients");
   return { success: true };
 }
 

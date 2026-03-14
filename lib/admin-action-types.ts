@@ -22,3 +22,19 @@ export type UpdateSupportRequestStatusState =
 export type UpdateBillingStatusState =
   | { success: false; error: string }
   | { success: true };
+
+export type CreateClientState =
+  | { success: false; error: string }
+  | { success: true };
+
+export type UpdateClientState =
+  | { success: false; error: string }
+  | { success: true };
+
+export type CreateProjectSetupState =
+  | { success: false; error: string }
+  | { success: true };
+
+export type UpdateClientClerkLinkState =
+  | { success: false; error: string }
+  | { success: true };

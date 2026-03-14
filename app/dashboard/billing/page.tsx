@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import { billingStatusLabels } from "@/lib/data";
 import { fetchBillingRecordsForClient } from "@/lib/portal-data";
 import { PageHeader } from "@/components/dashboard/PageHeader";
+import { EmptyState } from "@/components/dashboard/EmptyState";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { Receipt } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Billing",
@@ -45,12 +47,11 @@ export default async function DashboardBillingPage() {
           </ul>
         </section>
       ) : (
-        <GlassCard hover={false}>
-          <p className="text-sm text-zinc-400">
-            No invoices yet. Contact your project manager or use the contact form
-            for billing questions.
-          </p>
-        </GlassCard>
+        <EmptyState
+          icon={Receipt}
+          title="No invoices yet"
+          description="Invoices will appear here when they’re issued. For billing questions or to request an invoice, contact your project manager or use the contact form."
+        />
       )}
     </div>
   );
