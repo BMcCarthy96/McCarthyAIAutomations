@@ -38,6 +38,8 @@ export async function updateSupportRequestStatusAction(
     return { success: false, error: "Invalid status." };
   }
 
+  const statusValid = status as (typeof SUPPORT_REQUEST_STATUSES)[number];
+
   const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return { success: false, error: "Database unavailable." };
@@ -45,7 +47,7 @@ export async function updateSupportRequestStatusAction(
 
   const { error } = await supabase
     .from("support_requests")
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status: statusValid, updated_at: new Date().toISOString() })
     .eq("id", requestId);
 
   if (error) {

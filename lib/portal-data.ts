@@ -101,13 +101,14 @@ export async function fetchProjectsWithDetails(
       clientId !== undefined ? clientId : await getCurrentClientId();
     if (resolvedId === null) return [];
 
-    const { data: projects, error: projectsError } = await supabase
+    const { data: rawProjects, error: projectsError } = await supabase
       .from("projects")
       .select("id, name, status, progress, client_services!inner(client_id)")
       .eq("client_services.client_id", resolvedId);
 
-    if (projectsError || !projects) return [];
+    if (projectsError || !rawProjects) return [];
 
+    const projects: DbProject[] = rawProjects as DbProject[];
     const projectIds = projects.map((p) => p.id);
 
     const [{ data: milestones }, { data: updates }] = await Promise.all([

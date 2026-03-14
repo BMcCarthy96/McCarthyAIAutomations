@@ -1,21 +1,20 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/lib/database.types";
 
 /**
  * Supabase clients: anon (RLS) and service role (server-only, bypasses RLS).
  * Use getSupabaseServiceClient() in server code (admin + portal data/actions).
  */
 
-type SupabaseClientType = ReturnType<typeof createClient>;
-
-let cachedAnonClient: SupabaseClientType | null = null;
-let cachedServiceClient: SupabaseClientType | null = null;
+let cachedAnonClient: SupabaseClient<Database> | null = null;
+let cachedServiceClient: SupabaseClient<Database> | null = null;
 
 function getEnv(name: string): string | undefined {
   return process.env[name];
 }
 
 /** Anon key client (RLS applies). Use for client-side or when you rely on RLS. */
-export function getSupabaseClient(): SupabaseClientType | null {
+export function getSupabaseClient(): SupabaseClient<Database> | null {
   if (cachedAnonClient) return cachedAnonClient;
 
   const url = getEnv("NEXT_PUBLIC_SUPABASE_URL");
@@ -23,7 +22,7 @@ export function getSupabaseClient(): SupabaseClientType | null {
 
   if (!url || !anonKey) return null;
 
-  cachedAnonClient = createClient(url, anonKey, {
+  cachedAnonClient = createClient<Database>(url, anonKey, {
     auth: { persistSession: false },
   });
   return cachedAnonClient;
@@ -34,7 +33,7 @@ export function getSupabaseClient(): SupabaseClientType | null {
  * Use only in server code (e.g. API routes, server components). Never expose
  * SUPABASE_SERVICE_ROLE_KEY to the browser.
  */
-export function getSupabaseServiceClient(): SupabaseClientType | null {
+export function getSupabaseServiceClient(): SupabaseClient<Database> | null {
   if (cachedServiceClient) return cachedServiceClient;
 
   const url = getEnv("NEXT_PUBLIC_SUPABASE_URL");
@@ -42,7 +41,7 @@ export function getSupabaseServiceClient(): SupabaseClientType | null {
 
   if (!url || !serviceRoleKey) return null;
 
-  cachedServiceClient = createClient(url, serviceRoleKey, {
+  cachedServiceClient = createClient<Database>(url, serviceRoleKey, {
     auth: { persistSession: false },
   });
   return cachedServiceClient;

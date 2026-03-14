@@ -101,6 +101,8 @@ export async function updateProjectAction(
     return { success: false, error: "Invalid status." };
   }
 
+  const statusValid = status as (typeof PROJECT_STATUSES)[number];
+
   const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return { success: false, error: "Database unavailable." };
@@ -108,7 +110,7 @@ export async function updateProjectAction(
 
   const { error } = await supabase
     .from("projects")
-    .update({ progress: Math.round(progress), status })
+    .update({ progress: Math.round(progress), status: statusValid })
     .eq("id", projectId);
 
   if (error) {
@@ -210,6 +212,8 @@ export async function updateBillingStatusAction(
     return { success: false, error: "Invalid status." };
   }
 
+  const statusValid = status as (typeof BILLING_STATUSES)[number];
+
   const supabase = getSupabaseServiceClient();
   if (!supabase) {
     return { success: false, error: "Database unavailable." };
@@ -217,7 +221,7 @@ export async function updateBillingStatusAction(
 
   const { error } = await supabase
     .from("billing_records")
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status: statusValid, updated_at: new Date().toISOString() })
     .eq("id", recordId);
 
   if (error) {
@@ -362,6 +366,8 @@ export async function createProjectSetupAction(
     return { success: false, error: "Invalid status." };
   }
 
+  const statusValid = status as (typeof PROJECT_SETUP_STATUSES)[number];
+
   const progress = progressRaw !== null && progressRaw !== "" ? Number(progressRaw) : 0;
   if (Number.isNaN(progress) || progress < 0 || progress > 100) {
     return { success: false, error: "Progress must be 0–100." };
@@ -376,7 +382,7 @@ export async function createProjectSetupAction(
       client_id: clientId,
       service_id: serviceId,
       engagement_name: engagementName,
-      status,
+      status: statusValid,
       progress: Math.round(progress),
     })
     .select("id")
@@ -387,7 +393,7 @@ export async function createProjectSetupAction(
   const { error: projError } = await supabase.from("projects").insert({
     client_service_id: csRow.id,
     name: projectName,
-    status,
+    status: statusValid,
     progress: Math.round(progress),
   });
 
