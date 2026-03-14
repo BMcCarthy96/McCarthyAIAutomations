@@ -33,4 +33,30 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Lockfile and root directory
+
+Build and install must run from the directory that contains this app’s `package.json` and `package-lock.json`. If you see a lockfile or workspace-root warning:
+
+- **Repo root is the app folder** (only one `package.json` in the repo): no change needed; deploy from the repo root.
+- **App is in a subfolder** (e.g. repo root is `McCarthyAIAutomations` and the app is in `mccarthy-ai-automations/`): in Vercel go to **Project → Settings → General** and set **Root Directory** to that subfolder (e.g. `mccarthy-ai-automations`). Leave **Build Command** and **Output Directory** blank so Vercel uses the Next.js defaults from that root. This removes the lockfile/root warning and ensures the correct dependencies are installed.
+
+### Deployment environment requirements
+
+These variables must be set in **Vercel → Project → Settings → Environment Variables** for the deployment to work. Use **Production** (and optionally Preview) as needed.
+
+**Required (app, admin, and client portal):**
+
+| Variable | Purpose |
+|----------|---------|
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk auth (use production key for prod) |
+| `CLERK_SECRET_KEY` | Clerk server auth |
+| `ADMIN_CLERK_USER_ID` | Admin area access (Clerk user id, e.g. `user_2abc...`) |
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only DB access; never expose to client |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
+
+**Optional (contact form):** `RESEND_API_KEY`, `CONTACT_EMAIL`; optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). If `RESEND_API_KEY` or `CONTACT_EMAIL` is missing, the contact form API returns 503.
+
+Copy names and example values from `.env.example`, then replace with real production values. Redeploy after changing variables.
+
+See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
