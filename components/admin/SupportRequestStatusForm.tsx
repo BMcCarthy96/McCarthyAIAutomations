@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  updateSupportRequestStatusAction,
-  type UpdateSupportRequestStatusState,
-} from "@/lib/admin-actions";
+import { updateSupportRequestStatusAction } from "@/lib/admin-actions";
+import type { UpdateSupportRequestStatusState } from "@/lib/admin-action-types";
 import { supportRequestStatusLabels } from "@/lib/data";
 import type { SupportRequestStatus } from "@/lib/types";
 import { Button } from "@/components/ui/Button";

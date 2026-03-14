@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  updateBillingStatusAction,
-  type UpdateBillingStatusState,
-} from "@/lib/admin-actions";
+import { updateBillingStatusAction } from "@/lib/admin-actions";
+import type { UpdateBillingStatusState } from "@/lib/admin-action-types";
 import { billingStatusLabels } from "@/lib/data";
 import type { BillingStatus } from "@/lib/types";
 import { Button } from "@/components/ui/Button";

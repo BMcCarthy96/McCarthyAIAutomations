@@ -1,6 +1,11 @@
 import { auth } from "@clerk/nextjs/server";
 
 /**
+ * Admin auth: Clerk-based check for /admin access.
+ * Single source for "is this user the admin?" Used by admin layout and all admin server actions.
+ */
+
+/**
  * Returns true only if the current user's Clerk id matches ADMIN_CLERK_USER_ID.
  * Use in server components/layouts to restrict /admin to a single user.
  */

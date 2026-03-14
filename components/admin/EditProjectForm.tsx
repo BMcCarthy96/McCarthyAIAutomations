@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  updateProjectAction,
-  type UpdateProjectState,
-} from "@/lib/admin-actions";
+import { updateProjectAction } from "@/lib/admin-actions";
+import type { UpdateProjectState } from "@/lib/admin-action-types";
 import { Button } from "@/components/ui/Button";
 
 const STATUSES = [

@@ -2,10 +2,8 @@
 
 import { useActionState } from "react";
 import type { AdminProjectRow } from "@/lib/admin-data";
-import {
-  createProjectUpdateAction,
-  type CreateProjectUpdateState,
-} from "@/lib/admin-actions";
+import { createProjectUpdateAction } from "@/lib/admin-actions";
+import type { CreateProjectUpdateState } from "@/lib/admin-action-types";
 import { Button } from "@/components/ui/Button";
 
 const initialState: CreateProjectUpdateState = { success: false, error: "" };

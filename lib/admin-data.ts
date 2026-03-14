@@ -1,6 +1,12 @@
 import type { Client } from "@/lib/types";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
+/**
+ * Admin data: read-only Supabase access for /admin.
+ * Uses service client only. Returns empty/null when Supabase is unavailable.
+ * Grouped by domain: clients, projects, milestones, support, billing.
+ */
+
 /** Client row from DB (snake_case). */
 interface DbClient {
   id: string;
@@ -21,26 +27,6 @@ export interface AdminProjectRow {
   clientName: string;
 }
 
-/** Support request with client name for admin list. */
-export interface AdminSupportRow {
-  id: string;
-  subject: string;
-  status: string;
-  createdAt: string;
-  clientName: string;
-}
-
-/** Support request detail for admin view (body, client, project). */
-export interface AdminSupportDetail {
-  id: string;
-  subject: string;
-  body: string | null;
-  status: string;
-  createdAt: string;
-  clientName: string;
-  projectName: string | null;
-}
-
 /** Billing record with client name for admin list. */
 export interface AdminBillingRow {
   id: string;
@@ -52,6 +38,10 @@ export interface AdminBillingRow {
   paidAt: string | null;
   clientName: string;
 }
+
+// ---------------------------------------------------------------------------
+// Clients
+// ---------------------------------------------------------------------------
 
 export async function getAllClients(): Promise<Client[]> {
   const supabase = getSupabaseServiceClient();
@@ -74,6 +64,10 @@ export async function getAllClients(): Promise<Client[]> {
     updatedAt: row.updated_at,
   }));
 }
+
+// ---------------------------------------------------------------------------
+// Projects
+// ---------------------------------------------------------------------------
 
 export async function getAllProjects(): Promise<AdminProjectRow[]> {
   const supabase = getSupabaseServiceClient();
@@ -117,6 +111,10 @@ export async function getProjectById(
   };
 }
 
+// ---------------------------------------------------------------------------
+// Milestones
+// ---------------------------------------------------------------------------
+
 /** Milestone row for admin edit page. */
 export interface AdminMilestoneRow {
   id: string;
@@ -147,74 +145,21 @@ export async function getMilestonesForProject(
   }));
 }
 
-export type SupportRequestListView = "active" | "resolved" | "closed" | "all";
+// ---------------------------------------------------------------------------
+// Support (see lib/support/admin-data.ts)
+// ---------------------------------------------------------------------------
 
-export async function getAllSupportRequests(
-  view: SupportRequestListView = "active"
-): Promise<AdminSupportRow[]> {
-  const supabase = getSupabaseServiceClient();
-  if (!supabase) return [];
+export {
+  getAllSupportRequests,
+  getSupportRequestById,
+  type AdminSupportRow,
+  type AdminSupportDetail,
+  type SupportRequestListView,
+} from "@/lib/support/admin-data";
 
-  let query = supabase
-    .from("support_requests")
-    .select("id, subject, status, created_at, clients(name)")
-    .order("created_at", { ascending: false });
-
-  if (view === "active") {
-    query = query.in("status", ["open", "in_progress"]);
-  } else if (view === "resolved") {
-    query = query.eq("status", "resolved");
-  } else if (view === "closed") {
-    query = query.eq("status", "closed");
-  }
-  // "all" = no status filter
-
-  const { data, error } = await query;
-
-  if (error || !data) return [];
-
-  return data.map((row: { id: string; subject: string; status: string; created_at: string; clients: { name: string } | null }) => ({
-    id: row.id,
-    subject: row.subject,
-    status: row.status,
-    createdAt: row.created_at,
-    clientName: row.clients?.name ?? "—",
-  }));
-}
-
-export async function getSupportRequestById(
-  id: string
-): Promise<AdminSupportDetail | null> {
-  const supabase = getSupabaseServiceClient();
-  if (!supabase) return null;
-
-  const { data, error } = await supabase
-    .from("support_requests")
-    .select("id, subject, body, status, created_at, clients(name), projects(name)")
-    .eq("id", id)
-    .maybeSingle();
-
-  if (error || !data) return null;
-
-  const row = data as {
-    id: string;
-    subject: string;
-    body: string | null;
-    status: string;
-    created_at: string;
-    clients: { name: string } | null;
-    projects: { name: string } | null;
-  };
-  return {
-    id: row.id,
-    subject: row.subject,
-    body: row.body,
-    status: row.status,
-    createdAt: row.created_at,
-    clientName: row.clients?.name ?? "—",
-    projectName: row.projects?.name ?? null,
-  };
-}
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
 
 export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
   const supabase = getSupabaseServiceClient();

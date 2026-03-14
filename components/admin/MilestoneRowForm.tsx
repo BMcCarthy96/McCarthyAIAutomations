@@ -1,10 +1,8 @@
 "use client";
 
 import { useActionState } from "react";
-import {
-  updateMilestoneAction,
-  type UpdateMilestoneState,
-} from "@/lib/admin-actions";
+import { updateMilestoneAction } from "@/lib/admin-actions";
+import type { UpdateMilestoneState } from "@/lib/admin-action-types";
 import type { AdminMilestoneRow } from "@/lib/admin-data";
 import { Button } from "@/components/ui/Button";
 import { formatDisplayDate } from "@/lib/utils";

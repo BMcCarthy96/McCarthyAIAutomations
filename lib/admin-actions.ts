@@ -3,10 +3,26 @@
 import { revalidatePath } from "next/cache";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
+import type {
+  CreateProjectUpdateState,
+  UpdateProjectState,
+  UpdateMilestoneState,
+  UpdateBillingStatusState,
+  UpdateSupportRequestStatusState,
+} from "@/lib/admin-action-types";
+import {
+  updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
+} from "@/lib/support/admin-actions";
 
-export type CreateProjectUpdateState =
-  | { success: false; error: string }
-  | { success: true };
+/**
+ * Admin actions: server actions for /admin.
+ * All mutations require isAdminUser(). Use for forms and inline updates.
+ * Grouped by domain: project updates, projects, milestones, support, billing.
+ */
+
+// ---------------------------------------------------------------------------
+// Project updates
+// ---------------------------------------------------------------------------
 
 export async function createProjectUpdateAction(
   _prevState: CreateProjectUpdateState | null,
@@ -49,11 +65,11 @@ export async function createProjectUpdateAction(
   return { success: true };
 }
 
-const PROJECT_STATUSES = ["active", "in_progress", "pending", "completed"] as const;
+// ---------------------------------------------------------------------------
+// Projects
+// ---------------------------------------------------------------------------
 
-export type UpdateProjectState =
-  | { success: false; error: string }
-  | { success: true };
+const PROJECT_STATUSES = ["active", "in_progress", "pending", "completed"] as const;
 
 export async function updateProjectAction(
   _prevState: UpdateProjectState | null,
@@ -98,9 +114,9 @@ export async function updateProjectAction(
   return { success: true };
 }
 
-export type UpdateMilestoneState =
-  | { success: false; error: string }
-  | { success: true };
+// ---------------------------------------------------------------------------
+// Milestones
+// ---------------------------------------------------------------------------
 
 export async function updateMilestoneAction(
   _prevState: UpdateMilestoneState | null,
@@ -154,64 +170,22 @@ export async function updateMilestoneAction(
   return { success: true };
 }
 
-const SUPPORT_REQUEST_STATUSES = [
-  "open",
-  "in_progress",
-  "resolved",
-  "closed",
-] as const;
-
-export type UpdateSupportRequestStatusState =
-  | { success: false; error: string }
-  | { success: true };
+// ---------------------------------------------------------------------------
+// Support (wrapper around lib/support/admin-actions.ts)
+// ---------------------------------------------------------------------------
 
 export async function updateSupportRequestStatusAction(
-  _prevState: UpdateSupportRequestStatusState | null,
+  prevState: UpdateSupportRequestStatusState | null,
   formData: FormData
-): Promise<UpdateSupportRequestStatusState> {
-  const allowed = await isAdminUser();
-  if (!allowed) {
-    return { success: false, error: "Unauthorized." };
-  }
-
-  const requestId = (formData.get("requestId") as string)?.trim();
-  const status = (formData.get("status") as string)?.trim();
-
-  if (!requestId) {
-    return { success: false, error: "Request is required." };
-  }
-  if (
-    !status ||
-    !(SUPPORT_REQUEST_STATUSES as readonly string[]).includes(status)
-  ) {
-    return { success: false, error: "Invalid status." };
-  }
-
-  const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
-
-  const { error } = await supabase
-    .from("support_requests")
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq("id", requestId);
-
-  if (error) {
-    return { success: false, error: error.message };
-  }
-
-  revalidatePath("/admin/support");
-  revalidatePath(`/admin/support/${requestId}`);
-  revalidatePath("/dashboard/support");
-  return { success: true };
+) {
+  return implUpdateSupportRequestStatusAction(prevState, formData);
 }
 
-const BILLING_STATUSES = ["pending", "paid", "overdue"] as const;
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
 
-export type UpdateBillingStatusState =
-  | { success: false; error: string }
-  | { success: true };
+const BILLING_STATUSES = ["pending", "paid", "overdue"] as const;
 
 export async function updateBillingStatusAction(
   _prevState: UpdateBillingStatusState | null,
@@ -228,10 +202,7 @@ export async function updateBillingStatusAction(
   if (!recordId) {
     return { success: false, error: "Record is required." };
   }
-  if (
-    !status ||
-    !(BILLING_STATUSES as readonly string[]).includes(status)
-  ) {
+  if (!status || !(BILLING_STATUSES as readonly string[]).includes(status)) {
     return { success: false, error: "Invalid status." };
   }
 
@@ -253,3 +224,4 @@ export async function updateBillingStatusAction(
   revalidatePath("/dashboard/billing");
   return { success: true };
 }
+

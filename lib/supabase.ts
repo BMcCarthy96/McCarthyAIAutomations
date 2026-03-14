@@ -1,5 +1,10 @@
 import { createClient } from "@supabase/supabase-js";
 
+/**
+ * Supabase clients: anon (RLS) and service role (server-only, bypasses RLS).
+ * Use getSupabaseServiceClient() in server code (admin + portal data/actions).
+ */
+
 type SupabaseClientType = ReturnType<typeof createClient>;
 
 let cachedAnonClient: SupabaseClientType | null = null;

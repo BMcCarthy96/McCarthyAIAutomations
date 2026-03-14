@@ -4,6 +4,11 @@ import { revalidatePath } from "next/cache";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getCurrentClientId } from "@/lib/portal-data";
 
+/**
+ * Portal actions: server actions for the client dashboard.
+ * Scoped to the current client via getCurrentClientId(). Use for client-initiated writes (e.g. support requests).
+ */
+
 export type CreateSupportRequestState =
   | { success: false; error: string }
   | { success: true };

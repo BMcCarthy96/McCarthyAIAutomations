@@ -15,6 +15,12 @@ import {
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
 /**
+ * Portal data: dashboard reads for the client portal.
+ * Resolves the current client via Clerk → clients.clerk_user_id, then queries Supabase.
+ * Falls back to mock data (lib/data) when Supabase is unavailable or user has no linked client.
+ */
+
+/**
  * Resolves the current client id for dashboard reads:
  * 1. Gets the current Clerk user (server-side).
  * 2. Looks up the clients row in Supabase where clerk_user_id = Clerk userId.
@@ -83,6 +89,10 @@ interface DbBillingRecord {
   due_date: string;
   paid_at: string | null;
 }
+
+// ---------------------------------------------------------------------------
+// Projects (with next milestone, recent update)
+// ---------------------------------------------------------------------------
 
 /**
  * Optional: pass a pre-resolved client id (e.g. from getCurrentClientId()) to avoid resolving twice.
@@ -190,6 +200,10 @@ export async function fetchProjectsWithDetails(
   }
 }
 
+// ---------------------------------------------------------------------------
+// Project updates
+// ---------------------------------------------------------------------------
+
 /**
  * Optional: pass a pre-resolved client id to avoid resolving twice.
  */
@@ -232,6 +246,10 @@ export async function fetchProjectUpdatesForClient(
   }
 }
 
+// ---------------------------------------------------------------------------
+// Support requests
+// ---------------------------------------------------------------------------
+
 export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) {
@@ -269,6 +287,10 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
     return getSupportRequestsForClient(CURRENT_CLIENT_ID);
   }
 }
+
+// ---------------------------------------------------------------------------
+// Billing
+// ---------------------------------------------------------------------------
 
 export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
   const supabase = getSupabaseServiceClient();
