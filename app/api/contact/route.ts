@@ -23,26 +23,27 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const name = typeof body.name === "string" ? body.name.trim() : "";
-    const email = typeof body.email === "string" ? body.email.trim() : "";
+    const visitorEmail = typeof body.email === "string" ? body.email.trim() : "";
     const company = typeof body.company === "string" ? body.company.trim() : "";
     const message = typeof body.message === "string" ? body.message.trim() : "";
 
-    if (!name || !email || !message) {
+    if (!name || !visitorEmail || !message) {
       return NextResponse.json(
         { error: "Name, email, and message are required." },
         { status: 400 }
       );
     }
 
+    // Always send to configured inbox; visitor email is replyTo only (required for Resend sandbox).
     const resend = new Resend(resendApiKey);
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: contactEmail,
-      replyTo: email,
+      replyTo: visitorEmail,
       subject: `Contact: ${name}${company ? ` (${company})` : ""}`,
       text: [
         `Name: ${name}`,
-        `Email: ${email}`,
+        `Email: ${visitorEmail}`,
         company ? `Company: ${company}` : null,
         "",
         message,
