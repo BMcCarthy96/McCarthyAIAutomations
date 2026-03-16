@@ -28,7 +28,13 @@ export function ContactForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setErrorMessage(typeof data.error === "string" ? data.error : "");
+        const msg =
+          typeof data.details === "string"
+            ? data.details
+            : typeof data.error === "string"
+              ? data.error
+              : "";
+        setErrorMessage(msg);
         setStatus("error");
         return;
       }
