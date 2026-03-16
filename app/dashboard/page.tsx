@@ -6,10 +6,12 @@ import {
   fetchProjectsWithDetails,
   fetchProjectUpdatesForClient,
 } from "@/lib/portal-data";
+import { getClientAutomationMetrics } from "@/lib/portal-metrics";
 import { getProjectActivityTimeline } from "@/lib/portal-timeline";
 import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
+import { AutomationMetrics } from "@/components/dashboard/AutomationMetrics";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
 import { EmptyState } from "@/components/dashboard/EmptyState";
@@ -32,10 +34,11 @@ export const metadata: Metadata = {
 
 export default async function DashboardOverviewPage() {
   const clientId = await getCurrentClientId();
-  const [projects, allUpdates, activity] = await Promise.all([
+  const [projects, allUpdates, activity, metrics] = await Promise.all([
     fetchProjectsWithDetails(clientId),
     fetchProjectUpdatesForClient(clientId),
     getProjectActivityTimeline(clientId),
+    getClientAutomationMetrics(),
   ]);
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
@@ -47,6 +50,22 @@ export default async function DashboardOverviewPage() {
   return (
     <div className="space-y-10">
       <WelcomeHeader />
+
+      <section>
+        <SectionTitle>Automation metrics</SectionTitle>
+        <div className="mt-4">
+          {metrics.length > 0 ? (
+            <AutomationMetrics metrics={metrics} />
+          ) : (
+            <EmptyState
+              icon={Layers}
+              title="No metrics yet"
+              description="When your automations start running, key metrics will appear here."
+              compact
+            />
+          )}
+        </div>
+      </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
         <GlassCard hover={false} className="sm:col-span-2">
