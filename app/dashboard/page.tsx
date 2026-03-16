@@ -6,13 +6,22 @@ import {
   fetchProjectsWithDetails,
   fetchProjectUpdatesForClient,
 } from "@/lib/portal-data";
+import { getProjectActivityTimeline } from "@/lib/portal-timeline";
 import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
 import { EmptyState } from "@/components/dashboard/EmptyState";
-import { ArrowRight, Calendar, FileText, HelpCircle, Layers } from "lucide-react";
+import { ProjectTimeline } from "@/components/dashboard/ProjectTimeline";
+import {
+  ArrowRight,
+  Calendar,
+  Clock,
+  FileText,
+  HelpCircle,
+  Layers,
+} from "lucide-react";
 
 const quickActionIcons = { HelpCircle, Layers, FileText } as const;
 
@@ -23,12 +32,14 @@ export const metadata: Metadata = {
 
 export default async function DashboardOverviewPage() {
   const clientId = await getCurrentClientId();
-  const [projects, allUpdates] = await Promise.all([
+  const [projects, allUpdates, activity] = await Promise.all([
     fetchProjectsWithDetails(clientId),
     fetchProjectUpdatesForClient(clientId),
+    getProjectActivityTimeline(clientId),
   ]);
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
+  const latestActivity = activity.slice(0, 5);
 
   const activeCount = projects.filter((p) => p.status === "active").length;
   const inProgressCount = projects.filter((p) => p.status === "in_progress").length;
@@ -175,6 +186,30 @@ export default async function DashboardOverviewPage() {
               />
             )}
           </div>
+        </div>
+      </section>
+
+      <section>
+        <SectionTitle
+          action={
+            latestActivity.length > 0
+              ? { label: "View all", href: "/dashboard/activity" }
+              : undefined
+          }
+        >
+          Project activity
+        </SectionTitle>
+        <div className="mt-4">
+          {latestActivity.length > 0 ? (
+            <ProjectTimeline items={latestActivity} />
+          ) : (
+            <EmptyState
+              icon={Clock}
+              title="No activity yet"
+              description="Updates and milestones will appear here."
+              compact
+            />
+          )}
         </div>
       </section>
 
