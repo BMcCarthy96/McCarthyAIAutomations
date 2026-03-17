@@ -19,6 +19,10 @@ export type UpdateMilestoneState =
   | { success: false; error: string }
   | { success: true };
 
+export type DeleteMilestoneState =
+  | { success: false; error: string }
+  | { success: true };
+
 export type UpdateSupportRequestStatusState =
   | { success: false; error: string }
   | { success: true };

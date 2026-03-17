@@ -8,8 +8,9 @@ import { isAdminUser } from "@/lib/admin-auth";
 import type {
   CreateProjectUpdateState,
   CreateMilestoneState,
-  UpdateProjectState,
   UpdateMilestoneState,
+  DeleteMilestoneState,
+  UpdateProjectState,
   UpdateBillingStatusState,
   UpdateSupportRequestStatusState,
   CreateClientState,
@@ -277,6 +278,7 @@ export async function updateMilestoneAction(
   }
 
   const milestoneId = (formData.get("milestoneId") as string)?.trim();
+  const title = (formData.get("title") as string)?.trim();
   const dueDateRaw = (formData.get("dueDate") as string)?.trim();
   const markComplete = formData.get("markComplete") === "true";
 
@@ -289,7 +291,12 @@ export async function updateMilestoneAction(
     return { success: false, error: "Database unavailable." };
   }
 
-  const updates: { due_date?: string; completed_at?: string | null } = {};
+  const updates: { title?: string; due_date?: string; completed_at?: string | null } = {};
+
+  if (!title) {
+    return { success: false, error: "Title is required." };
+  }
+  updates.title = title;
 
   if (dueDateRaw) {
     const date = new Date(dueDateRaw);
@@ -315,6 +322,13 @@ export async function updateMilestoneAction(
   if (error) {
     return { success: false, error: error.message };
   }
+
+  const projectId = (formData.get("projectId") as string)?.trim();
+  if (projectId) {
+    revalidatePath(`/admin/projects/${projectId}/edit`);
+  }
+  revalidatePath("/admin/projects");
+  revalidatePath("/dashboard/services");
 
   // Notify client by email when milestone is marked complete (best-effort)
   if (markComplete) {
@@ -372,6 +386,45 @@ export async function updateMilestoneAction(
       // Ignore email errors; milestone was updated successfully
     }
   }
+
+  return { success: true };
+}
+
+export async function deleteMilestoneAction(
+  _prevState: DeleteMilestoneState | null,
+  formData: FormData
+): Promise<DeleteMilestoneState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const milestoneId = (formData.get("milestoneId") as string)?.trim();
+  const projectId = (formData.get("projectId") as string)?.trim();
+
+  if (!milestoneId) {
+    return { success: false, error: "Milestone is required." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { error } = await supabase
+    .from("milestones")
+    .delete()
+    .eq("id", milestoneId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  if (projectId) {
+    revalidatePath(`/admin/projects/${projectId}/edit`);
+  }
+  revalidatePath("/admin/projects");
+  revalidatePath("/dashboard/services");
 
   return { success: true };
 }

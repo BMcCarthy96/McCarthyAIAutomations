@@ -100,7 +100,7 @@ export default async function EditProjectPage({
               </thead>
               <tbody>
                 {milestones.map((m) => (
-                  <MilestoneRowForm key={m.id} milestone={m} />
+                  <MilestoneRowForm key={m.id} milestone={m} projectId={project.id} />
                 ))}
               </tbody>
             </table>
