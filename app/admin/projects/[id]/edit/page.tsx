@@ -6,6 +6,7 @@ import {
   getMilestonesForProject,
   getProjectMetricsForProject,
 } from "@/lib/admin-data";
+import { AddMilestoneForm } from "@/components/admin/AddMilestoneForm";
 import { EditProjectForm } from "@/components/admin/EditProjectForm";
 import { MilestoneRowForm } from "@/components/admin/MilestoneRowForm";
 import { ProjectMetricsForm } from "@/components/admin/ProjectMetricsForm";
@@ -75,6 +76,12 @@ export default async function EditProjectPage({
         <p className="mt-1 text-sm text-zinc-400">
           Update due dates and mark milestones complete.
         </p>
+        <div className="mt-4">
+          <h3 className="mb-2 text-sm font-medium text-zinc-300">Add Milestone</h3>
+          <AddMilestoneForm projectId={project.id} />
+        </div>
+        <div className="mt-6">
+          <h3 className="mb-2 text-sm font-medium text-zinc-300">Existing milestones</h3>
         {milestones.length === 0 ? (
           <p className="mt-4 text-sm text-zinc-500">
             No milestones for this project.
@@ -99,6 +106,7 @@ export default async function EditProjectPage({
             </table>
           </div>
         )}
+        </div>
       </section>
     </div>
   );

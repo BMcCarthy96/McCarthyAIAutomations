@@ -11,6 +11,10 @@ export type UpdateProjectState =
   | { success: false; error: string }
   | { success: true };
 
+export type CreateMilestoneState =
+  | { success: false; error: string }
+  | { success: true };
+
 export type UpdateMilestoneState =
   | { success: false; error: string }
   | { success: true };

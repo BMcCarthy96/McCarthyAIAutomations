@@ -7,6 +7,7 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
 import type {
   CreateProjectUpdateState,
+  CreateMilestoneState,
   UpdateProjectState,
   UpdateMilestoneState,
   UpdateBillingStatusState,
@@ -216,6 +217,56 @@ export async function updateProjectAction(
 // Milestones
 // ---------------------------------------------------------------------------
 
+export async function createMilestoneAction(
+  _prevState: CreateMilestoneState | null,
+  formData: FormData
+): Promise<CreateMilestoneState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const projectId = (formData.get("projectId") as string)?.trim();
+  const title = (formData.get("title") as string)?.trim();
+  const dueDateRaw = (formData.get("dueDate") as string)?.trim();
+
+  if (!projectId) {
+    return { success: false, error: "Project is required." };
+  }
+  if (!title) {
+    return { success: false, error: "Title is required." };
+  }
+  if (!dueDateRaw) {
+    return { success: false, error: "Due date is required." };
+  }
+
+  const date = new Date(dueDateRaw);
+  if (Number.isNaN(date.getTime())) {
+    return { success: false, error: "Invalid due date." };
+  }
+  const dueDate = dueDateRaw.slice(0, 10);
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { error } = await supabase.from("milestones").insert({
+    project_id: projectId,
+    title,
+    due_date: dueDate,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath(`/admin/projects/${projectId}/edit`);
+  revalidatePath("/dashboard/services");
+
+  return { success: true };
+}
+
 export async function updateMilestoneAction(
   _prevState: UpdateMilestoneState | null,
   formData: FormData
@@ -263,6 +314,63 @@ export async function updateMilestoneAction(
 
   if (error) {
     return { success: false, error: error.message };
+  }
+
+  // Notify client by email when milestone is marked complete (best-effort)
+  if (markComplete) {
+    try {
+      const { data: milestoneRow } = await supabase
+        .from("milestones")
+        .select("title, projects!inner(name, client_services!inner(clients(email)))")
+        .eq("id", milestoneId)
+        .single();
+
+      type MilestoneWithProject = {
+        title?: string;
+        projects?: { name?: string; client_services?: { clients?: { email?: string } | null } | null } | null;
+      };
+      const row = milestoneRow as unknown as MilestoneWithProject | null;
+      const milestoneTitle = row?.title ?? "Milestone";
+      const projectName = row?.projects?.name ?? "Your project";
+      const clientEmail = row?.projects?.client_services?.clients?.email?.trim?.();
+
+      const apiKey = process.env.RESEND_API_KEY?.trim();
+      const fromEmail =
+        (process.env.CONTACT_FROM_EMAIL ?? "").trim() || "onboarding@resend.dev";
+
+      if (apiKey && clientEmail) {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+          (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "");
+        const servicesUrl = baseUrl ? `${baseUrl}/dashboard/services` : "/dashboard/services";
+
+        const content = [
+          `Project: ${projectName}`,
+          ``,
+          `Milestone completed:`,
+          milestoneTitle,
+          ``,
+          `Your automation milestone has been completed successfully.`,
+        ].join("\n");
+
+        const html = renderEmailTemplate({
+          title: "Milestone Completed",
+          content,
+          actionText: "View Project",
+          actionUrl: servicesUrl,
+        });
+
+        const resend = new Resend(apiKey);
+        await resend.emails.send({
+          from: fromEmail,
+          to: clientEmail,
+          subject: `Milestone completed: ${milestoneTitle}`,
+          html,
+        });
+      }
+    } catch {
+      // Ignore email errors; milestone was updated successfully
+    }
   }
 
   return { success: true };
