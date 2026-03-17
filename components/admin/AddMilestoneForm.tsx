@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useEffect, useActionState, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createMilestoneAction } from "@/lib/admin-actions";
 import type { CreateMilestoneState } from "@/lib/admin-action-types";
 import { Button } from "@/components/ui/Button";
@@ -11,10 +12,22 @@ const inputClass =
   "w-full max-w-xs rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500";
 
 export function AddMilestoneForm({ projectId }: { projectId: string }) {
+  const router = useRouter();
   const [state, formAction] = useActionState(
     createMilestoneAction,
     initialState
   );
+
+  const [title, setTitle] = useState("");
+  const [dueDate, setDueDate] = useState("");
+
+  useEffect(() => {
+    if (state?.success === true) {
+      setTitle("");
+      setDueDate("");
+      router.refresh();
+    }
+  }, [state, router]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -31,6 +44,8 @@ export function AddMilestoneForm({ projectId }: { projectId: string }) {
             type="text"
             id="add-milestone-title"
             name="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
             required
             className={inputClass}
             placeholder="e.g. Phase 1 complete"
@@ -47,6 +62,8 @@ export function AddMilestoneForm({ projectId }: { projectId: string }) {
             type="date"
             id="add-milestone-dueDate"
             name="dueDate"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
             required
             className={inputClass}
           />
