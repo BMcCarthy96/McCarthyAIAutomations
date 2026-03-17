@@ -263,6 +263,7 @@ export async function createMilestoneAction(
   }
 
   revalidatePath(`/admin/projects/${projectId}/edit`);
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/services");
 
   return { success: true };
@@ -328,6 +329,7 @@ export async function updateMilestoneAction(
     revalidatePath(`/admin/projects/${projectId}/edit`);
   }
   revalidatePath("/admin/projects");
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/services");
 
   // Notify client by email when milestone is marked complete (best-effort)
@@ -424,6 +426,7 @@ export async function deleteMilestoneAction(
     revalidatePath(`/admin/projects/${projectId}/edit`);
   }
   revalidatePath("/admin/projects");
+  revalidatePath("/dashboard");
   revalidatePath("/dashboard/services");
 
   return { success: true };

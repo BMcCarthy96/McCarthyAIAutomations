@@ -82,6 +82,15 @@ interface DbBillingRecord {
   paid_at: string | null;
 }
 
+// Flat upcoming milestone item for dashboard
+export interface UpcomingMilestoneItem {
+  id: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  dueDate: string;
+}
+
 // ---------------------------------------------------------------------------
 // Projects (with next milestone, recent update)
 // ---------------------------------------------------------------------------
@@ -232,6 +241,51 @@ export async function fetchProjectUpdatesForClient(
 }
 
 // ---------------------------------------------------------------------------
+// Upcoming milestones (flat list across projects)
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns a flat list of incomplete milestones for the current client,
+ * ordered by due date ascending, optionally limited.
+ */
+export async function getUpcomingMilestonesForClient(
+  clientId?: string | null,
+  limit?: number
+): Promise<UpcomingMilestoneItem[]> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return [];
+
+  try {
+    const resolvedId =
+      clientId !== undefined ? clientId : await getCurrentClientId();
+    if (resolvedId === null) return [];
+
+    const query = supabase
+      .from("milestones")
+      .select(
+        "id, project_id, title, due_date, completed_at, projects!inner(id, name, client_services!inner(client_id))"
+      )
+      .eq("projects.client_services.client_id", resolvedId)
+      .is("completed_at", null)
+      .order("due_date", { ascending: true });
+
+    const { data, error } =
+      limit != null ? await query.limit(limit) : await query;
+    if (error || !data) return [];
+
+    return (data as any[]).map((row) => ({
+      id: row.id as string,
+      projectId: row.project_id as string,
+      projectName: (row.projects && row.projects.name) || "Project",
+      title: row.title as string,
+      dueDate: row.due_date as string,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Support requests
 // ---------------------------------------------------------------------------
 
@@ -303,6 +357,64 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
       stripeInvoiceId: null,
       createdAt: null,
       updatedAt: null,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Automation activity feed
+// ---------------------------------------------------------------------------
+
+export interface AutomationEventItem {
+  id: string;
+  projectId: string;
+  projectName: string;
+  eventType: string;
+  description: string;
+  createdAt: string;
+}
+
+/**
+ * Fetches recent automation events for the current client.
+ * Resolves via projects → client_services → client_id.
+ */
+export async function getAutomationEventsForClient(
+  clientId: string | null,
+  limit?: number
+): Promise<AutomationEventItem[]> {
+  if (!clientId) return [];
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return [];
+
+  try {
+    const query = supabase
+      .from("automation_events")
+      .select(
+        "id, project_id, event_type, description, created_at, projects!inner(id, name, client_services!inner(client_id))"
+      )
+      .eq("projects.client_services.client_id", clientId)
+      .order("created_at", { ascending: false });
+
+    const { data, error } = limit != null ? await query.limit(limit) : await query;
+    if (error || !data) return [];
+
+    return (data as Array<{
+      id: string;
+      project_id: string;
+      event_type: string;
+      description: string;
+      created_at: string;
+      projects: { id: string; name: string };
+    }>).map((row) => ({
+      id: row.id,
+      projectId: row.project_id,
+      projectName: row.projects?.name ?? "Project",
+      eventType: row.event_type,
+      description: row.description,
+      createdAt: row.created_at,
     }));
   } catch {
     return [];

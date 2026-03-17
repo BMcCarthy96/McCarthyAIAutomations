@@ -5,6 +5,7 @@ import {
   getCurrentClientId,
   fetchProjectsWithDetails,
   fetchProjectUpdatesForClient,
+  getUpcomingMilestonesForClient,
 } from "@/lib/portal-data";
 import { getClientAutomationMetrics } from "@/lib/portal-metrics";
 import { getProjectActivityTimeline } from "@/lib/portal-timeline";
@@ -34,11 +35,12 @@ export const metadata: Metadata = {
 
 export default async function DashboardOverviewPage() {
   const clientId = await getCurrentClientId();
-  const [projects, allUpdates, activity, metrics] = await Promise.all([
+  const [projects, allUpdates, activity, metrics, upcomingMilestones] = await Promise.all([
     fetchProjectsWithDetails(clientId),
     fetchProjectUpdatesForClient(clientId),
     getProjectActivityTimeline(clientId),
     getClientAutomationMetrics(),
+    getUpcomingMilestonesForClient(clientId, 4),
   ]);
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
@@ -136,29 +138,26 @@ export default async function DashboardOverviewPage() {
             Next milestones
           </SectionTitle>
           <div className="mt-4">
-            {projects.length > 0 ? (
+            {upcomingMilestones.length > 0 ? (
               <ul className="space-y-2">
-                {projects.map((project) => {
-                  const next = project.nextMilestone;
-                  return (
-                    <li key={project.id}>
-                      <Link
-                        href="/dashboard/services"
-                        className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                      >
-                        <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
-                        <div className="min-w-0">
-                          <p className="font-medium text-white">
-                            {next?.title ?? "—"}
-                          </p>
-                          <p className="mt-0.5 text-xs text-zinc-500">
-                            {project.name} · {next ? formatDisplayDate(next.dueDate) : "—"}
-                          </p>
-                        </div>
-                      </Link>
-                    </li>
-                  );
-                })}
+                {upcomingMilestones.map((item) => (
+                  <li key={item.id}>
+                    <Link
+                      href="/dashboard/services"
+                      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
+                    >
+                      <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-white">
+                          {item.title}
+                        </p>
+                        <p className="mt-0.5 text-xs text-zinc-500">
+                          {item.projectName} · {formatDisplayDate(item.dueDate)}
+                        </p>
+                      </div>
+                    </Link>
+                  </li>
+                ))}
               </ul>
             ) : (
               <EmptyState

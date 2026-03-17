@@ -122,6 +122,30 @@ export interface Database {
         };
         Relationships: TableRelationships;
       };
+      automation_events: {
+        Row: Record<string, unknown> & {
+          id: string;
+          project_id: string;
+          event_type: string;
+          description: string;
+          created_at: string;
+        };
+        Insert: Record<string, unknown> & {
+          id?: string;
+          project_id: string;
+          event_type: string;
+          description: string;
+          created_at?: string;
+        };
+        Update: Record<string, unknown> & {
+          id?: string;
+          project_id?: string;
+          event_type?: string;
+          description?: string;
+          created_at?: string;
+        };
+        Relationships: TableRelationships;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;
