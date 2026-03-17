@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getAllProjects, getAllClients } from "@/lib/admin-data";
 import { CreateProjectSetupForm } from "@/components/admin/CreateProjectSetupForm";
+import { AdminProjectsList } from "@/components/admin/AdminProjectsList";
 import { services } from "@/lib/data";
-import { Pencil } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Projects | Admin",
@@ -39,44 +38,12 @@ export default async function AdminProjectsPage() {
 
       <section>
         <h2 className="text-lg font-semibold text-white">All projects</h2>
-        <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-3 font-medium text-zinc-400">Name</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Progress</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((p) => (
-              <tr
-                key={p.id}
-                className="border-b border-white/5 last:border-0"
-              >
-                <td className="px-4 py-3 font-medium text-white">{p.name}</td>
-                <td className="px-4 py-3 text-zinc-300">{p.clientName}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.status}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.progress}%</td>
-                <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/projects/${p.id}/edit`}
-                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"
-                  >
-                    <Pencil className="h-4 w-4" />
-                    Edit
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <p className="mt-1 text-sm text-zinc-400">
+          Filter by status to find projects quickly.
+        </p>
+        <div className="mt-4">
+          <AdminProjectsList projects={projects} />
         </div>
-        {projects.length === 0 && (
-          <p className="mt-4 text-sm text-zinc-500">No projects yet.</p>
-        )}
       </section>
     </div>
   );
