@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
+import { renderEmailTemplate } from "@/lib/email/template";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
 import type {
@@ -114,22 +115,27 @@ export async function createProjectUpdateAction(
         ? `${baseUrl}/dashboard/updates`
         : "/dashboard/updates";
 
+      const emailContent = [
+        `Project: ${projectName}`,
+        ``,
+        title,
+        ``,
+        body,
+      ].join("\n");
+
+      const html = renderEmailTemplate({
+        title: "New Project Update",
+        content: emailContent,
+        actionText: "View updates",
+        actionUrl: updatesLink,
+      });
+
       const resend = new Resend(apiKey);
       const sendResult = await resend.emails.send({
         from: fromEmail,
         to: clientEmail,
         subject: `Project update: ${title}`,
-        text: [
-          `Hi,`,
-          ``,
-          `There's a new update for "${projectName}".`,
-          ``,
-          `Title: ${title}`,
-          ``,
-          body,
-          ``,
-          `View all updates: ${updatesLink}`,
-        ].join("\n"),
+        html,
       });
 
       if (sendResult.error) {
