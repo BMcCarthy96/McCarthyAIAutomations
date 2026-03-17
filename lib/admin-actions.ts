@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
 import type {
@@ -65,6 +66,90 @@ export async function createProjectUpdateAction(
 
   if (error) {
     return { success: false, error: error.message };
+  }
+
+  // DEBUG: temporary logging for project update email troubleshooting
+  console.log("[createProjectUpdateAction] 1. project update insert succeeded");
+
+  // Notify client by email (best-effort; do not fail the action if email fails)
+  try {
+    const { data: projectRow, error: projectError } = await supabase
+      .from("projects")
+      .select("name, client_services!inner(clients(email))")
+      .eq("id", projectId)
+      .single();
+
+    const projectLookupSucceeded = !projectError && projectRow != null;
+    console.log(
+      "[createProjectUpdateAction] 2. project lookup succeeded:",
+      projectLookupSucceeded,
+      projectError ? `(${projectError.message})` : ""
+    );
+
+    type ProjectWithClient = {
+      name?: string;
+      client_services?: { clients?: { email?: string } | null } | null;
+    };
+    const row = projectRow as unknown as ProjectWithClient | null;
+    const projectName = row?.name ?? "Your project";
+    const clientEmail = row?.client_services?.clients?.email?.trim?.();
+
+    console.log("[createProjectUpdateAction] 3. resolved project name:", projectName);
+    console.log("[createProjectUpdateAction] 4. resolved client email:", clientEmail ?? "(empty or missing)");
+
+    const apiKey = process.env.RESEND_API_KEY?.trim();
+    const fromEmail =
+      (process.env.CONTACT_FROM_EMAIL ?? "").trim() || "onboarding@resend.dev";
+
+    console.log("[createProjectUpdateAction] 5. RESEND_API_KEY exists:", Boolean(apiKey));
+    console.log("[createProjectUpdateAction] 6. from address:", fromEmail);
+
+    if (apiKey && clientEmail) {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL?.trim() ||
+        (process.env.VERCEL_URL
+          ? `https://${process.env.VERCEL_URL}`
+          : "");
+      const updatesLink = baseUrl
+        ? `${baseUrl}/dashboard/updates`
+        : "/dashboard/updates";
+
+      const resend = new Resend(apiKey);
+      const sendResult = await resend.emails.send({
+        from: fromEmail,
+        to: clientEmail,
+        subject: `Project update: ${title}`,
+        text: [
+          `Hi,`,
+          ``,
+          `There's a new update for "${projectName}".`,
+          ``,
+          `Title: ${title}`,
+          ``,
+          body,
+          ``,
+          `View all updates: ${updatesLink}`,
+        ].join("\n"),
+      });
+
+      if (sendResult.error) {
+        console.log("[createProjectUpdateAction] 7. Resend send: failed");
+        console.log("[createProjectUpdateAction] 8. Resend error:", sendResult.error.message);
+      } else {
+        console.log("[createProjectUpdateAction] 7. Resend send: succeeded");
+      }
+    } else {
+      console.log(
+        "[createProjectUpdateAction] 7. Resend send: skipped (no apiKey or no clientEmail)"
+      );
+    }
+  } catch (err) {
+    // Ignore email errors; update was saved successfully
+    console.log("[createProjectUpdateAction] 7. Resend send: threw exception");
+    console.log(
+      "[createProjectUpdateAction] 8. exception:",
+      err instanceof Error ? err.message : String(err)
+    );
   }
 
   return { success: true };
