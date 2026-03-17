@@ -56,7 +56,8 @@ export async function getProjectActivityTimeline(
     const { data: rawProjects, error: projectsError } = await supabase
       .from("projects")
       .select("id, name, client_services!inner(client_id)")
-      .eq("client_services.client_id", clientId);
+      .eq("client_services.client_id", clientId)
+      .eq("is_archived", false);
 
     if (projectsError || !rawProjects || rawProjects.length === 0) {
       return [];

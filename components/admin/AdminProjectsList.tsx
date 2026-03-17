@@ -11,15 +11,16 @@ const FILTERS = [
   { value: "in_progress" as const, label: "In progress" },
   { value: "pending" as const, label: "Pending" },
   { value: "completed" as const, label: "Completed" },
+  { value: "archived" as const, label: "Archived" },
 ];
 
 export function AdminProjectsList({ projects }: { projects: AdminProjectRow[] }) {
   const [filter, setFilter] = useState<typeof FILTERS[number]["value"]>("all");
 
   const filtered =
-    filter === "all"
-      ? projects
-      : projects.filter((p) => p.status === filter);
+    filter === "archived"
+      ? projects.filter((p) => p.isArchived)
+      : projects.filter((p) => !p.isArchived && (filter === "all" || p.status === filter));
 
   return (
     <>
@@ -78,7 +79,9 @@ export function AdminProjectsList({ projects }: { projects: AdminProjectRow[] })
         <p className="mt-4 text-sm text-zinc-500">
           {filter === "all"
             ? "No projects yet."
-            : `No ${filter.replace("_", " ")} projects.`}
+            : filter === "archived"
+              ? "No archived projects."
+              : `No ${filter.replace("_", " ")} projects.`}
         </p>
       )}
     </>

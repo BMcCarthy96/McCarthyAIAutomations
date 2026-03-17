@@ -27,7 +27,8 @@ export async function getClientAutomationMetrics(): Promise<AutomationMetric[]> 
       .select(
         "calls_handled, leads_captured, appointments_booked, hours_saved, estimated_revenue, projects!inner(client_services!inner(client_id))"
       )
-      .eq("projects.client_services.client_id", clientId);
+      .eq("projects.client_services.client_id", clientId)
+      .eq("projects.is_archived", false);
 
     if (explicit && explicit.length > 0) {
       const totals = explicit.reduce(

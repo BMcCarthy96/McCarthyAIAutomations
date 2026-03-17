@@ -113,7 +113,8 @@ export async function fetchProjectsWithDetails(
     const { data: rawProjects, error: projectsError } = await supabase
       .from("projects")
       .select("id, name, status, progress, client_services!inner(client_id)")
-      .eq("client_services.client_id", resolvedId);
+      .eq("client_services.client_id", resolvedId)
+      .eq("is_archived", false);
 
     if (projectsError || !rawProjects) return [];
 
@@ -222,6 +223,7 @@ export async function fetchProjectUpdatesForClient(
         "id, project_id, title, body, created_at, projects!inner(id, name, client_services!inner(client_id))"
       )
       .eq("projects.client_services.client_id", resolvedId)
+      .eq("projects.is_archived", false)
       .order("created_at", { ascending: false });
 
     if (error || !data) return [];
@@ -266,6 +268,7 @@ export async function getUpcomingMilestonesForClient(
         "id, project_id, title, due_date, completed_at, projects!inner(id, name, client_services!inner(client_id))"
       )
       .eq("projects.client_services.client_id", resolvedId)
+      .eq("projects.is_archived", false)
       .is("completed_at", null)
       .order("due_date", { ascending: true });
 

@@ -11,6 +11,7 @@ import type {
   UpdateMilestoneState,
   DeleteMilestoneState,
   UpdateProjectState,
+  ArchiveProjectState,
   UpdateBillingStatusState,
   UpdateSupportRequestStatusState,
   CreateClientState,
@@ -211,6 +212,60 @@ export async function updateProjectAction(
     return { success: false, error: error.message };
   }
 
+  return { success: true };
+}
+
+export async function archiveProjectAction(
+  _prevState: ArchiveProjectState | null,
+  formData: FormData
+): Promise<ArchiveProjectState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const projectId = (formData.get("projectId") as string)?.trim();
+  if (!projectId) return { success: false, error: "Project is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ is_archived: true })
+    .eq("id", projectId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/projects");
+  revalidatePath(`/admin/projects/${projectId}/edit`);
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/services");
+  return { success: true };
+}
+
+export async function unarchiveProjectAction(
+  _prevState: ArchiveProjectState | null,
+  formData: FormData
+): Promise<ArchiveProjectState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const projectId = (formData.get("projectId") as string)?.trim();
+  if (!projectId) return { success: false, error: "Project is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("projects")
+    .update({ is_archived: false })
+    .eq("id", projectId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/projects");
+  revalidatePath(`/admin/projects/${projectId}/edit`);
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/services");
   return { success: true };
 }
 

@@ -25,6 +25,7 @@ export interface AdminProjectRow {
   status: string;
   progress: number;
   clientName: string;
+  isArchived: boolean;
 }
 
 /** Billing record with client name for admin list. */
@@ -98,39 +99,42 @@ export async function getAllProjects(): Promise<AdminProjectRow[]> {
 
   const { data, error } = await supabase
     .from("projects")
-    .select("id, name, status, progress, client_services!inner(client_id, clients(name))")
+    .select("id, name, status, progress, is_archived, client_services!inner(client_id, clients(name))")
     .order("name");
 
   if (error || !data) return [];
 
-  return data.map((row: { id: string; name: string; status: string; progress: number; client_services: { clients: { name: string } | null } }) => ({
+  return data.map((row: { id: string; name: string; status: string; progress: number; is_archived?: boolean; client_services: { clients: { name: string } | null } }) => ({
     id: row.id,
     name: row.name,
     status: row.status,
     progress: row.progress,
     clientName: row.client_services?.clients?.name ?? "—",
+    isArchived: Boolean(row.is_archived),
   }));
 }
 
 /** Single project for edit form. */
 export async function getProjectById(
   id: string
-): Promise<{ id: string; name: string; status: string; progress: number } | null> {
+): Promise<{ id: string; name: string; status: string; progress: number; isArchived: boolean } | null> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return null;
 
   const { data, error } = await supabase
     .from("projects")
-    .select("id, name, status, progress")
+    .select("id, name, status, progress, is_archived")
     .eq("id", id)
     .maybeSingle();
 
   if (error || !data) return null;
+  const row = data as { id: string; name: string; status: string; progress: number; is_archived?: boolean };
   return {
-    id: data.id,
-    name: data.name,
-    status: data.status,
-    progress: data.progress,
+    id: row.id,
+    name: row.name,
+    status: row.status,
+    progress: row.progress,
+    isArchived: Boolean(row.is_archived),
   };
 }
 

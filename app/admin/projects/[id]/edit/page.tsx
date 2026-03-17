@@ -7,6 +7,7 @@ import {
   getProjectMetricsForProject,
 } from "@/lib/admin-data";
 import { AddMilestoneForm } from "@/components/admin/AddMilestoneForm";
+import { ArchiveProjectButton } from "@/components/admin/ArchiveProjectButton";
 import { EditProjectForm } from "@/components/admin/EditProjectForm";
 import { MilestoneRowForm } from "@/components/admin/MilestoneRowForm";
 import { ProjectMetricsForm } from "@/components/admin/ProjectMetricsForm";
@@ -54,6 +55,10 @@ export default async function EditProjectPage({
           initialProgress={project.progress}
           initialStatus={project.status}
         />
+        <div className="mt-4 flex items-center gap-4 border-t border-white/10 pt-4">
+          <span className="text-sm text-zinc-400">Archive hides this project from the client dashboard.</span>
+          <ArchiveProjectButton projectId={project.id} isArchived={project.isArchived} />
+        </div>
       </div>
       <section className="rounded-xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-lg font-semibold text-white">Automation metrics</h2>

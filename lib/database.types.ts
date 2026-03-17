@@ -45,9 +45,9 @@ export interface Database {
         Relationships: TableRelationships;
       };
       projects: {
-        Row: Record<string, unknown> & { id: string; client_service_id: string; name: string; status: ProjectStatus; progress: number; started_at: string | null; completed_at: string | null; created_at: string | null; updated_at: string | null };
-        Insert: Record<string, unknown> & { id?: string; client_service_id: string; name: string; status: ProjectStatus; progress: number; started_at?: string | null; completed_at?: string | null; created_at?: string | null; updated_at?: string | null };
-        Update: Record<string, unknown> & { id?: string; client_service_id?: string; name?: string; status?: ProjectStatus; progress?: number; started_at?: string | null; completed_at?: string | null; created_at?: string | null; updated_at?: string | null };
+        Row: Record<string, unknown> & { id: string; client_service_id: string; name: string; status: ProjectStatus; progress: number; is_archived: boolean; started_at: string | null; completed_at: string | null; created_at: string | null; updated_at: string | null };
+        Insert: Record<string, unknown> & { id?: string; client_service_id: string; name: string; status: ProjectStatus; progress: number; is_archived?: boolean; started_at?: string | null; completed_at?: string | null; created_at?: string | null; updated_at?: string | null };
+        Update: Record<string, unknown> & { id?: string; client_service_id?: string; name?: string; status?: ProjectStatus; progress?: number; is_archived?: boolean; started_at?: string | null; completed_at?: string | null; created_at?: string | null; updated_at?: string | null };
         Relationships: TableRelationships;
       };
       milestones: {
