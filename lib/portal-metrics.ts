@@ -21,6 +21,67 @@ export async function getClientAutomationMetrics(): Promise<AutomationMetric[]> 
   if (!clientId) return [];
 
   try {
+    // Prefer explicit project_metrics if present
+    const { data: explicit } = await supabase
+      .from("project_metrics")
+      .select(
+        "calls_handled, leads_captured, appointments_booked, hours_saved, estimated_revenue, projects!inner(client_services!inner(client_id))"
+      )
+      .eq("projects.client_services.client_id", clientId);
+
+    if (explicit && explicit.length > 0) {
+      const totals = explicit.reduce(
+        (acc, row: any) => {
+          acc.calls += row.calls_handled ?? 0;
+          acc.leads += row.leads_captured ?? 0;
+          acc.appointments += row.appointments_booked ?? 0;
+          acc.hours += row.hours_saved ?? 0;
+          acc.revenue += row.estimated_revenue ?? 0;
+          return acc;
+        },
+        { calls: 0, leads: 0, appointments: 0, hours: 0, revenue: 0 }
+      );
+
+      const metrics: AutomationMetric[] = [
+        {
+          id: "calls",
+          label: "Calls handled",
+          value: totals.calls.toLocaleString(),
+          helper: "Support interactions handled by automations.",
+        },
+        {
+          id: "leads",
+          label: "Leads captured",
+          value: totals.leads.toLocaleString(),
+          helper: "Leads attributed to your automations.",
+        },
+        {
+          id: "appointments",
+          label: "Appointments booked",
+          value: totals.appointments.toLocaleString(),
+          helper: "Bookings generated via automations.",
+        },
+        {
+          id: "hours",
+          label: "Hours saved",
+          value: totals.hours.toLocaleString(),
+          helper: "Time saved versus manual handling.",
+        },
+        {
+          id: "revenue",
+          label: "Est. revenue influenced",
+          value:
+            totals.revenue > 0
+              ? `$${totals.revenue.toLocaleString()}`
+              : "$0",
+          helper: "Estimated revenue influenced by automations.",
+        },
+      ];
+
+      return metrics;
+    }
+
+    // Fallback: derive from existing support and billing data
     const [{ data: support }, { data: billing }] = await Promise.all([
       supabase
         .from("support_requests")

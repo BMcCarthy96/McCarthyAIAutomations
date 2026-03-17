@@ -13,6 +13,7 @@ import type {
   UpdateClientState,
   CreateProjectSetupState,
   UpdateClientClerkLinkState,
+  UpdateProjectMetricsState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
@@ -401,6 +402,68 @@ export async function createProjectSetupAction(
 
   revalidatePath("/admin/projects");
   revalidatePath("/admin/clients");
+  return { success: true };
+}
+
+// ---------------------------------------------------------------------------
+// Project metrics
+// ---------------------------------------------------------------------------
+
+export async function updateProjectMetricsAction(
+  _prevState: UpdateProjectMetricsState | null,
+  formData: FormData
+): Promise<UpdateProjectMetricsState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const projectId = (formData.get("projectId") as string)?.trim();
+  if (!projectId) return { success: false, error: "Project is required." };
+
+  function toNumber(name: string): number | null | "invalid" {
+    const raw = (formData.get(name) as string | null)?.trim();
+    if (!raw) return null;
+    const value = Number(raw);
+    if (Number.isNaN(value) || value < 0) return "invalid";
+    return value;
+  }
+
+  const callsHandled = toNumber("callsHandled");
+  const leadsCaptured = toNumber("leadsCaptured");
+  const appointmentsBooked = toNumber("appointmentsBooked");
+  const hoursSaved = toNumber("hoursSaved");
+  const estimatedRevenue = toNumber("estimatedRevenue");
+
+  if (
+    [callsHandled, leadsCaptured, appointmentsBooked, hoursSaved, estimatedRevenue].includes(
+      "invalid" as any
+    )
+  ) {
+    return { success: false, error: "Metrics must be non-negative numbers." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("project_metrics")
+    .upsert(
+      {
+        project_id: projectId,
+        calls_handled: callsHandled === "invalid" ? null : callsHandled,
+        leads_captured: leadsCaptured === "invalid" ? null : leadsCaptured,
+        appointments_booked:
+          appointmentsBooked === "invalid" ? null : appointmentsBooked,
+        hours_saved: hoursSaved === "invalid" ? null : hoursSaved,
+        estimated_revenue:
+          estimatedRevenue === "invalid" ? null : estimatedRevenue,
+      } as any,
+      { onConflict: "project_id" }
+    );
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/projects");
+  revalidatePath(`/admin/projects/${projectId}/edit`);
   return { success: true };
 }
 

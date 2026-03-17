@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProjectById, getMilestonesForProject } from "@/lib/admin-data";
+import {
+  getProjectById,
+  getMilestonesForProject,
+  getProjectMetricsForProject,
+} from "@/lib/admin-data";
 import { EditProjectForm } from "@/components/admin/EditProjectForm";
 import { MilestoneRowForm } from "@/components/admin/MilestoneRowForm";
+import { ProjectMetricsForm } from "@/components/admin/ProjectMetricsForm";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -17,9 +22,10 @@ export default async function EditProjectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [project, milestones] = await Promise.all([
+  const [project, milestones, metrics] = await Promise.all([
     getProjectById(id),
     getMilestonesForProject(id),
+    getProjectMetricsForProject(id),
   ]);
   if (!project) notFound();
 
@@ -48,6 +54,22 @@ export default async function EditProjectPage({
           initialStatus={project.status}
         />
       </div>
+      <section className="rounded-xl border border-white/10 bg-white/5 p-6">
+        <h2 className="text-lg font-semibold text-white">Automation metrics</h2>
+        <p className="mt-1 text-sm text-zinc-400">
+          Set or update metrics used on the client dashboard for this project.
+        </p>
+        <div className="mt-4">
+          <ProjectMetricsForm
+            projectId={project.id}
+            initialCallsHandled={metrics?.callsHandled ?? null}
+            initialLeadsCaptured={metrics?.leadsCaptured ?? null}
+            initialAppointmentsBooked={metrics?.appointmentsBooked ?? null}
+            initialHoursSaved={metrics?.hoursSaved ?? null}
+            initialEstimatedRevenue={metrics?.estimatedRevenue ?? null}
+          />
+        </div>
+      </section>
       <section className="rounded-xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-lg font-semibold text-white">Milestones</h2>
         <p className="mt-1 text-sm text-zinc-400">

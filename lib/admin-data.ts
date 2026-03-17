@@ -134,6 +134,37 @@ export async function getProjectById(
   };
 }
 
+export async function getProjectMetricsForProject(
+  projectId: string
+): Promise<{
+  callsHandled: number | null;
+  leadsCaptured: number | null;
+  appointmentsBooked: number | null;
+  hoursSaved: number | null;
+  estimatedRevenue: number | null;
+} | null> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return null;
+
+  const { data, error } = await supabase
+    .from("project_metrics")
+    .select(
+      "calls_handled, leads_captured, appointments_booked, hours_saved, estimated_revenue"
+    )
+    .eq("project_id", projectId)
+    .maybeSingle();
+
+  if (error || !data) return null;
+
+  return {
+    callsHandled: data.calls_handled,
+    leadsCaptured: data.leads_captured,
+    appointmentsBooked: data.appointments_booked,
+    hoursSaved: data.hours_saved,
+    estimatedRevenue: data.estimated_revenue,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Milestones
 // ---------------------------------------------------------------------------

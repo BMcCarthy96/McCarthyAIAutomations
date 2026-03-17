@@ -86,6 +86,42 @@ export interface Database {
         Update: Record<string, unknown> & { id?: string; slug?: string; name?: string; tagline?: string; description?: string; long_description?: string; features?: Json; icon?: string; highlights?: Json | null };
         Relationships: TableRelationships;
       };
+      project_metrics: {
+        Row: Record<string, unknown> & {
+          id: string;
+          project_id: string;
+          calls_handled: number | null;
+          leads_captured: number | null;
+          appointments_booked: number | null;
+          hours_saved: number | null;
+          estimated_revenue: number | null;
+          created_at: string | null;
+          updated_at: string | null;
+        };
+        Insert: Record<string, unknown> & {
+          id?: string;
+          project_id: string;
+          calls_handled?: number | null;
+          leads_captured?: number | null;
+          appointments_booked?: number | null;
+          hours_saved?: number | null;
+          estimated_revenue?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Update: Record<string, unknown> & {
+          id?: string;
+          project_id?: string;
+          calls_handled?: number | null;
+          leads_captured?: number | null;
+          appointments_booked?: number | null;
+          hours_saved?: number | null;
+          estimated_revenue?: number | null;
+          created_at?: string | null;
+          updated_at?: string | null;
+        };
+        Relationships: TableRelationships;
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

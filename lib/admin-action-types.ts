@@ -38,3 +38,7 @@ export type CreateProjectSetupState =
 export type UpdateClientClerkLinkState =
   | { success: false; error: string }
   | { success: true };
+
+export type UpdateProjectMetricsState =
+  | { success: false; error: string }
+  | { success: true };
