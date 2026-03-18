@@ -655,6 +655,50 @@ export async function updateClientClerkLinkAction(
 
 const PROJECT_SETUP_STATUSES = ["active", "in_progress", "pending", "completed"] as const;
 
+/** Default milestones per service: title and days from project creation. Missing serviceId = no auto-milestones. */
+const SERVICE_MILESTONE_TEMPLATES: Record<
+  string,
+  { title: string; daysFromStart: number }[]
+> = {
+  "1": [
+    { title: "Kickoff & discovery", daysFromStart: 0 },
+    { title: "Design & content review", daysFromStart: 14 },
+    { title: "Development & AI integration", daysFromStart: 35 },
+    { title: "Review & QA", daysFromStart: 49 },
+    { title: "Launch & handoff", daysFromStart: 56 },
+  ],
+  "2": [
+    { title: "Kickoff & call flow design", daysFromStart: 0 },
+    { title: "Script & escalation rules", daysFromStart: 7 },
+    { title: "Integration & testing", daysFromStart: 21 },
+    { title: "Go live & monitoring", daysFromStart: 28 },
+  ],
+  "3": [
+    { title: "Kickoff & channel setup", daysFromStart: 0 },
+    { title: "Lead forms & calendar sync", daysFromStart: 14 },
+    { title: "Reminders & CRM connection", daysFromStart: 21 },
+    { title: "Launch & reporting", daysFromStart: 28 },
+  ],
+  "4": [
+    { title: "Kickoff & content gathering", daysFromStart: 0 },
+    { title: "Chatbot training & flows", daysFromStart: 14 },
+    { title: "Lead capture & handoff", daysFromStart: 21 },
+    { title: "Launch & analytics", daysFromStart: 28 },
+  ],
+  "5": [
+    { title: "Kickoff & workflow mapping", daysFromStart: 0 },
+    { title: "Integration setup", daysFromStart: 14 },
+    { title: "Workflow build & test", daysFromStart: 28 },
+    { title: "Go live & documentation", daysFromStart: 42 },
+  ],
+  "6": [
+    { title: "Kickoff & requirements", daysFromStart: 0 },
+    { title: "Architecture & build", daysFromStart: 21 },
+    { title: "Testing & deployment", daysFromStart: 42 },
+    { title: "Handoff & support", daysFromStart: 56 },
+  ],
+};
+
 export async function createProjectSetupAction(
   _prevState: CreateProjectSetupState | null,
   formData: FormData
@@ -701,17 +745,42 @@ export async function createProjectSetupAction(
 
   if (csError || !csRow) return { success: false, error: csError?.message ?? "Failed to create engagement." };
 
-  const { error: projError } = await supabase.from("projects").insert({
-    client_service_id: csRow.id,
-    name: projectName,
-    status: statusValid,
-    progress: Math.round(progress),
-  });
+  const { data: projectRow, error: projError } = await supabase
+    .from("projects")
+    .insert({
+      client_service_id: csRow.id,
+      name: projectName,
+      status: statusValid,
+      progress: Math.round(progress),
+    })
+    .select("id")
+    .single();
 
-  if (projError) return { success: false, error: projError.message };
+  if (projError || !projectRow) {
+    return { success: false, error: projError?.message ?? "Failed to create project." };
+  }
+
+  // Auto-create default milestones from service template (best-effort; do not fail setup)
+  const template = SERVICE_MILESTONE_TEMPLATES[serviceId];
+  if (template && template.length > 0) {
+    const today = new Date();
+    const milestoneRows = template.map(({ title, daysFromStart }) => {
+      const due = new Date(today);
+      due.setDate(due.getDate() + daysFromStart);
+      return {
+        project_id: projectRow.id,
+        title,
+        due_date: due.toISOString().slice(0, 10),
+      };
+    });
+    await supabase.from("milestones").insert(milestoneRows);
+  }
 
   revalidatePath("/admin/projects");
   revalidatePath("/admin/clients");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/services");
+  revalidatePath("/dashboard/activity");
   return { success: true };
 }
 
