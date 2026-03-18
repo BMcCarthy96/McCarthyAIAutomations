@@ -33,6 +33,9 @@ export const metadata: Metadata = {
   description: "Your active services and project status.",
 };
 
+/** Ensure dashboard always reflects latest data (e.g. new projects/milestones). */
+export const dynamic = "force-dynamic";
+
 export default async function DashboardOverviewPage() {
   const clientId = await getCurrentClientId();
   const [projects, allUpdates, activity, metrics, upcomingMilestones] = await Promise.all([
@@ -42,6 +45,7 @@ export default async function DashboardOverviewPage() {
     getClientAutomationMetrics(),
     getUpcomingMilestonesForClient(clientId, 4),
   ]);
+
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
   const latestActivity = activity.slice(0, 5);
@@ -134,7 +138,13 @@ export default async function DashboardOverviewPage() {
 
       <section className="grid gap-8 lg:grid-cols-2">
         <div>
-          <SectionTitle action={projects.length > 0 ? { label: "View all", href: "/dashboard/services" } : undefined}>
+          <SectionTitle
+            action={
+              upcomingMilestones.length > 0
+                ? { label: "View all", href: "/dashboard/milestones" }
+                : undefined
+            }
+          >
             Next milestones
           </SectionTitle>
           <div className="mt-4">

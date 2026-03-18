@@ -6,6 +6,7 @@ import {
   type ProjectUpdate,
 } from "@/lib/types";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { getTodayDateString } from "@/lib/utils";
 
 /**
  * Portal data: dashboard reads for the client portal.
@@ -89,6 +90,16 @@ export interface UpcomingMilestoneItem {
   projectName: string;
   title: string;
   dueDate: string;
+}
+
+// Flat milestone item (upcoming + completed) for dedicated milestones page
+export interface ClientMilestoneItem {
+  id: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  dueDate: string;
+  completedAt: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -247,13 +258,38 @@ export async function fetchProjectUpdatesForClient(
 // ---------------------------------------------------------------------------
 
 /**
- * Returns a flat list of incomplete milestones for the current client,
- * ordered by due date ascending, optionally limited.
+ * Returns a flat list of upcoming milestones for the current client (due today or later, not completed),
+ * ordered by due date ascending, optionally limited. Uses YYYY-MM-DD comparison only.
  */
 export async function getUpcomingMilestonesForClient(
   clientId?: string | null,
   limit?: number
 ): Promise<UpcomingMilestoneItem[]> {
+  const all = await getAllMilestonesForClient(clientId);
+  const today = getTodayDateString();
+  const upcoming = all
+    .filter((m) => !m.completedAt && m.dueDate >= today)
+    .slice()
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+
+  const sliced = limit != null ? upcoming.slice(0, limit) : upcoming;
+
+  return sliced.map((m) => ({
+    id: m.id,
+    projectId: m.projectId,
+    projectName: m.projectName,
+    title: m.title,
+    dueDate: m.dueDate,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// All milestones for client (upcoming + completed)
+// ---------------------------------------------------------------------------
+
+export async function getAllMilestonesForClient(
+  clientId?: string | null
+): Promise<ClientMilestoneItem[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return [];
 
@@ -262,18 +298,15 @@ export async function getUpcomingMilestonesForClient(
       clientId !== undefined ? clientId : await getCurrentClientId();
     if (resolvedId === null) return [];
 
-    const query = supabase
+    const { data, error } = await supabase
       .from("milestones")
       .select(
         "id, project_id, title, due_date, completed_at, projects!inner(id, name, client_services!inner(client_id))"
       )
       .eq("projects.client_services.client_id", resolvedId)
       .eq("projects.is_archived", false)
-      .is("completed_at", null)
       .order("due_date", { ascending: true });
 
-    const { data, error } =
-      limit != null ? await query.limit(limit) : await query;
     if (error || !data) return [];
 
     return (data as any[]).map((row) => ({
@@ -282,6 +315,7 @@ export async function getUpcomingMilestonesForClient(
       projectName: (row.projects && row.projects.name) || "Project",
       title: row.title as string,
       dueDate: row.due_date as string,
+      completedAt: (row.completed_at as string | null) ?? null,
     }));
   } catch {
     return [];
