@@ -53,15 +53,27 @@ export default async function DashboardOverviewPage() {
   const activeCount = projects.filter((p) => p.status === "active").length;
   const inProgressCount = projects.filter((p) => p.status === "in_progress").length;
 
+  const hoursSaved = metrics.find((m) => m.id === "hours")?.value ?? "0";
+  const estimatedRevenue = metrics.find((m) => m.id === "revenue")?.value ?? "$0";
+
   return (
     <div className="space-y-10">
       <WelcomeHeader />
 
       <section>
         <SectionTitle>Automation metrics</SectionTitle>
-        <div className="mt-4">
+        <div className="mt-4 space-y-5">
           {metrics.length > 0 ? (
-            <AutomationMetrics metrics={metrics} />
+            <>
+              <p className="text-base text-zinc-300 sm:text-lg">
+                Your automation saved you{" "}
+                <span className="font-bold text-white">{hoursSaved}</span> hours
+                and influenced{" "}
+                <span className="font-bold text-white">{estimatedRevenue}</span>{" "}
+                in the last 30 days.
+              </p>
+              <AutomationMetrics metrics={metrics} />
+            </>
           ) : (
             <EmptyState
               icon={Layers}
