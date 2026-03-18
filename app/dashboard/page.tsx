@@ -5,6 +5,7 @@ import {
   getCurrentClientId,
   fetchProjectsWithDetails,
   fetchProjectUpdatesForClient,
+  getAllMilestonesForClient,
   getUpcomingMilestonesForClient,
 } from "@/lib/portal-data";
 import { getClientAutomationMetrics } from "@/lib/portal-metrics";
@@ -20,6 +21,8 @@ import { ProjectTimeline } from "@/components/dashboard/ProjectTimeline";
 import {
   ArrowRight,
   Calendar,
+  Check,
+  Circle,
   Clock,
   FileText,
   HelpCircle,
@@ -38,13 +41,15 @@ export const dynamic = "force-dynamic";
 
 export default async function DashboardOverviewPage() {
   const clientId = await getCurrentClientId();
-  const [projects, allUpdates, activity, metrics, upcomingMilestones] = await Promise.all([
-    fetchProjectsWithDetails(clientId),
-    fetchProjectUpdatesForClient(clientId),
-    getProjectActivityTimeline(clientId),
-    getClientAutomationMetrics(),
-    getUpcomingMilestonesForClient(clientId, 4),
-  ]);
+  const [projects, allUpdates, activity, metrics, allMilestones, upcomingMilestones] =
+    await Promise.all([
+      fetchProjectsWithDetails(clientId),
+      fetchProjectUpdatesForClient(clientId),
+      getProjectActivityTimeline(clientId),
+      getClientAutomationMetrics(),
+      getAllMilestonesForClient(clientId),
+      getUpcomingMilestonesForClient(clientId, 4),
+    ]);
 
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
@@ -56,9 +61,50 @@ export default async function DashboardOverviewPage() {
   const hoursSaved = metrics.find((m) => m.id === "hours")?.value ?? "0";
   const estimatedRevenue = metrics.find((m) => m.id === "revenue")?.value ?? "$0";
 
+  const projectCreated = projects.length > 0;
+
+  const milestonesPerProject = new Map<string, number>();
+  allMilestones.forEach((m) => {
+    milestonesPerProject.set(m.projectId, (milestonesPerProject.get(m.projectId) ?? 0) + 1);
+  });
+  const milestonesScheduled = Array.from(milestonesPerProject.values()).some(
+    (count) => count >= 2
+  );
+
+  const integrationInProgress = projects.some((p) => p.status === "in_progress");
+  const automationLive = projects.some((p) => p.status === "active");
+
   return (
     <div className="space-y-10">
       <WelcomeHeader />
+
+      <section>
+        <SectionTitle>Your automation setup</SectionTitle>
+        <div className="mt-4">
+          <GlassCard hover={false} className="flex flex-wrap items-center gap-6 sm:gap-8">
+            {[
+              { label: "Project created", done: projectCreated },
+              { label: "Milestones scheduled", done: milestonesScheduled },
+              { label: "Integration in progress", done: integrationInProgress },
+              { label: "Automation live", done: automationLive },
+            ].map(({ label, done }) => (
+              <div
+                key={label}
+                className="flex items-center gap-2.5 text-sm text-zinc-400"
+              >
+                {done ? (
+                  <Check className="h-4 w-4 shrink-0 text-emerald-400" />
+                ) : (
+                  <Circle className="h-4 w-4 shrink-0 text-zinc-600" />
+                )}
+                <span className={done ? "text-zinc-300" : undefined}>
+                  {label}
+                </span>
+              </div>
+            ))}
+          </GlassCard>
+        </div>
+      </section>
 
       <section>
         <SectionTitle>Automation metrics</SectionTitle>
