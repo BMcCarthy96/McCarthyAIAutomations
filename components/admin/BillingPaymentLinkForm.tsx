@@ -55,35 +55,36 @@ export function BillingPaymentLinkForm({
         </form>
       ) : (
         <div className="flex flex-col gap-2">
-          <a
-            href={urlToShow}
-            className="inline-flex items-center gap-2 text-sm font-medium text-indigo-200 hover:text-indigo-100"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <LinkIcon className="h-4 w-4" />
-            Payment Link
-            <ExternalLink className="h-4 w-4" />
-          </a>
+          <div className="inline-flex items-center gap-1.5 text-xs text-zinc-400">
+            <LinkIcon className="h-3.5 w-3.5 text-emerald-300" />
+            Link ready
+          </div>
           <div className="flex items-center gap-2">
-            <input
-              readOnly
-              value={urlToShow}
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-xs text-zinc-200"
-            />
+            <a
+              href={urlToShow}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs font-medium text-indigo-200 transition-colors hover:bg-white/10 hover:text-indigo-100"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Open
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="px-2"
+              className="h-8 px-2.5 text-xs"
               onClick={copyUrl}
               disabled={copied}
             >
-              <Copy className="h-4 w-4" />
-              <span className="sr-only">Copy</span>
+              <Copy className="mr-1 h-3.5 w-3.5" />
+              Copy
             </Button>
           </div>
           {copied && <p className="text-xs text-emerald-300">Copied</p>}
+          {state?.success === false && state.error && (
+            <p className="text-xs text-red-300">{state.error}</p>
+          )}
         </div>
       )}
     </div>
