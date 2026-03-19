@@ -40,6 +40,7 @@ export interface AdminBillingRow {
   dueDate: string;
   paidAt: string | null;
   clientName: string;
+  stripePaymentLinkUrl?: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -231,7 +232,9 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
 
   const { data, error } = await supabase
     .from("billing_records")
-    .select("id, description, amount_cents, currency, status, due_date, paid_at, clients(name)")
+    .select(
+      "id, description, amount_cents, currency, status, due_date, paid_at, stripe_payment_link_url, clients(name)"
+    )
     .order("due_date", { ascending: false });
 
   if (error || !data) return [];
@@ -244,6 +247,7 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
     status: string;
     due_date: string;
     paid_at: string | null;
+    stripe_payment_link_url: string | null;
     clients: { name: string } | null;
   }) => ({
     id: row.id,
@@ -254,5 +258,6 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
     dueDate: row.due_date,
     paidAt: row.paid_at,
     clientName: row.clients?.name ?? "—",
+    stripePaymentLinkUrl: row.stripe_payment_link_url ?? null,
   }));
 }

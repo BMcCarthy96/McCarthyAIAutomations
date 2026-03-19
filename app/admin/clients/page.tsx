@@ -4,6 +4,7 @@ import { getAllClients } from "@/lib/admin-data";
 import { CreateClientForm } from "@/components/admin/CreateClientForm";
 import { ClientClerkLinkCell } from "@/components/admin/ClientClerkLinkCell";
 import { formatDisplayDate } from "@/lib/utils";
+import { CreateStripeCustomerButton } from "@/components/admin/CreateStripeCustomerButton";
 import { Pencil } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -67,6 +68,9 @@ export default async function AdminClientsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      {!c.stripeCustomerId && (
+                        <CreateStripeCustomerButton clientId={c.id} />
+                      )}
                       <Link
                         href={`/admin/clients/${c.id}/link`}
                         className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"

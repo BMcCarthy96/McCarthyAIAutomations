@@ -35,6 +35,14 @@ export type UpdateBillingStatusState =
   | { success: false; error: string }
   | { success: true };
 
+export type CreateStripePaymentLinkState =
+  | { success: false; error: string }
+  | { success: true; url: string };
+
+export type CreateStripeCustomerBackfillState =
+  | { success: false; error: string }
+  | { success: true };
+
 export type CreateClientState =
   | { success: false; error: string }
   | { success: true };

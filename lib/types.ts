@@ -176,6 +176,8 @@ export interface BillingRecord {
   paidAt?: string | null;
   /** Stripe invoice id when integrated. */
   stripeInvoiceId?: string | null;
+  /** Stripe payment link URL (for manual payment via payment links). */
+  stripePaymentLinkUrl?: string | null;
   /** ISO date or datetime when record was created. */
   createdAt?: string | null;
   /** ISO datetime when record was last updated. */

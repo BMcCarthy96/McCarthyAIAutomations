@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import { renderEmailTemplate } from "@/lib/email/template";
 import { getSupabaseServiceClient } from "@/lib/supabase";
-import { createStripeCustomerForClient } from "@/lib/stripe";
+import { createPaymentLinkForClient, createStripeCustomerForClient } from "@/lib/stripe";
 import { isAdminUser } from "@/lib/admin-auth";
 import type {
   CreateProjectUpdateState,
@@ -14,6 +14,8 @@ import type {
   UpdateProjectState,
   ArchiveProjectState,
   UpdateBillingStatusState,
+  CreateStripePaymentLinkState,
+  CreateStripeCustomerBackfillState,
   UpdateSupportRequestStatusState,
   CreateClientState,
   UpdateClientState,
@@ -545,6 +547,91 @@ export async function updateBillingStatusAction(
   return { success: true };
 }
 
+export async function createStripePaymentLinkAction(
+  _prevState: CreateStripePaymentLinkState | null,
+  formData: FormData
+): Promise<CreateStripePaymentLinkState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const recordId = (formData.get("recordId") as string)?.trim();
+  if (!recordId) {
+    return { success: false, error: "Record is required." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  // 1) Load billing record
+  const { data: recordRow, error: recordError } = await supabase
+    .from("billing_records")
+    .select("id, client_id, amount_cents, description")
+    .eq("id", recordId)
+    .single();
+
+  if (recordError || !recordRow) {
+    return { success: false, error: recordError?.message ?? "Billing record not found." };
+  }
+
+  // 2) Load client stripe customer id
+  const { data: clientRow, error: clientError } = await supabase
+    .from("clients")
+    .select("stripe_customer_id")
+    .eq("id", recordRow.client_id)
+    .single();
+
+  if (clientError || !clientRow) {
+    return { success: false, error: clientError?.message ?? "Client not found." };
+  }
+
+  const customerId = clientRow.stripe_customer_id as string | null;
+  if (!customerId) {
+    return {
+      success: false,
+      error:
+        "Stripe customer id is missing for this client. Create the client record first.",
+    };
+  }
+
+  const amountDollars = recordRow.amount_cents / 100;
+  const description = (recordRow.description ?? "").trim() || "Payment";
+
+  // 3) Create payment link via Stripe (fail gracefully)
+  const url = await createPaymentLinkForClient({
+    customerId,
+    amount: amountDollars,
+    description,
+    clientId: recordRow.client_id,
+    billingRecordId: recordRow.id,
+  });
+
+  if (!url) {
+    return {
+      success: false,
+      error:
+        "Stripe is not configured or payment link creation failed. Check STRIPE_SECRET_KEY.",
+    };
+  }
+
+  // 4) Persist the link
+  const { error: updateError } = await supabase
+    .from("billing_records")
+    .update({ stripe_payment_link_url: url, updated_at: new Date().toISOString() })
+    .eq("id", recordId);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  revalidatePath("/admin/billing");
+  revalidatePath("/dashboard/billing");
+  return { success: true, url };
+}
+
 // ---------------------------------------------------------------------------
 // Clients
 // ---------------------------------------------------------------------------
@@ -650,6 +737,76 @@ export async function updateClientClerkLinkAction(
   revalidatePath(`/admin/clients/${clientId}`);
   revalidatePath(`/admin/clients/${clientId}/edit`);
   revalidatePath(`/admin/clients/${clientId}/link`);
+  return { success: true };
+}
+
+// ---------------------------------------------------------------------------
+// Stripe backfills (clients)
+// ---------------------------------------------------------------------------
+
+export async function createStripeCustomerBackfillAction(
+  _prevState: CreateStripeCustomerBackfillState | null,
+  formData: FormData
+): Promise<CreateStripeCustomerBackfillState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  if (!clientId) return { success: false, error: "Client is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { data: clientRow, error: clientError } = await supabase
+    .from("clients")
+    .select("id, name, email, stripe_customer_id")
+    .eq("id", clientId)
+    .maybeSingle();
+
+  if (clientError || !clientRow) {
+    return {
+      success: false,
+      error: clientError?.message ?? "Client not found.",
+    };
+  }
+
+  if (clientRow.stripe_customer_id) {
+    // Idempotent: nothing to do.
+    revalidatePath("/admin/clients");
+    revalidatePath(`/admin/clients/${clientId}/edit`);
+    revalidatePath(`/admin/clients/${clientId}/link`);
+    return { success: true };
+  }
+
+  const stripeCustomerId = await createStripeCustomerForClient(
+    clientRow.name,
+    clientRow.email
+  );
+
+  if (!stripeCustomerId) {
+    return {
+      success: false,
+      error:
+        "Stripe is not configured or customer creation failed. Check STRIPE_SECRET_KEY.",
+    };
+  }
+
+  const { error: updateError } = await supabase
+    .from("clients")
+    .update({
+      stripe_customer_id: stripeCustomerId,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", clientId);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  revalidatePath("/admin/clients");
+  revalidatePath(`/admin/clients/${clientId}/edit`);
+  revalidatePath(`/admin/clients/${clientId}/link`);
+
   return { success: true };
 }
 

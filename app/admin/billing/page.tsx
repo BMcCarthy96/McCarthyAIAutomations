@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getAllBillingRecords } from "@/lib/admin-data";
 import { BillingRecordStatusForm } from "@/components/admin/BillingRecordStatusForm";
+import { BillingPaymentLinkForm } from "@/components/admin/BillingPaymentLinkForm";
 import { billingStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 
@@ -59,10 +60,18 @@ export default async function AdminBillingPage() {
                   {r.paidAt ? formatDisplayDate(r.paidAt) : "—"}
                 </td>
                 <td className="px-4 py-3">
-                  <BillingRecordStatusForm
-                    recordId={r.id}
-                    currentStatus={r.status}
-                  />
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-end">
+                    <BillingRecordStatusForm
+                      recordId={r.id}
+                      currentStatus={r.status}
+                    />
+                    <BillingPaymentLinkForm
+                      recordId={r.id}
+                      currentPaymentLinkUrl={
+                        (r.stripePaymentLinkUrl as string | null) ?? null
+                      }
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

@@ -81,6 +81,7 @@ interface DbBillingRecord {
   status: string;
   due_date: string;
   paid_at: string | null;
+  stripe_payment_link_url: string | null;
 }
 
 // Flat upcoming milestone item for dashboard
@@ -375,7 +376,7 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
     const { data, error } = await supabase
       .from("billing_records")
       .select(
-        "id, client_id, amount_cents, currency, description, status, due_date, paid_at"
+        "id, client_id, amount_cents, currency, description, status, due_date, paid_at, stripe_payment_link_url"
       )
       .eq("client_id", clientId)
       .order("due_date", { ascending: false });
@@ -392,6 +393,7 @@ export async function fetchBillingRecordsForClient(): Promise<BillingRecord[]> {
       dueDate: row.due_date,
       paidAt: row.paid_at,
       stripeInvoiceId: null,
+      stripePaymentLinkUrl: (row.stripe_payment_link_url as string | null) ?? null,
       createdAt: null,
       updatedAt: null,
     }));

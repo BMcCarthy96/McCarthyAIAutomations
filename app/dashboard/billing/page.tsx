@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/dashboard/EmptyState";
 import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { Button } from "@/components/ui/Button";
 import { Receipt } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -41,6 +42,13 @@ export default async function DashboardBillingPage() {
                     Due {formatDisplayDate(r.dueDate)}
                     {r.paidAt && ` · Paid ${formatDisplayDate(r.paidAt)}`}
                   </p>
+                  {r.stripePaymentLinkUrl ? (
+                    <div className="mt-3">
+                      <Button href={r.stripePaymentLinkUrl} size="sm">
+                        Pay Now
+                      </Button>
+                    </div>
+                  ) : null}
                 </GlassCard>
               </li>
             ))}
