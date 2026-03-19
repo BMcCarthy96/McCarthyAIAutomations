@@ -57,9 +57,9 @@ export interface Database {
         Relationships: TableRelationships;
       };
       clients: {
-        Row: Record<string, unknown> & { id: string; name: string; email: string; company: string | null; clerk_user_id: string | null; created_at: string | null; updated_at: string | null };
-        Insert: Record<string, unknown> & { id?: string; name: string; email: string; company?: string | null; clerk_user_id?: string | null; created_at?: string | null; updated_at?: string | null };
-        Update: Record<string, unknown> & { id?: string; name?: string; email?: string; company?: string | null; clerk_user_id?: string | null; created_at?: string | null; updated_at?: string | null };
+        Row: Record<string, unknown> & { id: string; name: string; email: string; company: string | null; clerk_user_id: string | null; stripe_customer_id: string | null; stripe_subscription_id: string | null; created_at: string | null; updated_at: string | null };
+        Insert: Record<string, unknown> & { id?: string; name: string; email: string; company?: string | null; clerk_user_id?: string | null; stripe_customer_id?: string | null; stripe_subscription_id?: string | null; created_at?: string | null; updated_at?: string | null };
+        Update: Record<string, unknown> & { id?: string; name?: string; email?: string; company?: string | null; clerk_user_id?: string | null; stripe_customer_id?: string | null; stripe_subscription_id?: string | null; created_at?: string | null; updated_at?: string | null };
         Relationships: TableRelationships;
       };
       client_services: {

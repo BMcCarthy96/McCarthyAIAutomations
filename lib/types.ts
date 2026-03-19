@@ -77,6 +77,10 @@ export interface Client {
   company?: string;
   /** Clerk user id when linking portal to auth. */
   clerkUserId?: string | null;
+  /** Stripe customer id for subscriptions (set when client is created). */
+  stripeCustomerId?: string | null;
+  /** Stripe subscription id when client has an active recurring subscription. */
+  stripeSubscriptionId?: string | null;
   /** ISO date or datetime when record was created. */
   createdAt?: string | null;
   /** ISO datetime when record was last updated. */

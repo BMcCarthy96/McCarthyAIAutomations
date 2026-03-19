@@ -14,6 +14,8 @@ interface DbClient {
   email: string;
   company: string | null;
   clerk_user_id: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -50,7 +52,7 @@ export async function getAllClients(): Promise<Client[]> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, clerk_user_id, created_at, updated_at")
+    .select("id, name, email, company, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
     .order("name");
 
   if (error || !data) return [];
@@ -61,6 +63,8 @@ export async function getAllClients(): Promise<Client[]> {
     email: row.email,
     company: row.company ?? undefined,
     clerkUserId: row.clerk_user_id,
+    stripeCustomerId: row.stripe_customer_id ?? undefined,
+    stripeSubscriptionId: row.stripe_subscription_id ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   }));
@@ -72,7 +76,7 @@ export async function getClientById(id: string): Promise<Client | null> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, clerk_user_id, created_at, updated_at")
+    .select("id, name, email, company, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
     .eq("id", id)
     .maybeSingle();
 
@@ -84,6 +88,8 @@ export async function getClientById(id: string): Promise<Client | null> {
     email: row.email,
     company: row.company ?? undefined,
     clerkUserId: row.clerk_user_id,
+    stripeCustomerId: row.stripe_customer_id ?? undefined,
+    stripeSubscriptionId: row.stripe_subscription_id ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

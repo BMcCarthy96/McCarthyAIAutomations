@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
 import { renderEmailTemplate } from "@/lib/email/template";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { createStripeCustomerForClient } from "@/lib/stripe";
 import { isAdminUser } from "@/lib/admin-auth";
 import type {
   CreateProjectUpdateState,
@@ -566,11 +567,14 @@ export async function createClientAction(
   const supabase = getSupabaseServiceClient();
   if (!supabase) return { success: false, error: "Database unavailable." };
 
+  const stripeCustomerId = await createStripeCustomerForClient(name, email);
+
   const { error } = await supabase.from("clients").insert({
     name,
     email,
     company,
     clerk_user_id: clerkUserId,
+    stripe_customer_id: stripeCustomerId ?? null,
   });
 
   if (error) return { success: false, error: error.message };
