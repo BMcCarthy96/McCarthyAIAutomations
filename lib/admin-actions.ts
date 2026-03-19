@@ -601,13 +601,20 @@ export async function createStripePaymentLinkAction(
   const description = (recordRow.description ?? "").trim() || "Payment";
 
   // 3) Create payment link via Stripe (fail gracefully)
-  const url = await createPaymentLinkForClient({
-    customerId,
-    amount: amountDollars,
-    description,
-    clientId: recordRow.client_id,
-    billingRecordId: recordRow.id,
-  });
+  let url: string | null = null;
+  try {
+    url = await createPaymentLinkForClient({
+      customerId,
+      amount: amountDollars,
+      description,
+      clientId: recordRow.client_id,
+      billingRecordId: recordRow.id,
+    });
+  } catch (err) {
+    const message =
+      err instanceof Error ? err.message : "Stripe payment link creation failed.";
+    return { success: false, error: message };
+  }
 
   if (!url) {
     return {

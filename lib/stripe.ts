@@ -58,12 +58,23 @@ export async function createPaymentLinkForClient({
   const stripe = getStripeServer();
   if (!stripe) return null;
 
+  function getStripeErrorMessage(err: unknown): string {
+    const anyErr = err as any;
+    return (
+      anyErr?.message ||
+      anyErr?.error?.message ||
+      "Stripe payment link creation failed"
+    );
+  }
+
   try {
     const unitAmountCents = Math.max(0, Math.round(amount * 100));
     if (!customerId || unitAmountCents <= 0) return null;
 
     const paymentLink = await (stripe.paymentLinks.create as any)({
-      customer: customerId,
+      // Payment Links endpoint doesn't support top-level `customer` in our SDK.
+      // Use `customer_creation` so Stripe will handle customer assignment.
+      customer_creation: "always",
       // Stripe supports `line_items` with `price_data`, but the SDK types for
       // this specific endpoint are stricter in our version; cast to keep runtime behavior.
       line_items: [
@@ -86,7 +97,9 @@ export async function createPaymentLinkForClient({
     });
 
     return paymentLink.url ?? null;
-  } catch {
-    return null;
+  } catch (err) {
+    const message = getStripeErrorMessage(err);
+    console.error("Stripe payment link creation failed:", message, err);
+    throw new Error(message);
   }
 }
