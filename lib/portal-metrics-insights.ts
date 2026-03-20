@@ -4,7 +4,7 @@ import type { AutomationMetric } from "@/lib/portal-metrics";
  * Parse displayed metric values back to numbers for client-side insight copy.
  * Values come from toLocaleString() / "$1,234" formatting in portal-metrics.
  */
-function metricNumberById(
+export function metricNumberById(
   metrics: AutomationMetric[],
   id: string
 ): number {
@@ -83,4 +83,13 @@ export function getAutomationImpactInsights(
   }
 
   return insights.slice(0, 3);
+}
+
+/** True if any core KPI is non-zero (avoid empty-feeling report emails). */
+export function metricsHaveReportableActivity(
+  metrics: AutomationMetric[]
+): boolean {
+  if (!metrics.length) return false;
+  const keys = ["hours", "revenue", "calls", "leads", "appointments"] as const;
+  return keys.some((id) => metricNumberById(metrics, id) > 0);
 }

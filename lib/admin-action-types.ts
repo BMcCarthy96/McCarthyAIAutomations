@@ -35,6 +35,17 @@ export type SendSupportReplyState =
   | { success: false; error: string }
   | { success: true };
 
+/** Batch send monthly impact report emails (admin-triggered). */
+export type RunMonthlyImpactReportEmailsState =
+  | { success: false; error: string }
+  | {
+      success: true;
+      sent: number;
+      skippedNoActivity: number;
+      skippedNoEmail: number;
+      failed: number;
+    };
+
 export type UpdateBillingStatusState =
   | { success: false; error: string }
   | { success: true };

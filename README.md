@@ -55,7 +55,9 @@ These variables must be set in **Vercel → Project → Settings → Environment
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only DB access; never expose to client |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
 
-**Optional (email):** `RESEND_API_KEY`, `CONTACT_EMAIL`, optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). The marketing **contact / consultation** form saves to the database and sends **HTML emails** (admin notification to `CONTACT_EMAIL` + confirmation to the requester) when `RESEND_API_KEY` is set; admin notification is skipped if `CONTACT_EMAIL` is missing. The legacy `/api/contact` route returns 503 if `RESEND_API_KEY` or `CONTACT_EMAIL` is missing. Optional `NEXT_PUBLIC_APP_URL` (or `VERCEL_URL`) adds “View support” / “Visit website” buttons in those emails.
+**Optional (email):** `RESEND_API_KEY`, `CONTACT_EMAIL`, optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). The marketing **contact / consultation** form saves to the database and sends **HTML emails** (admin notification to `CONTACT_EMAIL` + confirmation to the requester) when `RESEND_API_KEY` is set; admin notification is skipped if `CONTACT_EMAIL` is missing. The legacy `/api/contact` route returns 503 if `RESEND_API_KEY` or `CONTACT_EMAIL` is missing. Optional `NEXT_PUBLIC_APP_URL` (or `VERCEL_URL`) adds “View support” / “Visit website” buttons in those emails, and a **View dashboard** button on **monthly impact report** emails to clients.
+
+**Manual monthly impact emails:** On **Admin → Clients**, use **Send monthly impact reports** to email each client the same summary as the portal (30-day hours + revenue line, insight bullets, metrics from `getClientAutomationMetrics`). Clients with no reportable activity are skipped. Requires `RESEND_API_KEY` and `CONTACT_FROM_EMAIL` (verified domain in production).
 
 Copy names and example values from `.env.example`, then replace with real production values. Redeploy after changing variables.
 

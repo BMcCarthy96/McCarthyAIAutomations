@@ -5,6 +5,7 @@ import { CreateClientForm } from "@/components/admin/CreateClientForm";
 import { ClientClerkLinkCell } from "@/components/admin/ClientClerkLinkCell";
 import { formatDisplayDate } from "@/lib/utils";
 import { CreateStripeCustomerButton } from "@/components/admin/CreateStripeCustomerButton";
+import { RunMonthlyImpactReportEmailsForm } from "@/components/admin/RunMonthlyImpactReportEmailsForm";
 import { Pencil } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -25,6 +26,16 @@ export default async function AdminClientsPage() {
           {clients.length} client{clients.length !== 1 ? "s" : ""}
         </p>
       </div>
+
+      <section>
+        <h2 className="text-lg font-semibold text-white">Monthly impact reports</h2>
+        <p className="mt-1 text-sm text-zinc-400">
+          Manually send the rolling 30-day performance email to every client.
+        </p>
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-6">
+          <RunMonthlyImpactReportEmailsForm />
+        </div>
+      </section>
 
       <section>
         <h2 className="text-lg font-semibold text-white">New client</h2>

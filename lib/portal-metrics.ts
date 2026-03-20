@@ -12,12 +12,20 @@ export interface AutomationMetric {
  * Lightweight, derived automation metrics for the client dashboard.
  * Uses existing tables (support_requests, billing_records) and simple heuristics.
  * No schema changes required; can be replaced or extended later.
+ *
+ * @param clientIdOverride - When set (e.g. admin sending reports), compute metrics for this client.
+ *   When omitted, uses the signed-in portal client from `getCurrentClientId()`.
  */
-export async function getClientAutomationMetrics(): Promise<AutomationMetric[]> {
+export async function getClientAutomationMetrics(
+  clientIdOverride?: string | null
+): Promise<AutomationMetric[]> {
   const supabase = getSupabaseServiceClient();
   if (!supabase) return [];
 
-  const clientId = await getCurrentClientId();
+  const clientId =
+    clientIdOverride !== undefined && clientIdOverride !== null && clientIdOverride !== ""
+      ? clientIdOverride
+      : await getCurrentClientId();
   if (!clientId) return [];
 
   try {
