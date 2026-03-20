@@ -41,6 +41,7 @@ export type RunMonthlyImpactReportEmailsState =
   | {
       success: true;
       sent: number;
+      skippedDisabled: number;
       skippedNoActivity: number;
       skippedNoEmail: number;
       failed: number;

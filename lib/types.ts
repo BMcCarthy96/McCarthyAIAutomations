@@ -75,6 +75,8 @@ export interface Client {
   name: string;
   email: string;
   company?: string;
+  /** Admin-controlled toggle for monthly impact report emails. */
+  monthlyReportEnabled?: boolean;
   /** Clerk user id when linking portal to auth. */
   clerkUserId?: string | null;
   /** Stripe customer id for subscriptions (set when client is created). */

@@ -57,7 +57,30 @@ These variables must be set in **Vercel → Project → Settings → Environment
 
 **Optional (email):** `RESEND_API_KEY`, `CONTACT_EMAIL`, optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). The marketing **contact / consultation** form saves to the database and sends **HTML emails** (admin notification to `CONTACT_EMAIL` + confirmation to the requester) when `RESEND_API_KEY` is set; admin notification is skipped if `CONTACT_EMAIL` is missing. The legacy `/api/contact` route returns 503 if `RESEND_API_KEY` or `CONTACT_EMAIL` is missing. Optional `NEXT_PUBLIC_APP_URL` (or `VERCEL_URL`) adds “View support” / “Visit website” buttons in those emails, and a **View dashboard** button on **monthly impact report** emails to clients.
 
-**Manual monthly impact emails:** On **Admin → Clients**, use **Send monthly impact reports** to email each client the same summary as the portal (30-day hours + revenue line, insight bullets, metrics from `getClientAutomationMetrics`). Clients with no reportable activity are skipped. Requires `RESEND_API_KEY` and `CONTACT_FROM_EMAIL` (verified domain in production).
+**Optional (scheduled monthly reports):** `CRON_SECRET` for `POST /api/cron/monthly-impact`. The route rejects unauthorized requests unless one of these matches `CRON_SECRET`:
+- header `x-cron-secret: <CRON_SECRET>`
+- header `authorization: Bearer <CRON_SECRET>`
+
+**Manual monthly impact emails:** On **Admin → Clients**, use **Send monthly impact reports** to email each eligible client the same summary as the portal (30-day hours + revenue line, insight bullets, metrics from `getClientAutomationMetrics`). Clients are skipped when monthly reports are disabled, when there is no reportable activity, or when no email exists. Requires `RESEND_API_KEY` and `CONTACT_FROM_EMAIL` (verified domain in production).
+
+**Per-client monthly email toggle:** In **Admin → Clients → Edit**, use **Monthly impact emails enabled**. This controls both manual sends and the scheduled cron route.
+
+**Automated monthly impact emails (protected cron route):**
+1. Set `CRON_SECRET`, `RESEND_API_KEY`, and `CONTACT_FROM_EMAIL` in Vercel env vars.
+2. Add a Vercel cron job to call `POST /api/cron/monthly-impact` monthly.
+3. Include one auth header above (`x-cron-secret` or `authorization: Bearer ...`).
+4. The route returns JSON summary:
+   - `sent`
+   - `skipped_disabled`
+   - `skipped_no_activity`
+   - `skipped_no_email`
+   - `failed`
+
+**Manual cron route test (local):**
+```bash
+curl -X POST "http://localhost:3000/api/cron/monthly-impact" \
+  -H "x-cron-secret: $CRON_SECRET"
+```
 
 Copy names and example values from `.env.example`, then replace with real production values. Redeploy after changing variables.
 

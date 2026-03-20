@@ -29,8 +29,7 @@ import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
   sendSupportReplyAction as implSendSupportReplyAction,
 } from "@/lib/support/admin-actions";
-import { getClientAutomationMetrics } from "@/lib/portal-metrics";
-import { sendMonthlyImpactReportEmail } from "@/lib/email/monthly-impact-report-email";
+import { runMonthlyImpactReportEmails } from "@/lib/email/monthly-impact-report-runner";
 
 /**
  * Admin actions: server actions for /admin.
@@ -526,77 +525,23 @@ export async function runMonthlyImpactReportEmailsAction(
     return { success: false, error: "Unauthorized." };
   }
 
-  if (!process.env.RESEND_API_KEY?.trim()) {
+  try {
+    const summary = await runMonthlyImpactReportEmails();
+    revalidatePath("/admin/clients");
+    return {
+      success: true,
+      sent: summary.sent,
+      skippedDisabled: summary.skipped_disabled,
+      skippedNoActivity: summary.skipped_no_activity,
+      skippedNoEmail: summary.skipped_no_email,
+      failed: summary.failed,
+    };
+  } catch (e) {
     return {
       success: false,
-      error: "RESEND_API_KEY is not set. Add it to send report emails.",
+      error: e instanceof Error ? e.message : "Failed to send monthly reports.",
     };
   }
-
-  const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
-
-  const { data: rows, error } = await supabase
-    .from("clients")
-    .select("id, name, email")
-    .order("name");
-
-  if (error) {
-    return { success: false, error: error.message };
-  }
-
-  let sent = 0;
-  let skippedNoActivity = 0;
-  let skippedNoEmail = 0;
-  let failed = 0;
-
-  for (const row of rows ?? []) {
-    const id = typeof row.id === "string" ? row.id : "";
-    const email = typeof row.email === "string" ? row.email.trim() : "";
-    const name = typeof row.name === "string" ? row.name : "";
-    if (!id) {
-      skippedNoEmail++;
-      continue;
-    }
-    if (!email) {
-      skippedNoEmail++;
-      continue;
-    }
-
-    const metrics = await getClientAutomationMetrics(id);
-    const result = await sendMonthlyImpactReportEmail(
-      { id, name, email },
-      metrics
-    );
-
-    if (result.ok) {
-      sent++;
-    } else if (result.reason === "no_reportable_metrics") {
-      skippedNoActivity++;
-    } else if (result.reason === "missing_resend") {
-      return {
-        success: false,
-        error: "Resend became unavailable mid-run. Check RESEND_API_KEY.",
-      };
-    } else {
-      failed++;
-      console.warn(
-        "[runMonthlyImpactReportEmailsAction] send_failed:",
-        result.detail
-      );
-    }
-  }
-
-  revalidatePath("/admin/clients");
-  return {
-    success: true,
-    sent,
-    skippedNoActivity,
-    skippedNoEmail,
-    failed,
-  };
 }
 
 // ---------------------------------------------------------------------------
@@ -786,6 +731,7 @@ export async function updateClientAction(
   const email = (formData.get("email") as string)?.trim() ?? "";
   const company = (formData.get("company") as string)?.trim() || null;
   const clerkUserId = (formData.get("clerkUserId") as string)?.trim() || null;
+  const monthlyReportEnabled = formData.get("monthlyReportEnabled") === "on";
 
   if (!clientId) return { success: false, error: "Client is required." };
   if (!name) return { success: false, error: "Name is required." };
@@ -801,6 +747,7 @@ export async function updateClientAction(
       email,
       company,
       clerk_user_id: clerkUserId,
+      monthly_report_enabled: monthlyReportEnabled,
       updated_at: new Date().toISOString(),
     })
     .eq("id", clientId);

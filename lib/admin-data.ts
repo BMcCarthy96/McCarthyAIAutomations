@@ -13,6 +13,7 @@ interface DbClient {
   name: string;
   email: string;
   company: string | null;
+  monthly_report_enabled: boolean;
   clerk_user_id: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
@@ -53,7 +54,7 @@ export async function getAllClients(): Promise<Client[]> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
+    .select("id, name, email, company, monthly_report_enabled, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
     .order("name");
 
   if (error || !data) return [];
@@ -63,6 +64,7 @@ export async function getAllClients(): Promise<Client[]> {
     name: row.name,
     email: row.email,
     company: row.company ?? undefined,
+    monthlyReportEnabled: row.monthly_report_enabled,
     clerkUserId: row.clerk_user_id,
     stripeCustomerId: row.stripe_customer_id ?? undefined,
     stripeSubscriptionId: row.stripe_subscription_id ?? undefined,
@@ -77,7 +79,7 @@ export async function getClientById(id: string): Promise<Client | null> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
+    .select("id, name, email, company, monthly_report_enabled, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
     .eq("id", id)
     .maybeSingle();
 
@@ -88,6 +90,7 @@ export async function getClientById(id: string): Promise<Client | null> {
     name: row.name,
     email: row.email,
     company: row.company ?? undefined,
+    monthlyReportEnabled: row.monthly_report_enabled,
     clerkUserId: row.clerk_user_id,
     stripeCustomerId: row.stripe_customer_id ?? undefined,
     stripeSubscriptionId: row.stripe_subscription_id ?? undefined,

@@ -36,8 +36,9 @@ export function RunMonthlyImpactReportEmailsForm() {
       )}
       {state?.success === true && (
         <p className="text-sm text-emerald-400">
-          Sent {state.sent}. Skipped (no activity): {state.skippedNoActivity}.
-          Skipped (no email): {state.skippedNoEmail}. Failed: {state.failed}.
+          Sent {state.sent}. Skipped (disabled): {state.skippedDisabled}. Skipped
+          (no activity): {state.skippedNoActivity}. Skipped (no email):{" "}
+          {state.skippedNoEmail}. Failed: {state.failed}.
         </p>
       )}
     </form>

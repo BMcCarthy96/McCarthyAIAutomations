@@ -65,6 +65,22 @@ export function EditClientForm({ client }: { client: Client }) {
           placeholder="Link to portal sign-in"
         />
       </div>
+      <label className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <input
+          type="checkbox"
+          name="monthlyReportEnabled"
+          defaultChecked={client.monthlyReportEnabled !== false}
+          className="mt-0.5 h-4 w-4 rounded border-white/20 bg-zinc-900 text-indigo-500 focus:ring-indigo-500"
+        />
+        <span>
+          <span className="block text-sm font-medium text-zinc-200">
+            Monthly impact emails enabled
+          </span>
+          <span className="mt-0.5 block text-xs text-zinc-500">
+            Include this client in manual and scheduled monthly impact report sends.
+          </span>
+        </span>
+      </label>
       {state?.success === false && state.error && (
         <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-200">
           {state.error}
