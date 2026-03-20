@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getCurrentClientId } from "@/lib/portal-data";
+import { sendPublicConsultationEmails } from "@/lib/email/public-consultation-emails";
 
 /**
  * Portal actions: server actions for the client dashboard.
@@ -75,5 +76,109 @@ export async function createSupportRequestAction(
   }
 
   revalidatePath("/dashboard/support");
+  return { success: true };
+}
+
+export type CreatePublicSupportRequestState =
+  | { success: false; error: string }
+  | { success: true };
+
+const NAME_MAX = 200;
+const EMAIL_MAX = 320;
+const PUBLIC_SUBJECT_MAX = 500;
+const PUBLIC_BODY_MAX = 10000;
+const DEFAULT_PUBLIC_SUBJECT = "Free consultation";
+
+function looksLikeEmail(s: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
+/**
+ * Public marketing-site submissions (no Clerk / no client record).
+ * Inserts support_requests with client_id null and requester_* filled.
+ */
+export async function createPublicSupportRequestAction(
+  _prevState: CreatePublicSupportRequestState | null,
+  formData: FormData
+): Promise<CreatePublicSupportRequestState> {
+  const name = (formData.get("name") as string)?.trim() ?? "";
+  const email = (formData.get("email") as string)?.trim() ?? "";
+  const company = (formData.get("company") as string)?.trim() ?? "";
+  const message = (formData.get("message") as string)?.trim() ?? "";
+  const subjectRaw = (formData.get("subject") as string)?.trim() ?? "";
+  const subject = subjectRaw || DEFAULT_PUBLIC_SUBJECT;
+
+  if (!name) {
+    return { success: false, error: "Name is required." };
+  }
+  if (name.length > NAME_MAX) {
+    return { success: false, error: `Name must be ${NAME_MAX} characters or less.` };
+  }
+  if (!email) {
+    return { success: false, error: "Email is required." };
+  }
+  if (email.length > EMAIL_MAX) {
+    return { success: false, error: `Email must be ${EMAIL_MAX} characters or less.` };
+  }
+  if (!looksLikeEmail(email)) {
+    return { success: false, error: "Enter a valid email address." };
+  }
+  if (!message) {
+    return { success: false, error: "Message is required." };
+  }
+  if (message.length > PUBLIC_BODY_MAX) {
+    return {
+      success: false,
+      error: `Message must be ${PUBLIC_BODY_MAX} characters or less.`,
+    };
+  }
+  if (subject.length > PUBLIC_SUBJECT_MAX) {
+    return {
+      success: false,
+      error: `Subject must be ${PUBLIC_SUBJECT_MAX} characters or less.`,
+    };
+  }
+
+  let body = message;
+  if (company) {
+    body = `Company: ${company}\n\n${message}`;
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { error } = await supabase.from("support_requests").insert({
+    client_id: null,
+    project_id: null,
+    requester_name: name,
+    requester_email: email,
+    subject,
+    body,
+    status: "open",
+    category: "public",
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  try {
+    await sendPublicConsultationEmails({
+      requesterName: name,
+      requesterEmail: email,
+      company,
+      subject,
+      message,
+    });
+  } catch (e) {
+    console.warn(
+      "[createPublicSupportRequestAction] consultation emails:",
+      e instanceof Error ? e.message : String(e)
+    );
+  }
+
+  revalidatePath("/admin/support");
   return { success: true };
 }

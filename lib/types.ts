@@ -148,13 +148,18 @@ export interface ProjectUpdate {
 
 export interface SupportRequest {
   id: string;
-  clientId: string;
+  /** Set when the request is tied to a portal client; null for public submissions. */
+  clientId: string | null;
   projectId?: string | null;
   subject: string;
   body?: string | null;
   status: SupportRequestStatus;
-  /** Optional category (e.g. "billing", "technical", "general"). */
+  /** Optional category (e.g. "billing", "technical", "general", "public"). */
   category?: string | null;
+  /** Name from public form when clientId is null. */
+  requesterName?: string | null;
+  /** Email from public form when clientId is null. */
+  requesterEmail?: string | null;
   /** ISO date or datetime. */
   createdAt: string;
   /** ISO datetime when status was last updated. */

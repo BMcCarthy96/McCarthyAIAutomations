@@ -69,9 +69,45 @@ export interface Database {
         Relationships: TableRelationships;
       };
       support_requests: {
-        Row: Record<string, unknown> & { id: string; client_id: string; project_id: string | null; subject: string; body: string | null; status: SupportRequestStatus; category: string | null; created_at: string; updated_at: string | null };
-        Insert: Record<string, unknown> & { id?: string; client_id: string; project_id?: string | null; subject: string; body?: string | null; status: SupportRequestStatus; category?: string | null; created_at?: string; updated_at?: string | null };
-        Update: Record<string, unknown> & { id?: string; client_id?: string; project_id?: string | null; subject?: string; body?: string | null; status?: SupportRequestStatus; category?: string | null; created_at?: string; updated_at?: string | null };
+        Row: Record<string, unknown> & {
+          id: string;
+          client_id: string | null;
+          project_id: string | null;
+          subject: string;
+          body: string | null;
+          status: SupportRequestStatus;
+          category: string | null;
+          requester_name: string | null;
+          requester_email: string | null;
+          created_at: string;
+          updated_at: string | null;
+        };
+        Insert: Record<string, unknown> & {
+          id?: string;
+          client_id?: string | null;
+          project_id?: string | null;
+          subject: string;
+          body?: string | null;
+          status: SupportRequestStatus;
+          category?: string | null;
+          requester_name?: string | null;
+          requester_email?: string | null;
+          created_at?: string;
+          updated_at?: string | null;
+        };
+        Update: Record<string, unknown> & {
+          id?: string;
+          client_id?: string | null;
+          project_id?: string | null;
+          subject?: string;
+          body?: string | null;
+          status?: SupportRequestStatus;
+          category?: string | null;
+          requester_name?: string | null;
+          requester_email?: string | null;
+          created_at?: string;
+          updated_at?: string | null;
+        };
         Relationships: TableRelationships;
       };
       billing_records: {

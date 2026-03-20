@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+/**
+ * Optional email-only contact endpoint (Resend).
+ * The marketing /contact page saves to `support_requests` via `createPublicSupportRequestAction`
+ * and does not call this route unless you wire it separately.
+ */
 export async function POST(request: Request) {
   try {
     const resendApiKey = process.env.RESEND_API_KEY;

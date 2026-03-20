@@ -13,13 +13,17 @@ export function renderEmailTemplate({
   content,
   actionText,
   actionUrl,
+  /** Overrides default client footer (e.g. public consultation vs portal notifications). */
+  footerText,
 }: {
   title: string;
   content: string;
   actionText?: string;
   actionUrl?: string;
+  footerText?: string;
 }): string {
   const hasAction = Boolean(actionText && actionUrl);
+  const footer = footerText ?? FOOTER_TEXT;
 
   return `
 <!DOCTYPE html>
@@ -57,7 +61,7 @@ export function renderEmailTemplate({
           </tr>
           <tr>
             <td style="padding: 24px 32px; background-color: #ffffff; border-top: 1px solid #e5e7eb;">
-              <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">${escapeHtml(FOOTER_TEXT)}</p>
+              <p style="margin: 0; font-size: 12px; color: #6b7280; line-height: 1.5;">${escapeHtml(footer)}</p>
             </td>
           </tr>
         </table>

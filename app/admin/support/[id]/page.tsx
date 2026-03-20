@@ -44,9 +44,36 @@ export default async function AdminSupportRequestPage({
           <p className="mt-0.5 text-white">{request.subject}</p>
         </div>
         <div>
-          <p className="text-sm font-medium text-zinc-400">Client</p>
-          <p className="mt-0.5 text-white">{request.clientName}</p>
+          <p className="text-sm font-medium text-zinc-400">Type</p>
+          <p className="mt-0.5">
+            <span
+              className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                request.source === "public"
+                  ? "bg-amber-500/20 text-amber-200"
+                  : "bg-indigo-500/20 text-indigo-200"
+              }`}
+            >
+              {request.source === "public" ? "Public submission" : "Client portal"}
+            </span>
+          </p>
         </div>
+        {request.source === "client" && request.clientName && (
+          <div>
+            <p className="text-sm font-medium text-zinc-400">Client</p>
+            <p className="mt-0.5 text-white">{request.clientName}</p>
+          </div>
+        )}
+        {request.source === "public" &&
+          (request.requesterName || request.requesterEmail) && (
+            <div>
+              <p className="text-sm font-medium text-zinc-400">Contact</p>
+              <p className="mt-0.5 text-white">
+                {[request.requesterName, request.requesterEmail]
+                  .filter(Boolean)
+                  .join(" · ")}
+              </p>
+            </div>
+          )}
         <div>
           <p className="text-sm font-medium text-zinc-400">Project</p>
           <p className="mt-0.5 text-white">

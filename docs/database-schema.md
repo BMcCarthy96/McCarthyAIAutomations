@@ -17,7 +17,7 @@ A single reference for the future Supabase schema. **No database is implemented 
 - **projects** — A delivery engagement. **One-to-one** with client_services: each client_service has one project (the delivery). The project has its own status and progress and holds milestones and updates.
 - **milestones** — **One-to-many** from projects: each project has many milestones (due dates, titles, completed flag).
 - **project_updates** — **One-to-many** from projects: each project has many updates (title, body, created_at).
-- **support_requests** — **One-to-many** from clients: each client has many support requests. Optionally linked to a project via `project_id`.
+- **support_requests** — Mostly **one-to-many** from clients (portal). Rows may also have **no** `client_id` (public marketing submissions) with `requester_name` / `requester_email` instead. Optionally linked to a project via `project_id`.
 - **billing_records** — **One-to-many** from clients: each client has many invoices/payments.
 
 So: **Client → many ClientServices → each has one Project → each Project has many Milestones and many ProjectUpdates.** Client also has many SupportRequests and many BillingRecords.
@@ -25,7 +25,7 @@ So: **Client → many ClientServices → each has one Project → each Project h
 ### Required vs optional fields
 
 - **Required:** All `id` and foreign keys (`client_id`, `service_id`, `project_id`, etc.), and any field that the app today always expects (e.g. `name`, `email`, `status`, `due_date`, `created_at` where it’s the main timestamp).
-- **Optional (nullable):** Match TS optional/`| null`: `company`, `clerk_user_id`, `body` (support_requests), `category`, `project_id` (support_requests), `currency`, `paid_at`, `stripe_invoice_id`, `started_at`, `completed_at` (projects and milestones), `updated_at` on all tables.
+- **Optional (nullable):** Match TS optional/`| null`: `company`, `clerk_user_id`, `body` (support_requests), `category`, `client_id` (support_requests, when public), `requester_name` / `requester_email` (support_requests, when client-linked), `project_id` (support_requests), `currency`, `paid_at`, `stripe_invoice_id`, `started_at`, `completed_at` (projects and milestones), `updated_at` on all tables.
 
 ### Clerk → client mapping
 
@@ -159,17 +159,28 @@ CREATE TABLE project_updates (
 CREATE INDEX idx_project_updates_project_id ON project_updates (project_id);
 CREATE INDEX idx_project_updates_created_at ON project_updates (project_id, created_at DESC);
 
--- Support requests (client-scoped; optional project link)
+-- Support requests (client portal or public marketing form; optional project link)
 CREATE TABLE support_requests (
-  id         uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  client_id  uuid NOT NULL REFERENCES clients (id) ON DELETE CASCADE,
-  project_id uuid REFERENCES projects (id) ON DELETE SET NULL,
-  subject    text NOT NULL,
-  body       text,
-  status     support_request_status NOT NULL,
-  category   text,
-  created_at timestamptz NOT NULL DEFAULT now(),
-  updated_at timestamptz DEFAULT now()
+  id               uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  client_id        uuid REFERENCES clients (id) ON DELETE CASCADE,
+  project_id       uuid REFERENCES projects (id) ON DELETE SET NULL,
+  subject          text NOT NULL,
+  body             text,
+  status           support_request_status NOT NULL,
+  category         text,
+  requester_name   text,
+  requester_email  text,
+  created_at       timestamptz NOT NULL DEFAULT now(),
+  updated_at       timestamptz DEFAULT now(),
+  CONSTRAINT support_requests_client_or_public_contact_chk CHECK (
+    client_id IS NOT NULL
+    OR (
+      requester_name IS NOT NULL
+      AND length(btrim(requester_name)) > 0
+      AND requester_email IS NOT NULL
+      AND length(btrim(requester_email)) > 0
+    )
+  )
 );
 
 CREATE INDEX idx_support_requests_client_id ON support_requests (client_id);

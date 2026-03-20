@@ -19,7 +19,9 @@ export async function getAllSupportRequests(
 
   let query = supabase
     .from("support_requests")
-    .select("id, subject, status, created_at, clients(name)")
+    .select(
+      "id, subject, status, created_at, client_id, requester_name, requester_email, clients(name)"
+    )
     .order("created_at", { ascending: false });
 
   if (view === "active") {
@@ -34,13 +36,34 @@ export async function getAllSupportRequests(
 
   if (error || !data) return [];
 
-  return data.map((row: { id: string; subject: string; status: string; created_at: string; clients: { name: string } | null }) => ({
-    id: row.id,
-    subject: row.subject,
-    status: row.status,
-    createdAt: row.created_at,
-    clientName: row.clients?.name ?? "—",
-  }));
+  type Row = {
+    id: string;
+    subject: string;
+    status: string;
+    created_at: string;
+    client_id: string | null;
+    requester_name: string | null;
+    requester_email: string | null;
+    clients: { name: string } | null;
+  };
+
+  return data.map((row: Row) => {
+    const isPublic = row.client_id === null;
+    const clientName = row.clients?.name ?? null;
+    const publicContact =
+      isPublic && (row.requester_name || row.requester_email)
+        ? [row.requester_name, row.requester_email].filter(Boolean).join(" · ")
+        : null;
+    return {
+      id: row.id,
+      subject: row.subject,
+      status: row.status,
+      createdAt: row.created_at,
+      clientName,
+      publicContact,
+      source: isPublic ? ("public" as const) : ("client" as const),
+    };
+  });
 }
 
 export async function getSupportRequestById(
@@ -51,7 +74,9 @@ export async function getSupportRequestById(
 
   const { data, error } = await supabase
     .from("support_requests")
-    .select("id, subject, body, status, created_at, clients(name), projects(name)")
+    .select(
+      "id, subject, body, status, created_at, client_id, requester_name, requester_email, clients(name), projects(name)"
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -63,16 +88,23 @@ export async function getSupportRequestById(
     body: string | null;
     status: string;
     created_at: string;
+    client_id: string | null;
+    requester_name: string | null;
+    requester_email: string | null;
     clients: { name: string } | null;
     projects: { name: string } | null;
   };
+  const isPublic = row.client_id === null;
   return {
     id: row.id,
     subject: row.subject,
     body: row.body,
     status: row.status,
     createdAt: row.created_at,
-    clientName: row.clients?.name ?? "—",
+    clientName: row.clients?.name ?? null,
+    requesterName: row.requester_name,
+    requesterEmail: row.requester_email,
+    source: isPublic ? ("public" as const) : ("client" as const),
     projectName: row.projects?.name ?? null,
   };
 }

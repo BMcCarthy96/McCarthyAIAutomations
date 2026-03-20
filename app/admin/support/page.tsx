@@ -64,7 +64,8 @@ export default async function AdminSupportPage({
           <thead>
             <tr className="border-b border-white/10 bg-white/5">
               <th className="px-4 py-3 font-medium text-zinc-400">Subject</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">From</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">Type</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Created</th>
             </tr>
@@ -83,7 +84,22 @@ export default async function AdminSupportPage({
                     {r.subject}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-zinc-300">{r.clientName}</td>
+                <td className="px-4 py-3 text-zinc-300">
+                  {r.source === "public"
+                    ? r.publicContact ?? "—"
+                    : r.clientName ?? "—"}
+                </td>
+                <td className="px-4 py-3">
+                  <span
+                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
+                      r.source === "public"
+                        ? "bg-amber-500/20 text-amber-200"
+                        : "bg-indigo-500/20 text-indigo-200"
+                    }`}
+                  >
+                    {r.source === "public" ? "Public" : "Client"}
+                  </span>
+                </td>
                 <td className="px-4 py-3 text-zinc-400">{r.status}</td>
                 <td className="px-4 py-3 text-zinc-500">
                   {formatDisplayDate(r.createdAt)}

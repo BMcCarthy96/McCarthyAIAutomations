@@ -55,7 +55,7 @@ These variables must be set in **Vercel → Project → Settings → Environment
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only DB access; never expose to client |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase client |
 
-**Optional (contact form):** `RESEND_API_KEY`, `CONTACT_EMAIL`; optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). If `RESEND_API_KEY` or `CONTACT_EMAIL` is missing, the contact form API returns 503.
+**Optional (email):** `RESEND_API_KEY`, `CONTACT_EMAIL`, optional `CONTACT_FROM_EMAIL` (defaults to Resend onboarding). The marketing **contact / consultation** form saves to the database and sends **HTML emails** (admin notification to `CONTACT_EMAIL` + confirmation to the requester) when `RESEND_API_KEY` is set; admin notification is skipped if `CONTACT_EMAIL` is missing. The legacy `/api/contact` route returns 503 if `RESEND_API_KEY` or `CONTACT_EMAIL` is missing. Optional `NEXT_PUBLIC_APP_URL` (or `VERCEL_URL`) adds “View support” / “Visit website” buttons in those emails.
 
 Copy names and example values from `.env.example`, then replace with real production values. Redeploy after changing variables.
 

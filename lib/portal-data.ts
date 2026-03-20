@@ -63,12 +63,14 @@ interface DbProjectUpdate {
 
 interface DbSupportRequest {
   id: string;
-  client_id: string;
+  client_id: string | null;
   project_id: string | null;
   subject: string;
   body: string | null;
   status: string;
   category: string | null;
+  requester_name: string | null;
+  requester_email: string | null;
   created_at: string;
 }
 
@@ -338,7 +340,7 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
     const { data, error } = await supabase
       .from("support_requests")
       .select(
-        "id, client_id, project_id, subject, body, status, category, created_at"
+        "id, client_id, project_id, subject, body, status, category, requester_name, requester_email, created_at"
       )
       .eq("client_id", clientId)
       .order("created_at", { ascending: false });
@@ -347,12 +349,14 @@ export async function fetchSupportRequestsForClient(): Promise<SupportRequest[]>
 
     return data.map((row: DbSupportRequest) => ({
       id: row.id,
-      clientId: row.client_id,
+      clientId: row.client_id as string,
       projectId: row.project_id,
       subject: row.subject,
       body: row.body,
       status: row.status as SupportRequest["status"],
       category: row.category,
+      requesterName: row.requester_name,
+      requesterEmail: row.requester_email,
       createdAt: row.created_at,
       updatedAt: null,
     }));
