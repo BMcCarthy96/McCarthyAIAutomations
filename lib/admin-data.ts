@@ -191,6 +191,18 @@ export interface AdminMilestoneRow {
   completedAt: string | null;
 }
 
+export type AdminMilestoneListView = "upcoming" | "overdue" | "completed";
+
+/** Milestone row for global admin milestones page. */
+export interface AdminGlobalMilestoneRow {
+  id: string;
+  title: string;
+  dueDate: string;
+  completedAt: string | null;
+  projectName: string;
+  clientName: string;
+}
+
 export async function getMilestonesForProject(
   projectId: string
 ): Promise<AdminMilestoneRow[]> {
@@ -210,6 +222,48 @@ export async function getMilestonesForProject(
     title: row.title,
     dueDate: row.due_date,
     completedAt: row.completed_at,
+  }));
+}
+
+export async function getAllMilestones(
+  view: AdminMilestoneListView = "upcoming"
+): Promise<AdminGlobalMilestoneRow[]> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return [];
+
+  const today = new Date().toISOString().slice(0, 10);
+  let query = supabase
+    .from("milestones")
+    .select("id, title, due_date, completed_at, projects!inner(name, client_services!inner(clients(name)))")
+    .order("due_date", { ascending: true });
+
+  if (view === "completed") {
+    query = query.not("completed_at", "is", null);
+  } else if (view === "overdue") {
+    query = query.is("completed_at", null).lt("due_date", today);
+  } else {
+    query = query.is("completed_at", null).gte("due_date", today);
+  }
+
+  const { data, error } = await query;
+  if (error || !data) return [];
+
+  return data.map((row: {
+    id: string;
+    title: string;
+    due_date: string;
+    completed_at: string | null;
+    projects: {
+      name: string;
+      client_services: { clients: { name: string } | null } | null;
+    } | null;
+  }) => ({
+    id: row.id,
+    title: row.title,
+    dueDate: row.due_date,
+    completedAt: row.completed_at,
+    projectName: row.projects?.name ?? "—",
+    clientName: row.projects?.client_services?.clients?.name ?? "—",
   }));
 }
 

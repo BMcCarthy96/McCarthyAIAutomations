@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Users,
   FolderKanban,
+  CalendarCheck2,
   HelpCircle,
   CreditCard,
   Menu,
@@ -18,6 +19,7 @@ const navItems = [
   { href: "/admin", label: "Overview", icon: LayoutDashboard },
   { href: "/admin/clients", label: "Clients", icon: Users },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
+  { href: "/admin/milestones", label: "Milestones", icon: CalendarCheck2 },
   { href: "/admin/support", label: "Support", icon: HelpCircle },
   { href: "/admin/billing", label: "Billing", icon: CreditCard },
 ];
