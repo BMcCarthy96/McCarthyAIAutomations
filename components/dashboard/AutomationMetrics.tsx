@@ -4,18 +4,23 @@ import { TrendingUp } from "lucide-react";
 
 interface AutomationMetricsProps {
   metrics: AutomationMetric[];
+  /** Small caps label above the grid (default: time window hint). */
+  subheading?: string;
 }
 
 const FEATURED_IDS = new Set(["revenue", "hours"]);
 
-export function AutomationMetrics({ metrics }: AutomationMetricsProps) {
+export function AutomationMetrics({
+  metrics,
+  subheading = "Last 30 days",
+}: AutomationMetricsProps) {
   const featured = metrics.filter((m) => FEATURED_IDS.has(m.id));
   const rest = metrics.filter((m) => !FEATURED_IDS.has(m.id));
 
   return (
     <div className="space-y-5">
       <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
-        Last 30 days
+        {subheading}
       </p>
 
       {featured.length > 0 && (

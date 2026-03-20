@@ -9,6 +9,7 @@ import {
   getUpcomingMilestonesForClient,
 } from "@/lib/portal-data";
 import { getClientAutomationMetrics } from "@/lib/portal-metrics";
+import { getAutomationImpactInsights } from "@/lib/portal-metrics-insights";
 import { getProjectActivityTimeline } from "@/lib/portal-timeline";
 import { formatDisplayDate } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -27,6 +28,7 @@ import {
   FileText,
   HelpCircle,
   Layers,
+  Sparkles,
 } from "lucide-react";
 
 const quickActionIcons = { HelpCircle, Layers, FileText } as const;
@@ -74,6 +76,9 @@ export default async function DashboardOverviewPage() {
   const integrationInProgress = projects.some((p) => p.status === "in_progress");
   const automationLive = projects.some((p) => p.status === "active");
 
+  const impactInsights =
+    metrics.length > 0 ? getAutomationImpactInsights(metrics) : [];
+
   return (
     <div className="space-y-10">
       <WelcomeHeader />
@@ -107,18 +112,67 @@ export default async function DashboardOverviewPage() {
       </section>
 
       <section>
-        <SectionTitle>Automation metrics</SectionTitle>
+        <SectionTitle>Monthly impact report</SectionTitle>
+        <p className="mt-1 max-w-2xl text-sm text-zinc-500">
+          A concise view of what your automation delivered over the last 30 days.
+        </p>
         <div className="mt-4 space-y-5">
           {metrics.length > 0 ? (
             <>
-              <p className="text-base text-zinc-300 sm:text-lg">
-                Your automation saved you{" "}
-                <span className="font-bold text-white">{hoursSaved}</span> hours
-                and influenced{" "}
-                <span className="font-bold text-white">{estimatedRevenue}</span>{" "}
-                in the last 30 days.
-              </p>
-              <AutomationMetrics metrics={metrics} />
+              {impactInsights.length > 0 && (
+                <GlassCard
+                  hover={false}
+                  className="border-indigo-500/20 bg-indigo-500/[0.04]"
+                >
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <Sparkles
+                      className="h-5 w-5 shrink-0 text-indigo-400 sm:mt-0.5"
+                      aria-hidden
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-medium uppercase tracking-wider text-indigo-200/90">
+                        Key insights
+                      </p>
+                      <ul className="mt-3 list-none space-y-3">
+                        {impactInsights.map((line, idx) => (
+                          <li
+                            key={idx}
+                            className="flex gap-3 text-sm leading-relaxed text-zinc-300"
+                          >
+                            <span
+                              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-indigo-400/90"
+                              aria-hidden
+                            />
+                            <span>{line}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </GlassCard>
+              )}
+
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-4 sm:px-6">
+                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                  At a glance
+                </p>
+                <p className="mt-2 text-base leading-relaxed text-zinc-300 sm:text-lg">
+                  Your automation saved you{" "}
+                  <span className="font-semibold text-white tabular-nums">
+                    {hoursSaved}
+                  </span>{" "}
+                  hours and influenced{" "}
+                  <span className="font-semibold text-white tabular-nums">
+                    {estimatedRevenue}
+                  </span>{" "}
+                  in the last 30 days.
+                </p>
+              </div>
+
+              <AutomationMetrics
+                metrics={metrics}
+                subheading="Performance indicators"
+              />
             </>
           ) : (
             <EmptyState
