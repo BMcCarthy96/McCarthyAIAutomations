@@ -17,6 +17,7 @@ import type {
   CreateStripePaymentLinkState,
   CreateStripeCustomerBackfillState,
   UpdateSupportRequestStatusState,
+  SendSupportReplyState,
   CreateClientState,
   UpdateClientState,
   CreateProjectSetupState,
@@ -25,6 +26,7 @@ import type {
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
+  sendSupportReplyAction as implSendSupportReplyAction,
 } from "@/lib/support/admin-actions";
 
 /**
@@ -499,6 +501,13 @@ export async function updateSupportRequestStatusAction(
   formData: FormData
 ) {
   return implUpdateSupportRequestStatusAction(prevState, formData);
+}
+
+export async function sendSupportReplyAction(
+  prevState: SendSupportReplyState | null,
+  formData: FormData
+) {
+  return implSendSupportReplyAction(prevState, formData);
 }
 
 // ---------------------------------------------------------------------------

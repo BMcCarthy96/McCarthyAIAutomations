@@ -18,6 +18,7 @@ A single reference for the future Supabase schema. **No database is implemented 
 - **milestones** — **One-to-many** from projects: each project has many milestones (due dates, titles, completed flag).
 - **project_updates** — **One-to-many** from projects: each project has many updates (title, body, created_at).
 - **support_requests** — Mostly **one-to-many** from clients (portal). Rows may also have **no** `client_id` (public marketing submissions) with `requester_name` / `requester_email` instead. Optionally linked to a project via `project_id`.
+- **support_replies** — **One-to-many** from support_requests: admin replies stored for threading; `sender_type` defaults to `admin` for future expansion.
 - **billing_records** — **One-to-many** from clients: each client has many invoices/payments.
 
 So: **Client → many ClientServices → each has one Project → each Project has many Milestones and many ProjectUpdates.** Client also has many SupportRequests and many BillingRecords.
@@ -184,6 +185,19 @@ CREATE TABLE support_requests (
 );
 
 CREATE INDEX idx_support_requests_client_id ON support_requests (client_id);
+
+-- Admin replies (and future sender types) on a support thread
+CREATE TABLE support_replies (
+  id                  uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  support_request_id  uuid NOT NULL REFERENCES support_requests (id) ON DELETE CASCADE,
+  body                text NOT NULL,
+  sender_type         text NOT NULL DEFAULT 'admin',
+  created_at          timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT support_replies_sender_type_chk CHECK (sender_type IN ('admin'))
+);
+
+CREATE INDEX idx_support_replies_request_created
+  ON support_replies (support_request_id, created_at ASC);
 
 -- Invoices / payments (amount in cents)
 CREATE TABLE billing_records (

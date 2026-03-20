@@ -6,10 +6,16 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
 import type {
   AdminSupportRow,
   AdminSupportDetail,
+  AdminSupportReply,
   SupportRequestListView,
 } from "./types";
 
-export type { AdminSupportRow, AdminSupportDetail, SupportRequestListView };
+export type {
+  AdminSupportRow,
+  AdminSupportDetail,
+  AdminSupportReply,
+  SupportRequestListView,
+};
 
 export async function getAllSupportRequests(
   view: SupportRequestListView = "active"
@@ -75,7 +81,7 @@ export async function getSupportRequestById(
   const { data, error } = await supabase
     .from("support_requests")
     .select(
-      "id, subject, body, status, created_at, client_id, requester_name, requester_email, clients(name), projects(name)"
+      "id, subject, body, status, created_at, client_id, requester_name, requester_email, clients(name, email), projects(name), support_replies(id, body, sender_type, created_at)"
     )
     .eq("id", id)
     .maybeSingle();
@@ -91,10 +97,25 @@ export async function getSupportRequestById(
     client_id: string | null;
     requester_name: string | null;
     requester_email: string | null;
-    clients: { name: string } | null;
+    clients: { name: string; email: string } | null;
     projects: { name: string } | null;
+    support_replies:
+      | { id: string; body: string; sender_type: string; created_at: string }[]
+      | null;
   };
   const isPublic = row.client_id === null;
+  const rawReplies = row.support_replies ?? [];
+  const replies = [...rawReplies]
+    .sort(
+      (a, b) =>
+        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    )
+    .map((r) => ({
+      id: r.id,
+      body: r.body,
+      senderType: r.sender_type,
+      createdAt: r.created_at,
+    }));
   return {
     id: row.id,
     subject: row.subject,
@@ -102,9 +123,11 @@ export async function getSupportRequestById(
     status: row.status,
     createdAt: row.created_at,
     clientName: row.clients?.name ?? null,
+    clientEmail: row.clients?.email?.trim() || null,
     requesterName: row.requester_name,
     requesterEmail: row.requester_email,
     source: isPublic ? ("public" as const) : ("client" as const),
     projectName: row.projects?.name ?? null,
+    replies,
   };
 }

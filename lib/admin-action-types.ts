@@ -31,6 +31,10 @@ export type UpdateSupportRequestStatusState =
   | { success: false; error: string }
   | { success: true };
 
+export type SendSupportReplyState =
+  | { success: false; error: string }
+  | { success: true };
+
 export type UpdateBillingStatusState =
   | { success: false; error: string }
   | { success: true };

@@ -6,6 +6,6 @@ Admin support logic lives here. The rest of the app still imports from `@/lib/ad
 |------|------|
 | **types.ts** | `AdminSupportRow`, `AdminSupportDetail`, `SupportRequestListView`. |
 | **admin-data.ts** | `getAllSupportRequests(view)`, `getSupportRequestById(id)`. |
-| **admin-actions.ts** | `updateSupportRequestStatusAction` (status update for admin). |
+| **admin-actions.ts** | `updateSupportRequestStatusAction`, `sendSupportReplyAction` (reply + optional Resend email). |
 
 **Portal support** (client dashboard) stays in `lib/portal-data.ts` and `lib/portal-actions.ts` (`fetchSupportRequestsForClient`, `createSupportRequestAction`, `createPublicSupportRequestAction` for the marketing contact form) to avoid circular dependency with `getCurrentClientId()`.

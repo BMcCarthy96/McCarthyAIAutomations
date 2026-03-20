@@ -110,6 +110,30 @@ export interface Database {
         };
         Relationships: TableRelationships;
       };
+      support_replies: {
+        Row: Record<string, unknown> & {
+          id: string;
+          support_request_id: string;
+          body: string;
+          sender_type: string;
+          created_at: string;
+        };
+        Insert: Record<string, unknown> & {
+          id?: string;
+          support_request_id: string;
+          body: string;
+          sender_type?: string;
+          created_at?: string;
+        };
+        Update: Record<string, unknown> & {
+          id?: string;
+          support_request_id?: string;
+          body?: string;
+          sender_type?: string;
+          created_at?: string;
+        };
+        Relationships: TableRelationships;
+      };
       billing_records: {
         Row: Record<string, unknown> & { id: string; client_id: string; amount_cents: number; currency: string | null; description: string; status: BillingStatus; due_date: string; paid_at: string | null; stripe_invoice_id: string | null; stripe_payment_link_url: string | null; created_at: string | null; updated_at: string | null };
         Insert: Record<string, unknown> & { id?: string; client_id: string; amount_cents: number; currency?: string | null; description: string; status: BillingStatus; due_date: string; paid_at?: string | null; stripe_invoice_id?: string | null; stripe_payment_link_url?: string | null; created_at?: string | null; updated_at?: string | null };

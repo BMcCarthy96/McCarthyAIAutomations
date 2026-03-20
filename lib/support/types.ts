@@ -16,6 +16,14 @@ export interface AdminSupportRow {
   source: "client" | "public";
 }
 
+/** Stored admin reply on a support thread. */
+export interface AdminSupportReply {
+  id: string;
+  body: string;
+  senderType: string;
+  createdAt: string;
+}
+
 /** Support request detail for admin view (body, client, project). */
 export interface AdminSupportDetail {
   id: string;
@@ -24,10 +32,13 @@ export interface AdminSupportDetail {
   status: string;
   createdAt: string;
   clientName: string | null;
+  /** Linked client primary email (for admin replies); null for public-only rows. */
+  clientEmail: string | null;
   requesterName: string | null;
   requesterEmail: string | null;
   source: "client" | "public";
   projectName: string | null;
+  replies: AdminSupportReply[];
 }
 
 export type SupportRequestListView = "active" | "resolved" | "closed" | "all";

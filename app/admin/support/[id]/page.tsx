@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getSupportRequestById } from "@/lib/admin-data";
 import { SupportRequestStatusForm } from "@/components/admin/SupportRequestStatusForm";
+import { SupportRequestReplyForm } from "@/components/admin/SupportRequestReplyForm";
 import { supportRequestStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
@@ -88,12 +89,54 @@ export default async function AdminSupportRequestPage({
         </div>
         {request.body && (
           <div>
-            <p className="text-sm font-medium text-zinc-400">Message</p>
+            <p className="text-sm font-medium text-zinc-400">Original message</p>
             <div className="mt-0.5 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-zinc-300 whitespace-pre-wrap">
               {request.body}
             </div>
+            <p className="mt-1 text-xs text-zinc-500">
+              Submitted {formatDisplayDate(request.createdAt)}
+            </p>
           </div>
         )}
+
+        <div className="pt-2 border-t border-white/10 space-y-4">
+          <p className="text-sm font-medium text-zinc-400">Thread</p>
+          {request.replies.length === 0 ? (
+            <p className="text-sm text-zinc-500">No replies yet.</p>
+          ) : (
+            <ul className="space-y-3">
+              {request.replies.map((r) => (
+                <li
+                  key={r.id}
+                  className="rounded-lg border border-white/10 bg-white/5 p-4"
+                >
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+                    <span className="rounded-full bg-indigo-500/20 px-2 py-0.5 font-medium text-indigo-200">
+                      {r.senderType === "admin" ? "Team" : r.senderType}
+                    </span>
+                    <span>{formatDisplayDate(r.createdAt)}</span>
+                  </div>
+                  <p className="mt-2 text-sm text-zinc-300 whitespace-pre-wrap">
+                    {r.body}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        <div className="pt-2 border-t border-white/10">
+          <p className="mb-3 text-sm font-medium text-zinc-400">Send reply</p>
+          <SupportRequestReplyForm
+            requestId={request.id}
+            replyToHint={
+              request.source === "public"
+                ? request.requesterEmail
+                : request.clientEmail
+            }
+          />
+        </div>
+
         <div className="pt-2 border-t border-white/10">
           <p className="mb-2 text-sm font-medium text-zinc-400">
             Update status

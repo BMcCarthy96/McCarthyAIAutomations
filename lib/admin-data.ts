@@ -219,6 +219,7 @@ export {
   getSupportRequestById,
   type AdminSupportRow,
   type AdminSupportDetail,
+  type AdminSupportReply,
   type SupportRequestListView,
 } from "@/lib/support/admin-data";
 
