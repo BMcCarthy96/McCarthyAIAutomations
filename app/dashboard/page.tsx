@@ -257,12 +257,12 @@ export default async function DashboardOverviewPage() {
       <section>
         <SectionTitle
           eyebrow="Engagements"
-          description="Progress, milestones, and updates for each active service."
+          description="Each card is an automation in your stack—outcome, rollout, milestones, and team updates in one place."
           action={projects.length > 0 ? { label: "View all", href: "/dashboard/services" } : undefined}
         >
           Your services
         </SectionTitle>
-        <div className="mt-8 space-y-6">
+        <div className="mt-8 space-y-5">
           {overviewProjects.length > 0 ? (
             overviewProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />

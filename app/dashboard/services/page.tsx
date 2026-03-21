@@ -17,9 +17,9 @@ export default async function DashboardServicesPage() {
       <PageHeader
         eyebrow="Engagements"
         title="My services"
-        subtitle="Status, progress, next milestones, and the latest note from your team—one card per engagement."
+        subtitle="Every automation you run with us—what it delivers, live status, rollout, and what happens next."
       />
-      <div className="space-y-6">
+      <div className="space-y-5">
         {projects.length > 0 ? (
           projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
