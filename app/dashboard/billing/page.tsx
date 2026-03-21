@@ -7,6 +7,7 @@ import { formatDisplayDate } from "@/lib/utils";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
+import { DemoHint } from "@/components/dashboard/DemoHint";
 import { CheckCircle2, Receipt } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default async function DashboardBillingPage() {
         title="Billing"
         subtitle="Invoices, payment links, and status—aligned with what your team sees in admin."
       />
+      <DemoHint topic="billing" />
       {records.length > 0 ? (
         <section>
           <SectionTitle

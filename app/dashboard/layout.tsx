@@ -5,6 +5,9 @@ import { NoClientAccount } from "@/components/dashboard/NoClientAccount";
 import { getCurrentClientId } from "@/lib/portal-data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
+import { getPortalDemoMode } from "@/lib/demo-portal";
+import { DemoPortalProvider } from "@/components/dashboard/DemoPortalProvider";
+import { DemoModeBanner } from "@/components/dashboard/DemoModeBanner";
 
 export default async function DashboardLayout({
   children,
@@ -12,9 +15,10 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const supabase = getSupabaseServiceClient();
-  const [clientId, isAdmin] = await Promise.all([
+  const [clientId, isAdmin, isDemo] = await Promise.all([
     getCurrentClientId(),
     isAdminUser(),
+    getPortalDemoMode(),
   ]);
   const showNoClientState = supabase !== null && clientId === null;
 
@@ -57,7 +61,14 @@ export default async function DashboardLayout({
             aria-hidden
           />
           <div className="relative">
-            {showNoClientState ? <NoClientAccount /> : children}
+            {showNoClientState ? (
+              <NoClientAccount />
+            ) : (
+              <DemoPortalProvider isDemo={isDemo}>
+                <DemoModeBanner />
+                {children}
+              </DemoPortalProvider>
+            )}
           </div>
         </div>
       </div>

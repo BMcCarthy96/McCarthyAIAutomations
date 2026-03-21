@@ -17,6 +17,7 @@ import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { AutomationMetrics } from "@/components/dashboard/AutomationMetrics";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
+import { DemoHint } from "@/components/dashboard/DemoHint";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { ProjectTimeline } from "@/components/dashboard/ProjectTimeline";
 import {
@@ -133,6 +134,7 @@ export default async function DashboardOverviewPage() {
         >
           Monthly impact report
         </SectionTitle>
+        <DemoHint topic="metrics" />
         <div className="mt-8 space-y-8">
           {metrics.length > 0 ? (
             <>
@@ -287,6 +289,7 @@ export default async function DashboardOverviewPage() {
           >
             Next milestones
           </SectionTitle>
+          <DemoHint topic="milestones" />
           <div className="mt-8">
             {upcomingMilestones.length > 0 ? (
               <ul className="space-y-4">
