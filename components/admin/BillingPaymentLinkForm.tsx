@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createStripePaymentLinkAction } from "@/lib/admin-actions";
 import type { CreateStripePaymentLinkState } from "@/lib/admin-action-types";
 import { Button } from "@/components/ui/Button";
@@ -14,18 +15,43 @@ const initialState: CreateStripePaymentLinkState = {
 export function BillingPaymentLinkForm({
   recordId,
   currentPaymentLinkUrl,
+  billingStatus = "pending",
 }: {
   recordId: string;
   currentPaymentLinkUrl: string | null;
+  /** Used to tune copy when no link (e.g. pending invoices need payment). */
+  billingStatus?: string;
 }) {
   const [state, formAction] = useActionState<
     CreateStripePaymentLinkState | null,
     FormData
   >(createStripePaymentLinkAction, initialState);
 
+  const router = useRouter();
+  const prevSuccessRef = useRef(false);
+
+  useEffect(() => {
+    const ok = state?.success === true;
+    if (ok && !prevSuccessRef.current) {
+      router.refresh();
+    }
+    prevSuccessRef.current = ok;
+  }, [state, router]);
+
+  /**
+   * Server URL wins when present. When the DB clears the link after an edit,
+   * `currentPaymentLinkUrl` becomes null — do not keep showing a stale `state.url`
+   * from a previous "Generate Payment Link" (parent `key` also remounts on row updates).
+   */
   const urlToShow = useMemo(() => {
-    if (state?.success) return state.url;
-    return currentPaymentLinkUrl;
+    const fromServer = currentPaymentLinkUrl?.trim() || null;
+    if (fromServer) {
+      return fromServer;
+    }
+    if (state?.success && state.url) {
+      return state.url;
+    }
+    return null;
   }, [currentPaymentLinkUrl, state]);
 
   const [copied, setCopied] = useState(false);
@@ -44,13 +70,24 @@ export function BillingPaymentLinkForm({
   return (
     <div className="flex flex-col gap-2">
       {!urlToShow ? (
-        <form action={formAction}>
+        <form action={formAction} className="flex flex-col gap-1.5">
           <input type="hidden" name="recordId" value={recordId} />
           <Button type="submit" variant="secondary" size="sm">
             Generate Payment Link
           </Button>
+          {billingStatus === "pending" ? (
+            <p className="max-w-[15rem] text-[11px] leading-relaxed text-amber-200/90">
+              No active link. Generate when amount and description are final —{" "}
+              <span className="font-medium text-amber-100/95">regenerate</span> after editing those
+              fields (saved changes clear the old link).
+            </p>
+          ) : (
+            <p className="max-w-[14rem] text-[11px] text-zinc-500">
+              No payment link on file for this record.
+            </p>
+          )}
           {state && !state.success && state.error && (
-            <p className="mt-2 text-xs text-red-300">{state.error}</p>
+            <p className="text-xs text-red-300">{state.error}</p>
           )}
         </form>
       ) : (

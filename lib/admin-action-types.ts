@@ -47,9 +47,13 @@ export type RunMonthlyImpactReportEmailsState =
       failed: number;
     };
 
-export type UpdateBillingStatusState =
+export type CreateBillingRecordState =
   | { success: false; error: string }
   | { success: true };
+
+export type UpdateBillingRecordState =
+  | { success: false; error: string }
+  | { success: true; stripeLinkCleared?: boolean };
 
 export type CreateStripePaymentLinkState =
   | { success: false; error: string }

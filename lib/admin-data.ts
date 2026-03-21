@@ -43,6 +43,8 @@ export interface AdminBillingRow {
   paidAt: string | null;
   clientName: string;
   stripePaymentLinkUrl?: string | null;
+  /** For client form remount after server updates */
+  updatedAt: string | null;
 }
 
 // ---------------------------------------------------------------------------
@@ -364,7 +366,7 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
   const { data, error } = await supabase
     .from("billing_records")
     .select(
-      "id, description, amount_cents, currency, status, due_date, paid_at, stripe_payment_link_url, clients(name)"
+      "id, description, amount_cents, currency, status, due_date, paid_at, stripe_payment_link_url, updated_at, clients(name)"
     )
     .order("due_date", { ascending: false });
 
@@ -379,6 +381,7 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
     due_date: string;
     paid_at: string | null;
     stripe_payment_link_url: string | null;
+    updated_at: string | null;
     clients: { name: string } | null;
   }) => ({
     id: row.id,
@@ -390,5 +393,6 @@ export async function getAllBillingRecords(): Promise<AdminBillingRow[]> {
     paidAt: row.paid_at,
     clientName: row.clients?.name ?? "—",
     stripePaymentLinkUrl: row.stripe_payment_link_url ?? null,
+    updatedAt: row.updated_at ?? null,
   }));
 }

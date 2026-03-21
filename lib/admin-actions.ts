@@ -14,7 +14,8 @@ import type {
   DeleteMilestoneState,
   UpdateProjectState,
   ArchiveProjectState,
-  UpdateBillingStatusState,
+  CreateBillingRecordState,
+  UpdateBillingRecordState,
   CreateStripePaymentLinkState,
   CreateStripeCustomerBackfillState,
   UpdateSupportRequestStatusState,
@@ -45,6 +46,18 @@ import { processPendingLeadFollowUps } from "@/lib/lead-follow-up";
  * All mutations require isAdminUser(). Use for forms and inline updates.
  * Grouped by domain: project updates, projects, milestones, support, billing.
  */
+
+/** Invalidate billing server components (explicit page scope for reliable RSC refresh). */
+function revalidateBillingViews() {
+  revalidatePath("/admin/billing", "page");
+  revalidatePath("/dashboard/billing", "page");
+}
+
+/** Temporary: remove or gate when billing create/edit is stable. */
+function debugBilling(stage: string, payload: Record<string, unknown>) {
+  if (process.env.NODE_ENV !== "development") return;
+  console.log(`[billing-debug] ${stage}`, payload);
+}
 
 // ---------------------------------------------------------------------------
 // Project updates
@@ -606,23 +619,139 @@ export async function sendPendingLeadFollowUpsAction(
 
 const BILLING_STATUSES = ["pending", "paid", "overdue"] as const;
 
-export async function updateBillingStatusAction(
-  _prevState: UpdateBillingStatusState | null,
+function parseDollarsToCents(raw: string): { ok: true; cents: number } | { ok: false; error: string } {
+  const trimmed = raw.trim().replace(/,/g, "");
+  if (!trimmed) {
+    return { ok: false, error: "Amount is required." };
+  }
+  const n = Number.parseFloat(trimmed);
+  if (!Number.isFinite(n) || n <= 0) {
+    return { ok: false, error: "Enter a valid amount greater than zero." };
+  }
+  const cents = Math.round(n * 100);
+  if (cents < 1) {
+    return { ok: false, error: "Amount is too small." };
+  }
+  if (cents > 10_000_000_000) {
+    return { ok: false, error: "Amount is too large." };
+  }
+  return { ok: true, cents };
+}
+
+/** Default invoice due date: 30 days from today (UTC date). */
+function defaultBillingDueDateIso(): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() + 30);
+  return d.toISOString().slice(0, 10);
+}
+
+export async function createBillingRecordAction(
+  _prevState: CreateBillingRecordState | null,
   formData: FormData
-): Promise<UpdateBillingStatusState> {
+): Promise<CreateBillingRecordState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  const amountRaw = (formData.get("amountDollars") as string) ?? "";
+  const description = (formData.get("description") as string)?.trim() ?? "";
+  const statusRaw = (formData.get("status") as string)?.trim() || "pending";
+
+  if (!clientId) {
+    return { success: false, error: "Select a client." };
+  }
+  if (!description) {
+    return { success: false, error: "Description is required." };
+  }
+  if (!(BILLING_STATUSES as readonly string[]).includes(statusRaw)) {
+    return { success: false, error: "Invalid status." };
+  }
+
+  const amount = parseDollarsToCents(amountRaw);
+  if (!amount.ok) {
+    return { success: false, error: amount.error };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { data: clientRow, error: clientErr } = await supabase
+    .from("clients")
+    .select("id")
+    .eq("id", clientId)
+    .maybeSingle();
+
+  if (clientErr || !clientRow) {
+    return { success: false, error: "Client not found." };
+  }
+
+  const statusValid = statusRaw as (typeof BILLING_STATUSES)[number];
+
+  const insertPayload = {
+    client_id: clientId,
+    amount_cents: amount.cents,
+    currency: "USD",
+    description,
+    status: statusValid,
+    due_date: defaultBillingDueDateIso(),
+    paid_at: null,
+    updated_at: new Date().toISOString(),
+  };
+
+  debugBilling("create:insert_payload", { ...insertPayload, due_date: insertPayload.due_date });
+
+  const { data: inserted, error } = await supabase
+    .from("billing_records")
+    .insert(insertPayload)
+    .select("id, amount_cents, description, stripe_payment_link_url, updated_at")
+    .single();
+
+  debugBilling("create:insert_result", {
+    error: error?.message ?? null,
+    insertedId: inserted?.id ?? null,
+    row: inserted ?? null,
+  });
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidateBillingViews();
+  debugBilling("create:revalidated", { paths: ["/admin/billing", "/dashboard/billing"] });
+  return { success: true };
+}
+
+export async function updateBillingRecordAction(
+  _prevState: UpdateBillingRecordState | null,
+  formData: FormData
+): Promise<UpdateBillingRecordState> {
   const allowed = await isAdminUser();
   if (!allowed) {
     return { success: false, error: "Unauthorized." };
   }
 
   const recordId = (formData.get("recordId") as string)?.trim();
+  const amountRaw = (formData.get("amountDollars") as string) ?? "";
+  const description = (formData.get("description") as string)?.trim() ?? "";
   const status = (formData.get("status") as string)?.trim();
 
   if (!recordId) {
     return { success: false, error: "Record is required." };
   }
+  if (!description) {
+    return { success: false, error: "Description is required." };
+  }
   if (!status || !(BILLING_STATUSES as readonly string[]).includes(status)) {
     return { success: false, error: "Invalid status." };
+  }
+
+  const amount = parseDollarsToCents(amountRaw);
+  if (!amount.ok) {
+    return { success: false, error: amount.error };
   }
 
   const statusValid = status as (typeof BILLING_STATUSES)[number];
@@ -632,18 +761,103 @@ export async function updateBillingStatusAction(
     return { success: false, error: "Database unavailable." };
   }
 
-  const { error } = await supabase
+  const { data: prev, error: prevError } = await supabase
     .from("billing_records")
-    .update({ status: statusValid, updated_at: new Date().toISOString() })
-    .eq("id", recordId);
+    .select("amount_cents, description, stripe_payment_link_url")
+    .eq("id", recordId)
+    .maybeSingle();
+
+  if (prevError || !prev) {
+    return {
+      success: false,
+      error: prevError?.message ?? "Billing record not found.",
+    };
+  }
+
+  const prevRow = prev as {
+    amount_cents: number;
+    description: string;
+    stripe_payment_link_url: string | null;
+  };
+
+  const prevDesc = (prevRow.description ?? "").trim();
+  const newDesc = description.trim();
+  const amountChanged = prevRow.amount_cents !== amount.cents;
+  const descriptionChanged = prevDesc !== newDesc;
+  const checkoutFieldsChanged = amountChanged || descriptionChanged;
+
+  const hadPaymentLink = Boolean(
+    prevRow.stripe_payment_link_url && String(prevRow.stripe_payment_link_url).trim()
+  );
+
+  const updatePayload: Record<string, unknown> = {
+    amount_cents: amount.cents,
+    description,
+    status: statusValid,
+    updated_at: new Date().toISOString(),
+  };
+
+  if (checkoutFieldsChanged) {
+    updatePayload.stripe_payment_link_url = null;
+  }
+
+  debugBilling("update:pre_save", {
+    recordId,
+    prev: {
+      amount_cents: prevRow.amount_cents,
+      description: prevRow.description,
+      stripe_payment_link_url: prevRow.stripe_payment_link_url
+        ? "[set]"
+        : null,
+    },
+    next: {
+      amount_cents: amount.cents,
+      description,
+      status: statusValid,
+    },
+    amountChanged,
+    descriptionChanged,
+    checkoutFieldsChanged,
+    hadPaymentLink,
+    willClearStripeUrl: checkoutFieldsChanged,
+    updatePayload: {
+      ...updatePayload,
+      stripe_payment_link_url:
+        updatePayload.stripe_payment_link_url === null
+          ? null
+          : updatePayload.stripe_payment_link_url ?? "[unchanged]",
+    },
+  });
+
+  const { data: updatedRow, error } = await supabase
+    .from("billing_records")
+    .update(updatePayload)
+    .eq("id", recordId)
+    .select("id, amount_cents, description, stripe_payment_link_url, updated_at")
+    .maybeSingle();
+
+  debugBilling("update:post_save", {
+    error: error?.message ?? null,
+    row: updatedRow
+      ? {
+          id: updatedRow.id,
+          amount_cents: updatedRow.amount_cents,
+          description: updatedRow.description,
+          stripe_payment_link_url: updatedRow.stripe_payment_link_url ? "[set]" : null,
+          updated_at: updatedRow.updated_at,
+        }
+      : null,
+  });
 
   if (error) {
     return { success: false, error: error.message };
   }
 
-  revalidatePath("/admin/billing");
-  revalidatePath("/dashboard/billing");
-  return { success: true };
+  revalidateBillingViews();
+  debugBilling("update:revalidated", { recordId });
+
+  const stripeLinkCleared = checkoutFieldsChanged && hadPaymentLink;
+  return { success: true, ...(stripeLinkCleared ? { stripeLinkCleared: true } : {}) };
 }
 
 export async function deleteBillingRecordAction(
@@ -671,8 +885,7 @@ export async function deleteBillingRecordAction(
     return { success: false, error: error.message };
   }
 
-  revalidatePath("/admin/billing");
-  revalidatePath("/dashboard/billing");
+  revalidateBillingViews();
   return { success: true };
 }
 
@@ -763,8 +976,7 @@ export async function createStripePaymentLinkAction(
     return { success: false, error: updateError.message };
   }
 
-  revalidatePath("/admin/billing");
-  revalidatePath("/dashboard/billing");
+  revalidateBillingViews();
   return { success: true, url };
 }
 
@@ -987,10 +1199,10 @@ export async function deleteClientAction(
   }
 
   revalidatePath("/admin/clients");
-  revalidatePath("/admin/billing");
+  revalidatePath("/admin/billing", "page");
   revalidatePath("/admin/projects");
   revalidatePath("/dashboard");
-  revalidatePath("/dashboard/billing");
+  revalidatePath("/dashboard/billing", "page");
   redirect("/admin/clients");
 }
 

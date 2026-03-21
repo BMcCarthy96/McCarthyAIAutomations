@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { deleteBillingRecordAction } from "@/lib/admin-actions";
 import { Button } from "@/components/ui/Button";
 
@@ -12,6 +13,16 @@ export function BillingRecordDeleteForm({
   description: string;
 }) {
   const [state, formAction] = useActionState(deleteBillingRecordAction, null);
+  const router = useRouter();
+  const prevSuccessRef = useRef(false);
+
+  useEffect(() => {
+    const ok = state?.success === true;
+    if (ok && !prevSuccessRef.current) {
+      router.refresh();
+    }
+    prevSuccessRef.current = ok;
+  }, [state, router]);
 
   return (
     <form
