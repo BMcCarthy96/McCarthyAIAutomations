@@ -13,10 +13,11 @@ export const metadata: Metadata = {
 export default async function DashboardServicesPage() {
   const projects = await fetchProjectsWithDetails();
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHeader
-        title="My Services"
-        subtitle="Project status, next milestones, and recent updates."
+        eyebrow="Engagements"
+        title="My services"
+        subtitle="Status, progress, next milestones, and the latest note from your team—one card per engagement."
       />
       <div className="space-y-6">
         {projects.length > 0 ? (

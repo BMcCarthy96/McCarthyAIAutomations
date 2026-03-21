@@ -21,12 +21,52 @@ export function EmptyState({
   className,
 }: EmptyStateProps) {
   return (
-    <GlassCard hover={false} className={cn(compact && "py-4", className)}>
-      <div className={`flex flex-col items-center text-center ${compact ? "py-2" : "py-6"}`}>
-        <Icon className="h-10 w-10 text-zinc-500 sm:h-12 sm:w-12" aria-hidden />
-        <h3 className="mt-3 text-base font-semibold text-white sm:text-lg">{title}</h3>
-        <p className="mt-1 max-w-sm text-sm text-zinc-400">{description}</p>
-        {action && <div className="mt-4">{action}</div>}
+    <GlassCard
+      hover={false}
+      variant="inset"
+      className={cn(
+        "border-dashed border-white/15 bg-white/[0.02]",
+        compact && "py-5",
+        className
+      )}
+    >
+      <div
+        className={cn(
+          "flex flex-col items-center text-center",
+          compact ? "py-3" : "py-8"
+        )}
+      >
+        <div
+          className={cn(
+            "flex items-center justify-center rounded-2xl bg-indigo-500/10 ring-1 ring-indigo-500/25",
+            compact ? "p-3" : "p-4"
+          )}
+        >
+          <Icon
+            className={cn(
+              "text-indigo-300/90",
+              compact ? "h-8 w-8" : "h-10 w-10 sm:h-11 sm:w-11"
+            )}
+            aria-hidden
+          />
+        </div>
+        <h3
+          className={cn(
+            "font-semibold text-white",
+            compact ? "mt-3 text-base" : "mt-4 text-lg sm:text-xl"
+          )}
+        >
+          {title}
+        </h3>
+        <p
+          className={cn(
+            "max-w-md text-zinc-400",
+            compact ? "mt-1 text-sm" : "mt-2 text-sm leading-relaxed"
+          )}
+        >
+          {description}
+        </p>
+        {action && <div className="mt-5">{action}</div>}
       </div>
     </GlassCard>
   );

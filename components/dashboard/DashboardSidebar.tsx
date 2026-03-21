@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Layers,
   FileText,
+  ListChecks,
   HelpCircle,
   CreditCard,
   Menu,
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { href: "/dashboard/services", label: "My Services", icon: Layers },
+  { href: "/dashboard/milestones", label: "Milestones", icon: ListChecks },
   { href: "/dashboard/updates", label: "Project Updates", icon: FileText },
   { href: "/dashboard/support", label: "Support", icon: HelpCircle },
   { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
@@ -32,7 +34,7 @@ export function DashboardSidebar() {
         const isActive =
           item.href === "/dashboard"
             ? pathname === "/dashboard"
-            : pathname.startsWith(item.href);
+            : pathname === item.href || pathname.startsWith(`${item.href}/`);
         const Icon = item.icon;
         return (
           <Link
@@ -42,7 +44,7 @@ export function DashboardSidebar() {
             className={cn(
               "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
               isActive
-                ? "bg-white/10 text-white"
+                ? "bg-indigo-500/15 text-white ring-1 ring-indigo-500/25"
                 : "text-zinc-400 hover:bg-white/5 hover:text-white"
             )}
           >

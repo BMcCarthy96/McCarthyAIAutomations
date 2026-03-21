@@ -11,7 +11,10 @@ import {
 import { getClientAutomationMetrics } from "@/lib/portal-metrics";
 import { getAutomationImpactInsights } from "@/lib/portal-metrics-insights";
 import { getProjectActivityTimeline } from "@/lib/portal-timeline";
-import { formatDisplayDate } from "@/lib/utils";
+import { cn, formatDisplayDate } from "@/lib/utils";
+
+const rowLinkClass =
+  "flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 ring-1 ring-white/5 backdrop-blur-sm transition-all hover:border-indigo-400/35 hover:bg-white/[0.07] hover:ring-indigo-500/15";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { AutomationMetrics } from "@/components/dashboard/AutomationMetrics";
@@ -80,13 +83,22 @@ export default async function DashboardOverviewPage() {
     metrics.length > 0 ? getAutomationImpactInsights(metrics) : [];
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <WelcomeHeader />
 
       <section>
-        <SectionTitle>Your automation setup</SectionTitle>
-        <div className="mt-4">
-          <GlassCard hover={false} className="flex flex-wrap items-center gap-6 sm:gap-8">
+        <SectionTitle
+          eyebrow="Onboarding"
+          description="Track how your build is progressing from first integration to automation in production."
+        >
+          Your automation setup
+        </SectionTitle>
+        <div className="mt-5">
+          <GlassCard
+            hover={false}
+            variant="premium"
+            className="flex flex-wrap items-center gap-6 border-indigo-500/15 sm:gap-10"
+          >
             {[
               { label: "Project created", done: projectCreated },
               { label: "Milestones scheduled", done: milestonesScheduled },
@@ -95,16 +107,18 @@ export default async function DashboardOverviewPage() {
             ].map(({ label, done }) => (
               <div
                 key={label}
-                className="flex items-center gap-2.5 text-sm text-zinc-400"
+                className="flex items-center gap-3 text-sm text-zinc-400"
               >
                 {done ? (
-                  <Check className="h-4 w-4 shrink-0 text-emerald-400" />
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/25">
+                    <Check className="h-4 w-4 shrink-0 text-emerald-400" />
+                  </span>
                 ) : (
-                  <Circle className="h-4 w-4 shrink-0 text-zinc-600" />
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10">
+                    <Circle className="h-4 w-4 shrink-0 text-zinc-600" />
+                  </span>
                 )}
-                <span className={done ? "text-zinc-300" : undefined}>
-                  {label}
-                </span>
+                <span className={cn(done && "font-medium text-zinc-200")}>{label}</span>
               </div>
             ))}
           </GlassCard>
@@ -112,25 +126,27 @@ export default async function DashboardOverviewPage() {
       </section>
 
       <section>
-        <SectionTitle>Monthly impact report</SectionTitle>
-        <p className="mt-1 max-w-2xl text-sm text-zinc-500">
-          A concise view of what your automation delivered over the last 30 days.
-        </p>
-        <div className="mt-4 space-y-5">
+        <SectionTitle
+          eyebrow="Reporting"
+          description="A concise view of what your automation delivered over the last 30 days—the same signals we use in monthly impact emails."
+        >
+          Monthly impact report
+        </SectionTitle>
+        <div className="mt-6 space-y-6">
           {metrics.length > 0 ? (
             <>
               {impactInsights.length > 0 && (
                 <GlassCard
                   hover={false}
-                  className="border-indigo-500/20 bg-indigo-500/[0.04]"
+                  variant="premium"
+                  className="border-indigo-400/25 bg-gradient-to-br from-indigo-500/[0.12] to-purple-500/[0.05]"
                 >
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <Sparkles
-                      className="h-5 w-5 shrink-0 text-indigo-400 sm:mt-0.5"
-                      aria-hidden
-                    />
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/30">
+                      <Sparkles className="h-5 w-5 text-indigo-200" aria-hidden />
+                    </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium uppercase tracking-wider text-indigo-200/90">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-indigo-200/90">
                         Key insights
                       </p>
                       <ul className="mt-3 list-none space-y-3">
@@ -152,27 +168,26 @@ export default async function DashboardOverviewPage() {
                 </GlassCard>
               )}
 
-              <div className="rounded-xl border border-white/10 bg-white/[0.04] px-5 py-4 sm:px-6">
-                <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
-                  At a glance
-                </p>
-                <p className="mt-2 text-base leading-relaxed text-zinc-300 sm:text-lg">
+              <GlassCard hover={false} variant="default" className="py-5 sm:px-7">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    At a glance
+                  </p>
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Impact report
+                  </span>
+                </div>
+                <p className="mt-3 text-base leading-relaxed text-zinc-300 sm:text-lg">
                   Your automation saved you{" "}
-                  <span className="font-semibold text-white tabular-nums">
-                    {hoursSaved}
-                  </span>{" "}
+                  <span className="font-bold tabular-nums text-emerald-300">{hoursSaved}</span>{" "}
                   hours and influenced{" "}
-                  <span className="font-semibold text-white tabular-nums">
-                    {estimatedRevenue}
-                  </span>{" "}
+                  <span className="font-bold tabular-nums text-amber-200">{estimatedRevenue}</span>{" "}
                   in the last 30 days.
                 </p>
-              </div>
+              </GlassCard>
 
-              <AutomationMetrics
-                metrics={metrics}
-                subheading="Performance indicators"
-              />
+              <AutomationMetrics metrics={metrics} />
             </>
           ) : (
             <EmptyState
@@ -186,41 +201,50 @@ export default async function DashboardOverviewPage() {
       </section>
 
       <section className="grid gap-4 sm:grid-cols-3">
-        <GlassCard hover={false} className="sm:col-span-2">
-          <div className="flex flex-wrap items-center gap-8">
+        <GlassCard hover={false} variant="premium" className="sm:col-span-2">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+            Portfolio snapshot
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-8 sm:gap-10">
             <div>
-              <p className="text-3xl font-bold tabular-nums text-white">
+              <p className="text-3xl font-bold tabular-nums text-white sm:text-4xl">
                 {projects.length}
               </p>
-              <p className="mt-0.5 text-sm text-zinc-500">Active services</p>
+              <p className="mt-1 text-sm text-zinc-500">Active services</p>
             </div>
-            <div className="h-10 w-px bg-white/10" />
+            <div className="hidden h-12 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
             <div>
-              <p className="text-3xl font-bold tabular-nums text-emerald-400">
+              <p className="text-3xl font-bold tabular-nums text-emerald-300 sm:text-4xl">
                 {activeCount}
               </p>
-              <p className="mt-0.5 text-sm text-zinc-500">Live</p>
+              <p className="mt-1 text-sm text-zinc-500">Live</p>
             </div>
             <div>
-              <p className="text-3xl font-bold tabular-nums text-amber-400">
+              <p className="text-3xl font-bold tabular-nums text-amber-300 sm:text-4xl">
                 {inProgressCount}
               </p>
-              <p className="mt-0.5 text-sm text-zinc-500">In progress</p>
+              <p className="mt-1 text-sm text-zinc-500">In progress</p>
             </div>
           </div>
           {projects.length === 0 && (
-            <p className="mt-4 border-t border-white/10 pt-4 text-sm text-zinc-500">
+            <p className="mt-5 border-t border-white/10 pt-5 text-sm leading-relaxed text-zinc-500">
               Your services will appear here once they’re set up. Need access? Contact your account manager.
             </p>
           )}
         </GlassCard>
-        <GlassCard href="/dashboard/support" className="flex flex-col justify-center">
-          <HelpCircle className="h-5 w-5 text-indigo-400" />
-          <p className="mt-3 font-medium text-white">Need help?</p>
-          <p className="mt-0.5 text-sm text-zinc-400">
-            Contact support or request changes.
+        <GlassCard
+          href="/dashboard/support"
+          variant="premium"
+          className="flex flex-col justify-center border-indigo-400/20 bg-gradient-to-br from-indigo-500/[0.08] to-transparent"
+        >
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/25">
+            <HelpCircle className="h-5 w-5 text-indigo-300" />
+          </span>
+          <p className="mt-4 font-semibold text-white">Need help?</p>
+          <p className="mt-1 text-sm leading-relaxed text-zinc-400">
+            Open a support thread or escalate through your project team.
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400">
+          <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-300">
             Go to Support
             <ArrowRight className="h-4 w-4" />
           </span>
@@ -229,11 +253,13 @@ export default async function DashboardOverviewPage() {
 
       <section>
         <SectionTitle
+          eyebrow="Engagements"
+          description="Progress, milestones, and updates for each active service."
           action={projects.length > 0 ? { label: "View all", href: "/dashboard/services" } : undefined}
         >
           Your services
         </SectionTitle>
-        <div className="mt-4 space-y-4">
+        <div className="mt-6 space-y-5">
           {overviewProjects.length > 0 ? (
             overviewProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
@@ -251,6 +277,7 @@ export default async function DashboardOverviewPage() {
       <section className="grid gap-8 lg:grid-cols-2">
         <div>
           <SectionTitle
+            eyebrow="Roadmap"
             action={
               upcomingMilestones.length > 0
                 ? { label: "View all", href: "/dashboard/milestones" }
@@ -259,20 +286,17 @@ export default async function DashboardOverviewPage() {
           >
             Next milestones
           </SectionTitle>
-          <div className="mt-4">
+          <div className="mt-5">
             {upcomingMilestones.length > 0 ? (
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {upcomingMilestones.map((item) => (
                   <li key={item.id}>
-                    <Link
-                      href="/dashboard/services"
-                      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                    >
-                      <Calendar className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                    <Link href="/dashboard/milestones" className={rowLinkClass}>
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 ring-1 ring-indigo-500/20">
+                        <Calendar className="h-4 w-4 text-indigo-300" />
+                      </span>
                       <div className="min-w-0">
-                        <p className="font-medium text-white">
-                          {item.title}
-                        </p>
+                        <p className="font-semibold text-white">{item.title}</p>
                         <p className="mt-0.5 text-xs text-zinc-500">
                           {item.projectName} · {formatDisplayDate(item.dueDate)}
                         </p>
@@ -293,22 +317,22 @@ export default async function DashboardOverviewPage() {
         </div>
         <div>
           <SectionTitle
+            eyebrow="From your team"
             action={{ label: "View all", href: "/dashboard/updates" }}
           >
             Recent updates
           </SectionTitle>
-          <div className="mt-4">
+          <div className="mt-5">
             {recentUpdates.length > 0 ? (
-              <ul className="space-y-2">
+              <ul className="space-y-3">
                 {recentUpdates.map((update) => (
                   <li key={update.id}>
-                    <Link
-                      href="/dashboard/updates"
-                      className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:border-white/15 hover:bg-white/10"
-                    >
-                      <FileText className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400" />
+                    <Link href="/dashboard/updates" className={rowLinkClass}>
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/15 ring-1 ring-violet-500/20">
+                        <FileText className="h-4 w-4 text-violet-300" />
+                      </span>
                       <div className="min-w-0">
-                        <p className="font-medium text-white">{update.title}</p>
+                        <p className="font-semibold text-white">{update.title}</p>
                         <p className="mt-0.5 text-xs text-zinc-500">
                           {update.projectName} · {formatDisplayDate(update.createdAt)}
                         </p>
@@ -331,6 +355,8 @@ export default async function DashboardOverviewPage() {
 
       <section>
         <SectionTitle
+          eyebrow="Timeline"
+          description="A unified feed of updates, milestones, and support touchpoints."
           action={
             latestActivity.length > 0
               ? { label: "View all", href: "/dashboard/activity" }
@@ -339,7 +365,7 @@ export default async function DashboardOverviewPage() {
         >
           Project activity
         </SectionTitle>
-        <div className="mt-4">
+        <div className="mt-6">
           {latestActivity.length > 0 ? (
             <ProjectTimeline items={latestActivity} />
           ) : (
@@ -354,19 +380,23 @@ export default async function DashboardOverviewPage() {
       </section>
 
       <section>
-        <SectionTitle>Quick actions</SectionTitle>
-        <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <SectionTitle eyebrow="Shortcuts" description="Jump to the most-used areas of your portal.">
+          Quick actions
+        </SectionTitle>
+        <div className="mt-6 grid gap-4 sm:grid-cols-3">
           {dashboardQuickActions.map((action) => {
             const Icon = quickActionIcons[action.icon];
             return (
-              <GlassCard key={action.id} href={action.href}>
-                <Icon className="h-5 w-5 text-indigo-400" />
-                <p className="mt-3 font-medium text-white">{action.label}</p>
-                <p className="mt-0.5 text-sm text-zinc-400">
+              <GlassCard key={action.id} href={action.href} variant="default">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15 ring-1 ring-indigo-500/25">
+                  <Icon className="h-5 w-5 text-indigo-300" />
+                </span>
+                <p className="mt-4 font-semibold text-white">{action.label}</p>
+                <p className="mt-1 text-sm leading-relaxed text-zinc-400">
                   {action.description}
                 </p>
-                <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-indigo-400">
-                  Go
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-300">
+                  Open
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </GlassCard>

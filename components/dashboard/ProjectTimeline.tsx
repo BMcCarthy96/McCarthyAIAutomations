@@ -1,19 +1,27 @@
 import { formatDisplayDate } from "@/lib/utils";
 import type { ProjectActivityItem } from "@/lib/portal-timeline";
-import {
-  CheckCircle,
-  Clock,
-  FileText,
-  MessageCircle,
-} from "lucide-react";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { CheckCircle, Clock, FileText, MessageCircle } from "lucide-react";
 
 const typeIconMap: Record<
   ProjectActivityItem["type"],
-  { icon: typeof FileText; color: string }
+  { icon: typeof FileText; color: string; bg: string }
 > = {
-  update: { icon: FileText, color: "text-indigo-400" },
-  milestone: { icon: CheckCircle, color: "text-emerald-400" },
-  support: { icon: MessageCircle, color: "text-amber-300" },
+  update: {
+    icon: FileText,
+    color: "text-indigo-300",
+    bg: "bg-indigo-500/15 ring-indigo-500/25",
+  },
+  milestone: {
+    icon: CheckCircle,
+    color: "text-emerald-300",
+    bg: "bg-emerald-500/15 ring-emerald-500/25",
+  },
+  support: {
+    icon: MessageCircle,
+    color: "text-amber-200",
+    bg: "bg-amber-500/15 ring-amber-500/25",
+  },
 };
 
 interface ProjectTimelineProps {
@@ -23,56 +31,57 @@ interface ProjectTimelineProps {
 export function ProjectTimeline({ items }: ProjectTimelineProps) {
   if (items.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="flex items-center gap-3">
-          <Clock className="h-5 w-5 text-zinc-500" />
+      <GlassCard hover={false} variant="inset" className="border-dashed border-white/15">
+        <div className="flex items-center gap-4">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-zinc-500/10 ring-1 ring-white/10">
+            <Clock className="h-5 w-5 text-zinc-400" />
+          </div>
           <div>
-            <p className="font-medium text-white">No activity yet</p>
-            <p className="mt-0.5 text-sm text-zinc-400">
-              Updates and milestones will appear here.
+            <p className="font-semibold text-white">No activity yet</p>
+            <p className="mt-0.5 text-sm text-zinc-500">
+              Updates and milestones will appear here as your projects move forward.
             </p>
           </div>
         </div>
-      </div>
+      </GlassCard>
     );
   }
 
   return (
-    <ol className="relative space-y-4 border-l border-white/10 pl-4">
-      {items.map((item, index) => {
-        const { icon: Icon, color } = typeIconMap[item.type];
-        const isLast = index === items.length - 1;
-        return (
-          <li key={`${item.type}-${item.createdAt}-${index}`} className="relative pl-4">
-            <span className="absolute -left-[9px] top-1 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--background)]">
-              <span className="h-2 w-2 rounded-full bg-indigo-400" />
-            </span>
-            <div className="flex items-start gap-3">
-              <div
-                className={`mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-white/5 ${color}`}
-              >
-                <Icon className="h-4 w-4" />
+    <GlassCard hover={false} className="p-5 sm:p-6">
+      <ol className="relative space-y-0">
+        {items.map((item, index) => {
+          const { icon: Icon, color, bg } = typeIconMap[item.type];
+          const isLast = index === items.length - 1;
+          return (
+            <li key={`${item.type}-${item.createdAt}-${index}`} className="relative flex gap-4 pb-8 last:pb-0">
+              {!isLast ? (
+                <span
+                  className="absolute left-[17px] top-10 bottom-0 w-px bg-gradient-to-b from-indigo-500/40 to-transparent"
+                  aria-hidden
+                />
+              ) : null}
+              <div className="relative z-10 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ring-1 ring-white/10">
+                <div className={`flex h-full w-full items-center justify-center rounded-xl ${bg}`}>
+                  <Icon className={`h-4 w-4 ${color}`} />
+                </div>
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1 pt-0.5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <p className="font-medium text-white">{item.title}</p>
-                  <span className="rounded-full bg-white/5 px-2 py-0.5 text-xs text-zinc-400">
+                  <p className="font-semibold text-white">{item.title}</p>
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-medium text-zinc-400">
                     {item.projectName}
                   </span>
                 </div>
-                <p className="mt-1 text-sm text-zinc-400">{item.description}</p>
-                <p className="mt-1 text-xs text-zinc-500">
+                <p className="mt-1 text-sm leading-relaxed text-zinc-400">{item.description}</p>
+                <p className="mt-2 text-xs font-medium text-zinc-600">
                   {formatDisplayDate(item.createdAt)}
                 </p>
               </div>
-            </div>
-            {!isLast && (
-              <span className="pointer-events-none absolute left-0 top-5 h-full border-l border-white/10" />
-            )}
-          </li>
-        );
-      })}
-    </ol>
+            </li>
+          );
+        })}
+      </ol>
+    </GlassCard>
   );
 }
-

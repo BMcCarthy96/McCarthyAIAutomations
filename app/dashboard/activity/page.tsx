@@ -16,10 +16,11 @@ export default async function DashboardActivityPage() {
   const items = await getProjectActivityTimeline(clientId);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHeader
+        eyebrow="Timeline"
         title="Project activity"
-        subtitle="A unified view of updates, milestones, and support for your projects."
+        subtitle="Updates, milestones, and support touchpoints in one chronological feed."
       />
       {items.length > 0 ? (
         <ProjectTimeline items={items} />

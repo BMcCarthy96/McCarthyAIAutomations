@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ClientMilestoneItem } from "@/lib/portal-data";
 import { formatDisplayDate, getTodayDateString } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { EmptyState } from "@/components/dashboard/EmptyState";
-import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { Calendar, CheckCircle2 } from "lucide-react";
 
 type Filter = "upcoming" | "completed" | "all";
@@ -35,41 +35,34 @@ export function ClientMilestonesList({ milestones }: Props) {
   const hasAny = milestones.length > 0;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <SectionTitle>All milestones</SectionTitle>
-        <div className="inline-flex items-center gap-1 rounded-full bg-white/5 p-1 text-xs text-zinc-300 ring-1 ring-white/10">
-          <button
-            type="button"
-            onClick={() => setFilter("upcoming")}
-            className={`rounded-full px-3 py-1 transition-colors ${
-              filter === "upcoming"
-                ? "bg-indigo-500 text-white shadow-sm"
-                : "hover:bg-white/10"
-            }`}
-          >
-            Upcoming
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter("completed")}
-            className={`rounded-full px-3 py-1 transition-colors ${
-              filter === "completed"
-                ? "bg-indigo-500 text-white shadow-sm"
-                : "hover:bg-white/10"
-            }`}
-          >
-            Completed
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter("all")}
-            className={`rounded-full px-3 py-1 transition-colors ${
-              filter === "all" ? "bg-indigo-500 text-white shadow-sm" : "hover:bg-white/10"
-            }`}
-          >
-            All
-          </button>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm text-zinc-500">
+          <span className="font-medium text-zinc-400">View:</span> focus on what’s next or review
+          completed work.
+        </p>
+        <div className="inline-flex w-fit items-center gap-1 rounded-xl border border-white/10 bg-black/25 p-1 ring-1 ring-white/5">
+          {(
+            [
+              { key: "upcoming" as const, label: "Upcoming" },
+              { key: "completed" as const, label: "Completed" },
+              { key: "all" as const, label: "All" },
+            ] as const
+          ).map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setFilter(key)}
+              className={cn(
+                "rounded-lg px-4 py-2 text-sm font-semibold transition-all",
+                filter === key
+                  ? "bg-indigo-500/25 text-white ring-1 ring-indigo-400/35"
+                  : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200"
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -80,33 +73,40 @@ export function ClientMilestonesList({ milestones }: Props) {
           description="When your projects have milestones, they’ll appear here. Try a different filter if you’re not seeing what you expect."
         />
       ) : (
-        <GlassCard className="divide-y divide-white/5">
-          <ul className="divide-y divide-white/5">
+        <GlassCard hover={false} variant="premium" className="overflow-hidden p-0">
+          <ul className="divide-y divide-white/[0.06]">
             {filtered.map((m) => {
               const isCompleted = !!m.completedAt;
               return (
-                <li key={m.id} className="flex items-start gap-3 px-4 py-3 sm:px-6">
+                <li
+                  key={m.id}
+                  className="flex items-start gap-4 px-5 py-4 transition-colors hover:bg-white/[0.03] sm:px-7 sm:py-5"
+                >
                   <div className="mt-0.5">
                     {isCompleted ? (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 ring-1 ring-emerald-500/25">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-300" />
+                      </span>
                     ) : (
-                      <Calendar className="h-4 w-4 text-indigo-400" />
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/15 ring-1 ring-indigo-500/25">
+                        <Calendar className="h-4 w-4 text-indigo-300" />
+                      </span>
                     )}
                   </div>
                   <div className="min-w-0 flex-1">
-                    <p className="font-medium text-white">{m.title}</p>
-                    <p className="mt-0.5 text-xs text-zinc-500">
+                    <p className="font-semibold text-white">{m.title}</p>
+                    <p className="mt-1 text-xs text-zinc-500">
                       {m.projectName} · {formatDisplayDate(m.dueDate)}
                     </p>
                   </div>
-                  <div className="ml-3 shrink-0">
+                  <div className="ml-2 shrink-0">
                     <span
-                      className={[
-                        "inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium",
+                      className={cn(
+                        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
                         isCompleted
-                          ? "bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30"
-                          : "bg-amber-500/10 text-amber-300 ring-1 ring-amber-500/30",
-                      ].join(" ")}
+                          ? "bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/30"
+                          : "bg-amber-500/10 text-amber-200 ring-1 ring-amber-400/30"
+                      )}
                     >
                       {isCompleted ? "Completed" : "Upcoming"}
                     </span>
@@ -115,9 +115,12 @@ export function ClientMilestonesList({ milestones }: Props) {
               );
             })}
           </ul>
-          <div className="border-t border-white/10 px-4 py-3 text-xs text-zinc-500 sm:px-6">
+          <div className="border-t border-white/10 bg-black/20 px-5 py-4 text-xs text-zinc-500 sm:px-7">
             Need changes to a milestone?{" "}
-            <Link href="/dashboard/support" className="font-medium text-indigo-300 hover:text-indigo-200">
+            <Link
+              href="/dashboard/support"
+              className="font-semibold text-indigo-300 hover:text-indigo-200"
+            >
               Contact support
             </Link>
             .
@@ -127,4 +130,3 @@ export function ClientMilestonesList({ milestones }: Props) {
     </div>
   );
 }
-

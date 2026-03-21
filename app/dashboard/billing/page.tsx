@@ -20,62 +20,72 @@ export default async function DashboardBillingPage() {
   function statusBadge(status: string): string {
     switch (status) {
       case "paid":
-        return "bg-emerald-500/10 text-emerald-300 ring-1 ring-emerald-500/30";
+        return "bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/35 shadow-[0_0_20px_-10px_rgba(52,211,153,0.4)]";
       case "overdue":
-        return "bg-rose-500/10 text-rose-300 ring-1 ring-rose-500/30";
+        return "bg-rose-500/10 text-rose-200 ring-1 ring-rose-400/35";
       case "pending":
       default:
-        return "bg-amber-500/10 text-amber-300 ring-1 ring-amber-500/30";
+        return "bg-amber-500/10 text-amber-200 ring-1 ring-amber-400/30";
     }
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <PageHeader
+        eyebrow="Account"
         title="Billing"
-        subtitle="Invoices and payment details."
+        subtitle="Invoices, payment links, and status—aligned with what your team sees in admin."
       />
       {records.length > 0 ? (
         <section>
-          <SectionTitle>Invoices</SectionTitle>
-          <ul className="mt-4 space-y-4">
+          <SectionTitle
+            eyebrow="Invoices"
+            description="Pay open balances via the secure Stripe link when your team sends one."
+          >
+            Your records
+          </SectionTitle>
+          <ul className="mt-6 space-y-5">
             {records.map((r) => (
               <li key={r.id}>
-                <GlassCard hover={false}>
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-zinc-500">
-                        Invoice
-                      </p>
-                      <p className="mt-1 font-medium text-white">{r.description}</p>
+                <GlassCard hover={false} variant="premium" className="p-0 overflow-hidden">
+                  <div className="p-6 sm:p-7">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                          Invoice
+                        </p>
+                        <p className="mt-2 text-lg font-semibold text-white">{r.description}</p>
+                      </div>
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge(
+                          r.status
+                        )}`}
+                      >
+                        {billingStatusLabels[r.status] ?? r.status}
+                      </span>
                     </div>
-                    <span
-                      className={`rounded-full px-2 py-0.5 text-xs font-medium ${statusBadge(
-                        r.status
-                      )}`}
-                    >
-                      {billingStatusLabels[r.status] ?? r.status}
-                    </span>
+                    <p className="mt-6 text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
+                      <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">
+                        ${r.amount.toLocaleString()}
+                      </span>
+                    </p>
+                    <p className="mt-2 text-sm text-zinc-500">
+                      Due {formatDisplayDate(r.dueDate)}
+                      {r.paidAt && ` · Paid ${formatDisplayDate(r.paidAt)}`}
+                    </p>
+                    {r.status === "paid" ? (
+                      <div className="mt-5 inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Paid in full
+                      </div>
+                    ) : r.status === "pending" && r.stripePaymentLinkUrl ? (
+                      <div className="mt-5">
+                        <Button href={r.stripePaymentLinkUrl} size="md">
+                          Pay now
+                        </Button>
+                      </div>
+                    ) : null}
                   </div>
-                  <p className="mt-4 text-3xl font-semibold tracking-tight text-white">
-                    ${r.amount.toLocaleString()}
-                  </p>
-                  <p className="mt-1 text-sm text-zinc-500">
-                    Due {formatDisplayDate(r.dueDate)}
-                    {r.paidAt && ` · Paid ${formatDisplayDate(r.paidAt)}`}
-                  </p>
-                  {r.status === "paid" ? (
-                    <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-300 ring-1 ring-emerald-500/30">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      Paid
-                    </div>
-                  ) : r.status === "pending" && r.stripePaymentLinkUrl ? (
-                    <div className="mt-4">
-                      <Button href={r.stripePaymentLinkUrl} size="sm">
-                        Pay Now
-                      </Button>
-                    </div>
-                  ) : null}
                 </GlassCard>
               </li>
             ))}
