@@ -4,7 +4,7 @@ Admin support logic lives here. The rest of the app still imports from `@/lib/ad
 
 | File | Role |
 |------|------|
-| **types.ts** | `AdminSupportRow`, `AdminSupportDetail`, `SupportRequestListView`. |
+| **types.ts** | `AdminSupportRow` (incl. `leadFollowUp` pipeline), `AdminSupportDetail`, `SupportRequestListView`. |
 | **admin-data.ts** | `getAllSupportRequests(view)`, `getSupportRequestById(id)`. |
 | **admin-actions.ts** | `updateSupportRequestStatusAction`, `sendSupportReplyAction` (reply + optional Resend email). |
 

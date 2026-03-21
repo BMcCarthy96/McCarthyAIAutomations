@@ -2,6 +2,14 @@
  * Support domain types for admin (list/detail views and list filter).
  */
 
+/** Lead follow-up pipeline for public consultation rows (admin list). */
+export type AdminLeadFollowUpListState =
+  | "pending"
+  | "sent"
+  | "suppressed"
+  | "ineligible"
+  | "closed_before_send";
+
 /** Support request with client name for admin list. */
 export interface AdminSupportRow {
   id: string;
@@ -14,6 +22,8 @@ export interface AdminSupportRow {
   publicContact: string | null;
   /** Distinct UI badge: portal client vs marketing-site submission. */
   source: "client" | "public";
+  /** Public consultation lead follow-up (null for client portal requests). */
+  leadFollowUp: AdminLeadFollowUpListState | null;
 }
 
 /** Stored admin reply on a support thread. */

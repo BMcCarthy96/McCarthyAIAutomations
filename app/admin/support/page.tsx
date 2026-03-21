@@ -8,6 +8,8 @@ import { formatDisplayDate } from "@/lib/utils";
 import { countPendingLeadFollowUps } from "@/lib/lead-follow-up";
 import { getBookingUrl } from "@/lib/booking-url";
 import { SendLeadFollowUpsForm } from "@/components/admin/SendLeadFollowUpsForm";
+import { LeadFollowUpListBadge } from "@/components/admin/LeadFollowUpListBadge";
+import { Sparkles, Building2 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Support | Admin",
@@ -52,13 +54,13 @@ export default async function AdminSupportPage({
         </p>
       </div>
 
-      <section className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
-        <h2 className="text-sm font-semibold text-white">
+      <section className="rounded-xl border border-indigo-400/15 bg-gradient-to-br from-indigo-500/[0.06] to-transparent p-4 sm:p-5">
+        <h2 className="text-sm font-semibold tracking-tight text-white">
           Consultation lead follow-up
         </h2>
-        <p className="mt-1 text-xs text-zinc-500 leading-relaxed">
-          After someone submits the public contact form, you can send a delayed
-          booking reminder (manual for now). Requires Resend + booking URL env.
+        <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+          Batch or cron sends the booking reminder to qualified leads (open
+          consultations, not suppressed). Requires Resend + booking URL.
         </p>
         <div className="mt-4">
           <SendLeadFollowUpsForm
@@ -83,13 +85,16 @@ export default async function AdminSupportPage({
           </Link>
         ))}
       </div>
-      <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-        <table className="w-full text-left text-sm">
+      <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5">
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
+            <tr className="border-b border-white/10 bg-white/[0.04]">
               <th className="px-4 py-3 font-medium text-zinc-400">Subject</th>
               <th className="px-4 py-3 font-medium text-zinc-400">From</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Type</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">Source</th>
+              <th className="px-4 py-3 font-medium text-zinc-400">
+                Lead follow-up
+              </th>
               <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
               <th className="px-4 py-3 font-medium text-zinc-400">Created</th>
             </tr>
@@ -98,9 +103,13 @@ export default async function AdminSupportPage({
             {requests.map((r) => (
               <tr
                 key={r.id}
-                className="border-b border-white/5 last:border-0"
+                className={`border-b border-white/5 last:border-0 transition-colors ${
+                  r.source === "public"
+                    ? "bg-amber-500/[0.02] hover:bg-amber-500/[0.05]"
+                    : "hover:bg-white/[0.03]"
+                }`}
               >
-                <td className="px-4 py-3 font-medium text-white">
+                <td className="px-4 py-3.5 align-top font-medium text-white">
                   <Link
                     href={`/admin/support/${r.id}`}
                     className="transition-colors hover:text-indigo-400"
@@ -108,24 +117,33 @@ export default async function AdminSupportPage({
                     {r.subject}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-zinc-300">
-                  {r.source === "public"
-                    ? r.publicContact ?? "—"
-                    : r.clientName ?? "—"}
-                </td>
-                <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${
-                      r.source === "public"
-                        ? "bg-amber-500/20 text-amber-200"
-                        : "bg-indigo-500/20 text-indigo-200"
-                    }`}
-                  >
-                    {r.source === "public" ? "Public" : "Client"}
+                <td className="max-w-[200px] px-4 py-3.5 align-top text-zinc-300">
+                  <span className="line-clamp-2 break-words">
+                    {r.source === "public"
+                      ? r.publicContact ?? "—"
+                      : r.clientName ?? "—"}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-zinc-400">{r.status}</td>
-                <td className="px-4 py-3 text-zinc-500">
+                <td className="px-4 py-3.5 align-top">
+                  {r.source === "public" ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-gradient-to-r from-amber-500/15 to-orange-500/10 px-2.5 py-1 text-xs font-semibold text-amber-100 shadow-sm">
+                      <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-300/90" />
+                      Consultation
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-400/25 bg-indigo-500/10 px-2.5 py-1 text-xs font-semibold text-indigo-100">
+                      <Building2 className="h-3.5 w-3.5 shrink-0 text-indigo-300/90" />
+                      Client portal
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-3.5 align-top">
+                  <LeadFollowUpListBadge state={r.leadFollowUp} />
+                </td>
+                <td className="px-4 py-3.5 align-top text-zinc-400 capitalize">
+                  {r.status.replace(/_/g, " ")}
+                </td>
+                <td className="whitespace-nowrap px-4 py-3.5 align-top text-zinc-500">
                   {formatDisplayDate(r.createdAt)}
                 </td>
               </tr>

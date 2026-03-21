@@ -14,7 +14,7 @@ export default function ContactPage() {
       <div className="mx-auto max-w-2xl">
         <SectionHeading
           title="Get in touch"
-          subtitle="Book a free consultation or drop us a message. We'll respond within one business day."
+          subtitle="Tell us what you want to automate—we’ll confirm by email and follow up personally, usually within one business day."
         />
         <ContactForm />
       </div>

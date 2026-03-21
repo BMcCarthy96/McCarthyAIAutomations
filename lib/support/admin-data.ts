@@ -7,6 +7,7 @@ import type {
   AdminSupportRow,
   AdminSupportDetail,
   AdminSupportReply,
+  AdminLeadFollowUpListState,
   SupportRequestListView,
 } from "./types";
 
@@ -14,8 +15,26 @@ export type {
   AdminSupportRow,
   AdminSupportDetail,
   AdminSupportReply,
+  AdminLeadFollowUpListState,
   SupportRequestListView,
 };
+
+function computePublicLeadFollowUp(
+  row: {
+    client_id: string | null;
+    lead_follow_up_eligible: boolean;
+    follow_up_sent_at: string | null;
+    lead_follow_up_suppressed: boolean;
+    status: string;
+  }
+): AdminLeadFollowUpListState | null {
+  if (row.client_id !== null) return null;
+  if (!row.lead_follow_up_eligible) return "ineligible";
+  if (row.follow_up_sent_at) return "sent";
+  if (row.lead_follow_up_suppressed) return "suppressed";
+  if (row.status === "open" || row.status === "in_progress") return "pending";
+  return "closed_before_send";
+}
 
 export async function getAllSupportRequests(
   view: SupportRequestListView = "active"
@@ -26,7 +45,7 @@ export async function getAllSupportRequests(
   let query = supabase
     .from("support_requests")
     .select(
-      "id, subject, status, created_at, client_id, requester_name, requester_email, clients(name)"
+      "id, subject, status, created_at, client_id, requester_name, requester_email, lead_follow_up_eligible, follow_up_sent_at, lead_follow_up_suppressed, clients(name)"
     )
     .order("created_at", { ascending: false });
 
@@ -50,6 +69,9 @@ export async function getAllSupportRequests(
     client_id: string | null;
     requester_name: string | null;
     requester_email: string | null;
+    lead_follow_up_eligible: boolean;
+    follow_up_sent_at: string | null;
+    lead_follow_up_suppressed: boolean;
     clients: { name: string } | null;
   };
 
@@ -68,6 +90,13 @@ export async function getAllSupportRequests(
       clientName,
       publicContact,
       source: isPublic ? ("public" as const) : ("client" as const),
+      leadFollowUp: computePublicLeadFollowUp({
+        client_id: row.client_id,
+        lead_follow_up_eligible: Boolean(row.lead_follow_up_eligible),
+        follow_up_sent_at: row.follow_up_sent_at,
+        lead_follow_up_suppressed: Boolean(row.lead_follow_up_suppressed),
+        status: row.status,
+      }),
     };
   });
 }

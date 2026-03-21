@@ -6,6 +6,7 @@ import {
   type CreatePublicSupportRequestState,
 } from "@/lib/portal-actions";
 import { Button } from "@/components/ui/Button";
+import { CheckCircle2, Mail, Sparkles } from "lucide-react";
 
 const initialState: CreatePublicSupportRequestState = {
   success: false,
@@ -20,13 +21,55 @@ export function ContactForm() {
 
   if (state?.success === true) {
     return (
-      <div className="mt-12 rounded-2xl border border-white/10 bg-white/5 p-8 text-center backdrop-blur-xl">
-        <h3 className="text-xl font-semibold text-white">
-          Thanks for reaching out
-        </h3>
-        <p className="mt-2 text-zinc-400">
-          We&apos;ll get back to you within one business day.
-        </p>
+      <div className="mt-12 overflow-hidden rounded-2xl border border-emerald-500/20 bg-gradient-to-b from-emerald-500/[0.08] via-white/[0.04] to-white/[0.02] p-8 shadow-[0_0_40px_-20px_rgba(52,211,153,0.35)] backdrop-blur-xl sm:p-10">
+        <div className="mx-auto max-w-lg text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/15 ring-1 ring-emerald-400/30">
+            <CheckCircle2
+              className="h-7 w-7 text-emerald-300"
+              aria-hidden
+              strokeWidth={1.75}
+            />
+          </div>
+          <h3 className="mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
+            Your consultation request is in
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-[15px]">
+            We&apos;ve received your message and sent a confirmation to your inbox.
+            A member of our team will review your goals and reply personally—
+            <span className="font-medium text-zinc-200">
+              {" "}
+              typically within one business day
+            </span>
+            , often sooner during business hours.
+          </p>
+          <div className="mt-8 space-y-3 rounded-xl border border-white/[0.07] bg-black/20 px-5 py-4 text-left text-sm text-zinc-400">
+            <p className="flex gap-3">
+              <Mail
+                className="mt-0.5 h-4 w-4 shrink-0 text-indigo-400/90"
+                aria-hidden
+              />
+              <span>
+                Check your email for a copy of your submission. You can reply
+                directly to that thread to add context—no need to re-send the
+                form.
+              </span>
+            </p>
+            <p className="flex gap-3">
+              <Sparkles
+                className="mt-0.5 h-4 w-4 shrink-0 text-amber-400/90"
+                aria-hidden
+              />
+              <span>
+                Want to move faster? When we&apos;re ready, we may share a link to
+                book a short discovery call—optional, and only on your
+                timeline.
+              </span>
+            </p>
+          </div>
+          <p className="mt-6 text-xs text-zinc-500">
+            — McCarthy AI Automations
+          </p>
+        </div>
       </div>
     );
   }
