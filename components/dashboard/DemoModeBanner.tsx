@@ -10,9 +10,9 @@ const tips = [
       "Impact numbers are derived from project metrics and activity in your account. In production they reflect real automation performance.",
   },
   {
-    label: "Milestones",
+    label: "Roadmap",
     title:
-      "Milestones show planned delivery checkpoints. Dates may move as your team refines scope.",
+      "The roadmap lists implementation steps toward go-live. Dates may shift as your team refines scope.",
   },
   {
     label: "Billing",

@@ -38,6 +38,10 @@ const quickActionIcons = { HelpCircle, Layers, FileText } as const;
 const rowLinkClass =
   "flex items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-4 backdrop-blur-sm transition-colors hover:border-indigo-400/25 hover:bg-white/[0.055]";
 
+/** Milestone preview rows — aligned with rollout roadmap styling. */
+const milestonePreviewRowClass =
+  "flex items-start gap-4 rounded-xl border border-white/[0.08] bg-gradient-to-br from-indigo-500/[0.04] to-transparent px-4 py-4 backdrop-blur-sm transition-colors hover:border-indigo-400/30 hover:from-indigo-500/[0.07]";
+
 export const metadata: Metadata = {
   title: "Dashboard",
   description: "Your active services and project status.",
@@ -103,7 +107,7 @@ export default async function DashboardOverviewPage() {
           >
             {[
               { label: "Project created", done: projectCreated },
-              { label: "Milestones scheduled", done: milestonesScheduled },
+              { label: "Roadmap steps scheduled", done: milestonesScheduled },
               { label: "Integration in progress", done: integrationInProgress },
               { label: "Automation live", done: automationLive },
             ].map(({ label, done }) => (
@@ -281,13 +285,14 @@ export default async function DashboardOverviewPage() {
         <div>
           <SectionTitle
             eyebrow="Roadmap"
+            description="Upcoming steps on your implementation plan—same roadmap as the full milestones page."
             action={
               upcomingMilestones.length > 0
-                ? { label: "View all", href: "/dashboard/milestones" }
+                ? { label: "View full roadmap", href: "/dashboard/milestones" }
                 : undefined
             }
           >
-            Next milestones
+            Next implementation steps
           </SectionTitle>
           <DemoHint topic="milestones" />
           <div className="mt-8">
@@ -295,14 +300,24 @@ export default async function DashboardOverviewPage() {
               <ul className="space-y-4">
                 {upcomingMilestones.map((item) => (
                   <li key={item.id}>
-                    <Link href="/dashboard/milestones" className={rowLinkClass}>
-                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/12">
-                        <Calendar className="h-4 w-4 text-indigo-300" />
+                    <Link href="/dashboard/milestones" className={milestonePreviewRowClass}>
+                      <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/12 ring-1 ring-amber-400/20">
+                        <Calendar className="h-4 w-4 text-amber-200" />
                       </span>
-                      <div className="min-w-0">
-                        <p className="font-semibold text-white">{item.title}</p>
-                        <p className="mt-0.5 text-xs text-zinc-500">
-                          {item.projectName} · {formatDisplayDate(item.dueDate)}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                          {item.projectName}
+                        </p>
+                        <p className="mt-1 font-semibold leading-snug text-white">
+                          {item.title}
+                        </p>
+                        <p className="mt-1.5 text-xs text-zinc-400">
+                          Target:{" "}
+                          <span className="font-medium text-zinc-300">
+                            {formatDisplayDate(item.dueDate)}
+                          </span>
+                          <span className="text-zinc-600"> · </span>
+                          <span className="text-zinc-500">Scheduled</span>
                         </p>
                       </div>
                     </Link>
@@ -312,8 +327,8 @@ export default async function DashboardOverviewPage() {
             ) : (
               <EmptyState
                 icon={Calendar}
-                title="No milestones yet"
-                description="Upcoming milestones will appear here once your services and projects are set up."
+                title="No upcoming steps"
+                description="Implementation steps will show here as your team adds them to the rollout plan."
                 compact
               />
             )}

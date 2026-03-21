@@ -5,8 +5,9 @@ import { PageHeader } from "@/components/dashboard/PageHeader";
 import { DemoHint } from "@/components/dashboard/DemoHint";
 
 export const metadata: Metadata = {
-  title: "Milestones",
-  description: "See the full roadmap of your project milestones.",
+  title: "Rollout roadmap",
+  description:
+    "Implementation steps and delivery checkpoints across your automation engagements.",
 };
 
 export default async function ClientMilestonesPage() {
@@ -17,8 +18,8 @@ export default async function ClientMilestonesPage() {
     <div className="space-y-12">
       <PageHeader
         eyebrow="Delivery"
-        title="Milestones"
-        subtitle="Every checkpoint across your engagements—filter by upcoming, completed, or the full list."
+        title="Rollout roadmap"
+        subtitle="Structured implementation steps for each automation—what’s scheduled, what’s done, and what’s next."
       />
       <DemoHint topic="milestones" />
       <ClientMilestonesList milestones={milestones} />

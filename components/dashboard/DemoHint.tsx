@@ -9,7 +9,7 @@ const COPY: Record<
   metrics:
     "Figures here aggregate your linked project metrics. In a live account they track real automation outcomes.",
   milestones:
-    "These checkpoints mirror how we plan delivery. Your team can update dates as work progresses.",
+    "Steps here reflect your rollout plan. In production, your team updates dates as each automation moves toward go-live.",
   billing:
     "Invoice lines reflect what your account team publishes. Payment links use Stripe when enabled.",
 };
