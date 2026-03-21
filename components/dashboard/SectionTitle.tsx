@@ -21,11 +21,11 @@ export function SectionTitle({
   return (
     <div
       className={cn(
-        "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between",
+        "flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6",
         className
       )}
     >
-      <div className="min-w-0 flex-1">
+      <div className="min-w-0 flex-1 space-y-0">
         {eyebrow ? (
           <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
             {eyebrow}
@@ -34,13 +34,13 @@ export function SectionTitle({
         <h2
           className={cn(
             "font-semibold tracking-tight text-white sm:text-2xl",
-            eyebrow ? "mt-1 text-xl" : "text-xl"
+            eyebrow ? "mt-2 text-xl" : "text-xl"
           )}
         >
           {children}
         </h2>
         {description ? (
-          <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-zinc-500">
+          <p className="mt-2.5 max-w-2xl text-sm leading-relaxed text-zinc-500">
             {description}
           </p>
         ) : null}

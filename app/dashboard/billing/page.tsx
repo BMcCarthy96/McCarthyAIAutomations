@@ -20,17 +20,17 @@ export default async function DashboardBillingPage() {
   function statusBadge(status: string): string {
     switch (status) {
       case "paid":
-        return "bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/35 shadow-[0_0_20px_-10px_rgba(52,211,153,0.4)]";
+        return "border border-emerald-400/25 bg-emerald-500/10 text-emerald-200 shadow-[0_0_20px_-10px_rgba(52,211,153,0.35)]";
       case "overdue":
-        return "bg-rose-500/10 text-rose-200 ring-1 ring-rose-400/35";
+        return "border border-rose-400/25 bg-rose-500/10 text-rose-200";
       case "pending":
       default:
-        return "bg-amber-500/10 text-amber-200 ring-1 ring-amber-400/30";
+        return "border border-amber-400/22 bg-amber-500/10 text-amber-200";
     }
   }
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Account"
         title="Billing"
@@ -44,11 +44,11 @@ export default async function DashboardBillingPage() {
           >
             Your records
           </SectionTitle>
-          <ul className="mt-6 space-y-5">
+          <ul className="mt-8 space-y-6">
             {records.map((r) => (
               <li key={r.id}>
                 <GlassCard hover={false} variant="premium" className="p-0 overflow-hidden">
-                  <div className="p-6 sm:p-7">
+                  <div className="p-7 sm:p-8">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">

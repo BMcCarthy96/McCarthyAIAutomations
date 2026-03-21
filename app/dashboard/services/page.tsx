@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default async function DashboardServicesPage() {
   const projects = await fetchProjectsWithDetails();
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Engagements"
         title="My services"

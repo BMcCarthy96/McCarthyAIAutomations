@@ -7,7 +7,7 @@ export function WelcomeHeader() {
   const { user } = useUser();
   const firstName = user?.firstName ?? "";
   return (
-    <header className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.08] via-white/[0.03] to-transparent p-6 shadow-xl shadow-indigo-950/20 ring-1 ring-white/5 backdrop-blur-xl sm:p-8">
+    <header className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-transparent p-7 shadow-lg shadow-black/25 backdrop-blur-xl sm:p-9">
       <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl" />
       <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">

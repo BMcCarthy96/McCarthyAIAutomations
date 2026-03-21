@@ -16,7 +16,7 @@ export default async function DashboardActivityPage() {
   const items = await getProjectActivityTimeline(clientId);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Timeline"
         title="Project activity"

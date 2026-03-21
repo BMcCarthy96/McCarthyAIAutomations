@@ -20,7 +20,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-premium">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[var(--background)]/85 shadow-lg shadow-black/20 ring-1 ring-white/[0.04] backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[var(--background)]/90 shadow-md shadow-black/15 backdrop-blur-xl">
         <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:pl-8 lg:pr-8">
           <div className="flex min-w-0 items-center gap-4 lg:pl-64">
             <Link
@@ -51,7 +51,7 @@ export default async function DashboardLayout({
       </header>
       <DashboardSidebar />
       <div className="lg:pl-64">
-        <div className="relative mx-auto max-w-5xl px-4 py-8 pl-14 sm:px-6 sm:pl-6 lg:px-8 lg:pl-8">
+        <div className="relative mx-auto max-w-5xl px-4 py-10 pl-14 sm:px-6 sm:pl-6 lg:px-8 lg:py-12 lg:pl-8">
           <div
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,rgba(99,102,241,0.12),transparent)]"
             aria-hidden

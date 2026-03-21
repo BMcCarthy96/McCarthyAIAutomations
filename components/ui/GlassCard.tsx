@@ -23,15 +23,15 @@ export function GlassCard({
 }: GlassCardProps) {
   const variantStyles = {
     default:
-      "border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.02] shadow-xl shadow-black/25 ring-1 ring-white/5",
+      "border border-white/[0.08] bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-lg shadow-black/20",
     premium:
-      "border-white/10 bg-gradient-to-b from-white/[0.09] to-white/[0.03] shadow-2xl shadow-indigo-950/30 ring-1 ring-indigo-500/10",
+      "border border-white/[0.09] bg-gradient-to-b from-white/[0.08] to-white/[0.025] shadow-xl shadow-indigo-950/20",
     inset:
-      "border-white/8 bg-white/[0.03] shadow-none ring-1 ring-white/[0.04]",
+      "border border-white/[0.06] bg-white/[0.025] shadow-none",
   };
 
   const cardClasses = cn(
-    "rounded-2xl border p-6 backdrop-blur-xl",
+    "rounded-2xl p-6 backdrop-blur-xl",
     variantStyles[variant],
     hover &&
       variant !== "inset" &&

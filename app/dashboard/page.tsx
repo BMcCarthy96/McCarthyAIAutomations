@@ -12,9 +12,6 @@ import { getClientAutomationMetrics } from "@/lib/portal-metrics";
 import { getAutomationImpactInsights } from "@/lib/portal-metrics-insights";
 import { getProjectActivityTimeline } from "@/lib/portal-timeline";
 import { cn, formatDisplayDate } from "@/lib/utils";
-
-const rowLinkClass =
-  "flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3.5 ring-1 ring-white/5 backdrop-blur-sm transition-all hover:border-indigo-400/35 hover:bg-white/[0.07] hover:ring-indigo-500/15";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ProjectCard } from "@/components/dashboard/ProjectCard";
 import { AutomationMetrics } from "@/components/dashboard/AutomationMetrics";
@@ -35,6 +32,10 @@ import {
 } from "lucide-react";
 
 const quickActionIcons = { HelpCircle, Layers, FileText } as const;
+
+/** List row links — single border, no ring (avoids stacked chrome with section headers). */
+const rowLinkClass =
+  "flex items-start gap-3 rounded-xl border border-white/[0.07] bg-white/[0.03] px-4 py-4 backdrop-blur-sm transition-colors hover:border-indigo-400/25 hover:bg-white/[0.055]";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -83,7 +84,7 @@ export default async function DashboardOverviewPage() {
     metrics.length > 0 ? getAutomationImpactInsights(metrics) : [];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       <WelcomeHeader />
 
       <section>
@@ -93,11 +94,11 @@ export default async function DashboardOverviewPage() {
         >
           Your automation setup
         </SectionTitle>
-        <div className="mt-5">
+        <div className="mt-8">
           <GlassCard
             hover={false}
             variant="premium"
-            className="flex flex-wrap items-center gap-6 border-indigo-500/15 sm:gap-10"
+            className="flex flex-wrap items-center gap-7 px-7 py-7 sm:gap-10 sm:px-8 sm:py-8"
           >
             {[
               { label: "Project created", done: projectCreated },
@@ -110,11 +111,11 @@ export default async function DashboardOverviewPage() {
                 className="flex items-center gap-3 text-sm text-zinc-400"
               >
                 {done ? (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/25">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/12">
                     <Check className="h-4 w-4 shrink-0 text-emerald-400" />
                   </span>
                 ) : (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.05]">
                     <Circle className="h-4 w-4 shrink-0 text-zinc-600" />
                   </span>
                 )}
@@ -132,24 +133,24 @@ export default async function DashboardOverviewPage() {
         >
           Monthly impact report
         </SectionTitle>
-        <div className="mt-6 space-y-6">
+        <div className="mt-8 space-y-8">
           {metrics.length > 0 ? (
             <>
               {impactInsights.length > 0 && (
                 <GlassCard
                   hover={false}
                   variant="premium"
-                  className="border-indigo-400/25 bg-gradient-to-br from-indigo-500/[0.12] to-purple-500/[0.05]"
+                  className="border-indigo-400/12 bg-gradient-to-br from-indigo-500/[0.1] to-purple-500/[0.04] px-7 py-7 sm:px-8 sm:py-8"
                 >
-                  <div className="flex items-start gap-3 sm:gap-4">
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/30">
+                  <div className="flex items-start gap-4 sm:gap-5">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/18">
                       <Sparkles className="h-5 w-5 text-indigo-200" aria-hidden />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-semibold uppercase tracking-wider text-indigo-200/90">
                         Key insights
                       </p>
-                      <ul className="mt-3 list-none space-y-3">
+                      <ul className="mt-4 list-none space-y-4">
                         {impactInsights.map((line, idx) => (
                           <li
                             key={idx}
@@ -168,17 +169,17 @@ export default async function DashboardOverviewPage() {
                 </GlassCard>
               )}
 
-              <GlassCard hover={false} variant="default" className="py-5 sm:px-7">
-                <div className="flex flex-wrap items-center justify-between gap-3">
+              <GlassCard hover={false} variant="default" className="py-6 sm:px-8 sm:py-7">
+                <div className="flex flex-wrap items-center justify-between gap-4">
                   <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                     At a glance
                   </p>
-                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
+                  <span className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300">
                     <Sparkles className="h-3.5 w-3.5" />
                     Impact report
                   </span>
                 </div>
-                <p className="mt-3 text-base leading-relaxed text-zinc-300 sm:text-lg">
+                <p className="mt-4 text-base leading-relaxed text-zinc-300 sm:text-lg">
                   Your automation saved you{" "}
                   <span className="font-bold tabular-nums text-emerald-300">{hoursSaved}</span>{" "}
                   hours and influenced{" "}
@@ -200,8 +201,8 @@ export default async function DashboardOverviewPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-3">
-        <GlassCard hover={false} variant="premium" className="sm:col-span-2">
+      <section className="grid gap-5 sm:grid-cols-3 sm:gap-6">
+        <GlassCard hover={false} variant="premium" className="px-7 py-7 sm:col-span-2 sm:px-8 sm:py-8">
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
             Portfolio snapshot
           </p>
@@ -235,9 +236,9 @@ export default async function DashboardOverviewPage() {
         <GlassCard
           href="/dashboard/support"
           variant="premium"
-          className="flex flex-col justify-center border-indigo-400/20 bg-gradient-to-br from-indigo-500/[0.08] to-transparent"
+          className="flex flex-col justify-center bg-gradient-to-br from-indigo-500/[0.07] to-transparent px-7 py-7 sm:px-8 sm:py-8"
         >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/20 ring-1 ring-indigo-400/25">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/18">
             <HelpCircle className="h-5 w-5 text-indigo-300" />
           </span>
           <p className="mt-4 font-semibold text-white">Need help?</p>
@@ -259,7 +260,7 @@ export default async function DashboardOverviewPage() {
         >
           Your services
         </SectionTitle>
-        <div className="mt-6 space-y-5">
+        <div className="mt-8 space-y-6">
           {overviewProjects.length > 0 ? (
             overviewProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
@@ -274,7 +275,7 @@ export default async function DashboardOverviewPage() {
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-2">
+      <section className="grid gap-10 lg:grid-cols-2 lg:gap-12">
         <div>
           <SectionTitle
             eyebrow="Roadmap"
@@ -286,13 +287,13 @@ export default async function DashboardOverviewPage() {
           >
             Next milestones
           </SectionTitle>
-          <div className="mt-5">
+          <div className="mt-8">
             {upcomingMilestones.length > 0 ? (
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {upcomingMilestones.map((item) => (
                   <li key={item.id}>
                     <Link href="/dashboard/milestones" className={rowLinkClass}>
-                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/15 ring-1 ring-indigo-500/20">
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-500/12">
                         <Calendar className="h-4 w-4 text-indigo-300" />
                       </span>
                       <div className="min-w-0">
@@ -322,13 +323,13 @@ export default async function DashboardOverviewPage() {
           >
             Recent updates
           </SectionTitle>
-          <div className="mt-5">
+          <div className="mt-8">
             {recentUpdates.length > 0 ? (
-              <ul className="space-y-3">
+              <ul className="space-y-4">
                 {recentUpdates.map((update) => (
                   <li key={update.id}>
                     <Link href="/dashboard/updates" className={rowLinkClass}>
-                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/15 ring-1 ring-violet-500/20">
+                      <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-violet-500/12">
                         <FileText className="h-4 w-4 text-violet-300" />
                       </span>
                       <div className="min-w-0">
@@ -365,7 +366,7 @@ export default async function DashboardOverviewPage() {
         >
           Project activity
         </SectionTitle>
-        <div className="mt-6">
+        <div className="mt-8">
           {latestActivity.length > 0 ? (
             <ProjectTimeline items={latestActivity} />
           ) : (
@@ -383,12 +384,12 @@ export default async function DashboardOverviewPage() {
         <SectionTitle eyebrow="Shortcuts" description="Jump to the most-used areas of your portal.">
           Quick actions
         </SectionTitle>
-        <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:grid-cols-3">
           {dashboardQuickActions.map((action) => {
             const Icon = quickActionIcons[action.icon];
             return (
-              <GlassCard key={action.id} href={action.href} variant="default">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/15 ring-1 ring-indigo-500/25">
+              <GlassCard key={action.id} href={action.href} variant="default" className="px-6 py-6 sm:px-7 sm:py-7">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/12">
                   <Icon className="h-5 w-5 text-indigo-300" />
                 </span>
                 <p className="mt-4 font-semibold text-white">{action.label}</p>

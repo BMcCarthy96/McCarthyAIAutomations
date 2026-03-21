@@ -35,13 +35,13 @@ export function ClientMilestonesList({ milestones }: Props) {
   const hasAny = milestones.length > 0;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-zinc-500">
           <span className="font-medium text-zinc-400">View:</span> focus on what’s next or review
           completed work.
         </p>
-        <div className="inline-flex w-fit items-center gap-1 rounded-xl border border-white/10 bg-black/25 p-1 ring-1 ring-white/5">
+        <div className="inline-flex w-fit items-center gap-1 rounded-xl border border-white/[0.07] bg-black/25 p-1">
           {(
             [
               { key: "upcoming" as const, label: "Upcoming" },
@@ -56,7 +56,7 @@ export function ClientMilestonesList({ milestones }: Props) {
               className={cn(
                 "rounded-lg px-4 py-2 text-sm font-semibold transition-all",
                 filter === key
-                  ? "bg-indigo-500/25 text-white ring-1 ring-indigo-400/35"
+                  ? "bg-indigo-500/20 text-white"
                   : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200"
               )}
             >
@@ -80,15 +80,15 @@ export function ClientMilestonesList({ milestones }: Props) {
               return (
                 <li
                   key={m.id}
-                  className="flex items-start gap-4 px-5 py-4 transition-colors hover:bg-white/[0.03] sm:px-7 sm:py-5"
+                  className="flex items-start gap-4 px-6 py-5 transition-colors hover:bg-white/[0.03] sm:px-8 sm:py-5"
                 >
                   <div className="mt-0.5">
                     {isCompleted ? (
-                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/15 ring-1 ring-emerald-500/25">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/12">
                         <CheckCircle2 className="h-4 w-4 text-emerald-300" />
                       </span>
                     ) : (
-                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/15 ring-1 ring-indigo-500/25">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/12">
                         <Calendar className="h-4 w-4 text-indigo-300" />
                       </span>
                     )}
@@ -104,8 +104,8 @@ export function ClientMilestonesList({ milestones }: Props) {
                       className={cn(
                         "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold",
                         isCompleted
-                          ? "bg-emerald-500/10 text-emerald-200 ring-1 ring-emerald-400/30"
-                          : "bg-amber-500/10 text-amber-200 ring-1 ring-amber-400/30"
+                          ? "border border-emerald-400/22 bg-emerald-500/10 text-emerald-200"
+                          : "border border-amber-400/22 bg-amber-500/10 text-amber-200"
                       )}
                     >
                       {isCompleted ? "Completed" : "Upcoming"}
@@ -115,7 +115,7 @@ export function ClientMilestonesList({ milestones }: Props) {
               );
             })}
           </ul>
-          <div className="border-t border-white/10 bg-black/20 px-5 py-4 text-xs text-zinc-500 sm:px-7">
+          <div className="border-t border-white/[0.06] bg-black/15 px-6 py-4 text-xs text-zinc-500 sm:px-8">
             Need changes to a milestone?{" "}
             <Link
               href="/dashboard/support"

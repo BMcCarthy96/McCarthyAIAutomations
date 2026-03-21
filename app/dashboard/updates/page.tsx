@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 export default async function DashboardUpdatesPage() {
   const updates = await fetchProjectUpdatesForClient();
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Communications"
         title="Project updates"
         subtitle="Everything your delivery team posts—newest first, grouped by project."
       />
       {updates.length > 0 ? (
-        <ul className="space-y-5">
+        <ul className="space-y-6">
           {updates.map((update) => (
             <li key={update.id}>
               <GlassCard hover={false} variant="premium" className="border-white/[0.08]">

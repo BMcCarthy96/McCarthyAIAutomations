@@ -6,24 +6,22 @@ const config = {
     icon: CheckCircle2,
     label: "Live",
     className:
-      "text-emerald-300 bg-emerald-500/10 border-emerald-400/30 ring-1 ring-emerald-400/20 shadow-[0_0_20px_-8px_rgba(52,211,153,0.35)]",
+      "text-emerald-300 bg-emerald-500/10 border-emerald-400/22 shadow-[0_0_24px_-10px_rgba(52,211,153,0.3)]",
   },
   in_progress: {
     icon: Clock,
     label: "In progress",
-    className:
-      "text-amber-200 bg-amber-500/10 border-amber-400/30 ring-1 ring-amber-400/15",
+    className: "text-amber-200 bg-amber-500/10 border-amber-400/22",
   },
   pending: {
     icon: Circle,
     label: "Scheduled",
-    className: "text-zinc-300 bg-white/5 border-white/15 ring-1 ring-white/10",
+    className: "text-zinc-300 bg-white/[0.06] border-white/[0.1]",
   },
   completed: {
     icon: CheckCircle2,
     label: "Completed",
-    className:
-      "text-emerald-200 bg-emerald-500/10 border-emerald-400/25 ring-1 ring-emerald-400/15",
+    className: "text-emerald-200 bg-emerald-500/10 border-emerald-400/20",
   },
 } as const;
 

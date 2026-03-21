@@ -16,13 +16,13 @@ const featuredStyles: Record<
   { border: string; badge: string; value: string }
 > = {
   hours: {
-    border: "border-emerald-500/25 bg-emerald-500/[0.06]",
-    badge: "border-emerald-500/25 bg-emerald-500/10 text-emerald-300",
+    border: "border-emerald-500/15 bg-emerald-500/[0.05]",
+    badge: "border-emerald-500/20 bg-emerald-500/10 text-emerald-300",
     value: "text-emerald-300",
   },
   revenue: {
-    border: "border-amber-500/25 bg-amber-500/[0.06]",
-    badge: "border-amber-500/25 bg-amber-500/10 text-amber-200",
+    border: "border-amber-500/15 bg-amber-500/[0.05]",
+    badge: "border-amber-500/20 bg-amber-500/10 text-amber-200",
     value: "text-amber-200",
   },
 };
@@ -41,13 +41,13 @@ export function AutomationMetrics({
   const rest = metrics.filter((m) => !FEATURED_IDS.has(m.id));
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-7">
       <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
         {subheading}
       </p>
 
       {featured.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-5 sm:grid-cols-2">
           {featured.map((metric) => {
             const styles = featuredStyles[metric.id] ?? featuredStyles.hours;
             return (
@@ -93,7 +93,7 @@ export function AutomationMetrics({
       )}
 
       {rest.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-3">
           {rest.map((metric) => (
             <GlassCard key={metric.id} hover={false} variant="default" className="flex flex-col justify-between">
               <div>

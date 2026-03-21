@@ -46,14 +46,14 @@ function filterByView(requests: SupportRequest[], view: RequestView): SupportReq
 function requestStatusPill(status: SupportRequest["status"]): string {
   switch (status) {
     case "open":
-      return "bg-indigo-500/15 text-indigo-200 ring-1 ring-indigo-400/25";
+      return "border border-indigo-400/22 bg-indigo-500/12 text-indigo-200";
     case "in_progress":
-      return "bg-amber-500/15 text-amber-200 ring-1 ring-amber-400/25";
+      return "border border-amber-400/22 bg-amber-500/12 text-amber-200";
     case "resolved":
-      return "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/25";
+      return "border border-emerald-400/22 bg-emerald-500/12 text-emerald-200";
     case "closed":
     default:
-      return "bg-white/10 text-zinc-400 ring-1 ring-white/10";
+      return "border border-white/[0.08] bg-white/[0.06] text-zinc-400";
   }
 }
 
@@ -73,7 +73,7 @@ export default async function DashboardSupportPage({
   const filteredRequests = filterByView(requests, view);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Help"
         title="Support"
@@ -86,8 +86,8 @@ export default async function DashboardSupportPage({
         >
           New request
         </SectionTitle>
-        <GlassCard hover={false} variant="premium" className="mt-6 max-w-xl border-indigo-500/15">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/15 ring-1 ring-indigo-400/25">
+        <GlassCard hover={false} variant="premium" className="mt-8 max-w-xl px-7 py-7 sm:px-8 sm:py-8">
+          <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-500/12">
             <Send className="h-6 w-6 text-indigo-300" />
           </span>
           <p className="mt-5 text-sm leading-relaxed text-zinc-400">
@@ -98,9 +98,9 @@ export default async function DashboardSupportPage({
           </div>
         </GlassCard>
       </section>
-      <div className="grid gap-5 sm:grid-cols-2">
-        <GlassCard hover={false} variant="default">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/15 ring-1 ring-violet-400/25">
+      <div className="grid gap-6 sm:grid-cols-2">
+        <GlassCard hover={false} variant="default" className="px-6 py-6 sm:px-7 sm:py-7">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/12">
             <Mail className="h-5 w-5 text-violet-300" />
           </span>
           <h3 className="mt-5 text-lg font-semibold text-white">Email support</h3>
@@ -112,8 +112,8 @@ export default async function DashboardSupportPage({
             Contact us
           </Button>
         </GlassCard>
-        <GlassCard hover={false} variant="default">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/15 ring-1 ring-amber-400/25">
+        <GlassCard hover={false} variant="default" className="px-6 py-6 sm:px-7 sm:py-7">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/12">
             <MessageCircle className="h-5 w-5 text-amber-200" />
           </span>
           <h3 className="mt-5 text-lg font-semibold text-white">Project-specific help</h3>
@@ -139,7 +139,7 @@ export default async function DashboardSupportPage({
               {filteredRequests.length} request{filteredRequests.length !== 1 ? "s" : ""}
               {view !== "all" && ` · ${view}`}
             </p>
-            <div className="mt-4 inline-flex flex-wrap gap-1 rounded-xl border border-white/10 bg-black/30 p-1 ring-1 ring-white/5">
+            <div className="mt-5 inline-flex flex-wrap gap-1 rounded-xl border border-white/[0.07] bg-black/25 p-1">
               {VIEWS.map((v) => (
                 <Link
                   key={v.value}
@@ -147,7 +147,7 @@ export default async function DashboardSupportPage({
                   className={cn(
                     "rounded-lg px-3 py-2 text-sm font-semibold transition-all",
                     view === v.value
-                      ? "bg-indigo-500/20 text-white ring-1 ring-indigo-400/35"
+                      ? "bg-indigo-500/18 text-white"
                       : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200"
                   )}
                 >
@@ -156,10 +156,10 @@ export default async function DashboardSupportPage({
               ))}
             </div>
             {filteredRequests.length > 0 ? (
-              <ul className="mt-5 space-y-3">
+              <ul className="mt-6 space-y-4">
                 {filteredRequests.map((r) => (
                   <li key={r.id}>
-                    <GlassCard hover={false} variant="default" className="py-5">
+                    <GlassCard hover={false} variant="default" className="px-5 py-5 sm:px-6 sm:py-6">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold text-white">{r.subject}</span>
                         <span

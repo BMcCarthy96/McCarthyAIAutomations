@@ -44,8 +44,8 @@ export function DashboardSidebar() {
             className={cn(
               "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
               isActive
-                ? "bg-indigo-500/15 text-white ring-1 ring-indigo-500/25"
-                : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                ? "border border-indigo-400/20 bg-indigo-500/12 text-white"
+                : "border border-transparent text-zinc-400 hover:bg-white/5 hover:text-white"
             )}
           >
             {isActive && (

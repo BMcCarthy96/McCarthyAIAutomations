@@ -9,7 +9,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, eyebrow, className }: PageHeaderProps) {
   return (
-    <header className={cn("border-b border-white/10 pb-8", className)}>
+    <header className={cn("border-b border-white/[0.06] pb-10", className)}>
       {eyebrow ? (
         <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           {eyebrow}
@@ -24,7 +24,7 @@ export function PageHeader({ title, subtitle, eyebrow, className }: PageHeaderPr
         {title}
       </h1>
       {subtitle ? (
-        <p className="mt-2 max-w-2xl text-base leading-relaxed text-zinc-400">
+        <p className="mt-3 max-w-2xl text-base leading-relaxed text-zinc-400">
           {subtitle}
         </p>
       ) : null}

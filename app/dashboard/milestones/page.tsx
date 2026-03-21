@@ -13,7 +13,7 @@ export default async function ClientMilestonesPage() {
   const milestones = await getAllMilestonesForClient(clientId);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-12">
       <PageHeader
         eyebrow="Delivery"
         title="Milestones"
