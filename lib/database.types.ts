@@ -110,6 +110,8 @@ export interface Database {
           category: string | null;
           requester_name: string | null;
           requester_email: string | null;
+          lead_follow_up_eligible: boolean;
+          follow_up_sent_at: string | null;
           created_at: string;
           updated_at: string | null;
         };
@@ -123,6 +125,8 @@ export interface Database {
           category?: string | null;
           requester_name?: string | null;
           requester_email?: string | null;
+          lead_follow_up_eligible?: boolean;
+          follow_up_sent_at?: string | null;
           created_at?: string;
           updated_at?: string | null;
         };
@@ -136,6 +140,8 @@ export interface Database {
           category?: string | null;
           requester_name?: string | null;
           requester_email?: string | null;
+          lead_follow_up_eligible?: boolean;
+          follow_up_sent_at?: string | null;
           created_at?: string;
           updated_at?: string | null;
         };

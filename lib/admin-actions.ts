@@ -28,12 +28,15 @@ import type {
   ArchiveClientState,
   DeleteClientState,
   DeleteBillingRecordState,
+  SendPendingLeadFollowUpsState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
   sendSupportReplyAction as implSendSupportReplyAction,
 } from "@/lib/support/admin-actions";
 import { runMonthlyImpactReportEmails } from "@/lib/email/monthly-impact-report-runner";
+import { getBookingUrl } from "@/lib/booking-url";
+import { processPendingLeadFollowUps } from "@/lib/lead-follow-up";
 
 /**
  * Admin actions: server actions for /admin.
@@ -544,6 +547,46 @@ export async function runMonthlyImpactReportEmailsAction(
     return {
       success: false,
       error: e instanceof Error ? e.message : "Failed to send monthly reports.",
+    };
+  }
+}
+
+/**
+ * Sends the delayed booking follow-up email to pending public consultation leads.
+ * Manual admin trigger; same batch logic as POST /api/cron/lead-follow-up (with secret).
+ */
+export async function sendPendingLeadFollowUpsAction(
+  _prevState: SendPendingLeadFollowUpsState | null,
+  _formData: FormData
+): Promise<SendPendingLeadFollowUpsState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const bookingUrl = getBookingUrl();
+  if (!bookingUrl) {
+    return {
+      success: false,
+      error:
+        "Set NEXT_PUBLIC_BOOKING_URL or BOOKING_URL to a valid URL (e.g. Cal.com or Calendly).",
+    };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  try {
+    const result = await processPendingLeadFollowUps(bookingUrl);
+    revalidatePath("/admin/support");
+    return { success: true, sent: result.sent, failed: result.failed };
+  } catch (e) {
+    return {
+      success: false,
+      error:
+        e instanceof Error ? e.message : "Failed to send lead follow-up emails.",
     };
   }
 }

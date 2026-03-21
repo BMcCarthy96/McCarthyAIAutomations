@@ -90,3 +90,8 @@ export type DeleteBillingRecordState =
 export type UpdateProjectMetricsState =
   | { success: false; error: string }
   | { success: true };
+
+/** Batch send lead follow-up emails (public consultation leads; admin or cron). */
+export type SendPendingLeadFollowUpsState =
+  | { success: false; error: string }
+  | { success: true; sent: number; failed: number };

@@ -158,6 +158,7 @@ export async function createPublicSupportRequestAction(
     body,
     status: "open",
     category: "public",
+    lead_follow_up_eligible: true,
   });
 
   if (error) {

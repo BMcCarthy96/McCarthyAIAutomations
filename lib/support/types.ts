@@ -39,6 +39,9 @@ export interface AdminSupportDetail {
   source: "client" | "public";
   projectName: string | null;
   replies: AdminSupportReply[];
+  /** Public consultation lead follow-up automation (client rows: always ineligible / N/A). */
+  leadFollowUpEligible: boolean;
+  followUpSentAt: string | null;
 }
 
 export type SupportRequestListView = "active" | "resolved" | "closed" | "all";

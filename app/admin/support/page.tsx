@@ -5,6 +5,9 @@ import {
   type SupportRequestListView,
 } from "@/lib/admin-data";
 import { formatDisplayDate } from "@/lib/utils";
+import { countPendingLeadFollowUps } from "@/lib/lead-follow-up";
+import { getBookingUrl } from "@/lib/booking-url";
+import { SendLeadFollowUpsForm } from "@/components/admin/SendLeadFollowUpsForm";
 
 export const metadata: Metadata = {
   title: "Support | Admin",
@@ -31,7 +34,11 @@ export default async function AdminSupportPage({
   const view: SupportRequestListView = isValidView(viewParam)
     ? viewParam
     : "active";
-  const requests = await getAllSupportRequests(view);
+  const [requests, pendingFollowUps, hasBookingUrl] = await Promise.all([
+    getAllSupportRequests(view),
+    countPendingLeadFollowUps(),
+    Promise.resolve(Boolean(getBookingUrl())),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -44,6 +51,23 @@ export default async function AdminSupportPage({
           {view !== "all" && ` (${view})`}
         </p>
       </div>
+
+      <section className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5">
+        <h2 className="text-sm font-semibold text-white">
+          Consultation lead follow-up
+        </h2>
+        <p className="mt-1 text-xs text-zinc-500 leading-relaxed">
+          After someone submits the public contact form, you can send a delayed
+          booking reminder (manual for now). Requires Resend + booking URL env.
+        </p>
+        <div className="mt-4">
+          <SendLeadFollowUpsForm
+            pendingCount={pendingFollowUps}
+            hasBookingUrl={hasBookingUrl}
+          />
+        </div>
+      </section>
+
       <div className="flex flex-wrap gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
         {VIEWS.map((v) => (
           <Link

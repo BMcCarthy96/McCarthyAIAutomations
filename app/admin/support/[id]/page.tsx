@@ -75,6 +75,20 @@ export default async function AdminSupportRequestPage({
               </p>
             </div>
           )}
+        {request.source === "public" && (
+          <div>
+            <p className="text-sm font-medium text-zinc-400">
+              Lead follow-up email
+            </p>
+            <p className="mt-0.5 text-sm text-zinc-300">
+              {request.followUpSentAt
+                ? `Sent ${formatDisplayDate(request.followUpSentAt)}`
+                : request.leadFollowUpEligible
+                  ? "Eligible — pending send (still open; use Support → Send pending follow-ups)."
+                  : "Not eligible (legacy submission or not marked for automation)."}
+            </p>
+          </div>
+        )}
         <div>
           <p className="text-sm font-medium text-zinc-400">Project</p>
           <p className="mt-0.5 text-white">
