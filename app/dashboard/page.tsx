@@ -203,34 +203,34 @@ export default async function DashboardOverviewPage() {
         </div>
       </section>
 
-      <section className="grid gap-5 sm:grid-cols-3 sm:gap-6">
-        <GlassCard hover={false} variant="premium" className="px-7 py-7 sm:col-span-2 sm:px-8 sm:py-8">
+      <section className="grid gap-4 sm:grid-cols-3 sm:gap-5">
+        <GlassCard hover={false} variant="premium" className="px-5 py-5 sm:col-span-2 sm:px-6 sm:py-6">
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
             Portfolio snapshot
           </p>
-          <div className="mt-4 flex flex-wrap items-center gap-8 sm:gap-10">
+          <div className="mt-3 flex flex-wrap items-center gap-5 sm:gap-7">
             <div>
-              <p className="text-3xl font-bold tabular-nums text-white sm:text-4xl">
+              <p className="text-3xl font-bold tabular-nums leading-none text-white sm:text-4xl">
                 {projects.length}
               </p>
-              <p className="mt-1 text-sm text-zinc-500">Active services</p>
+              <p className="mt-1.5 text-sm text-zinc-500">Active services</p>
             </div>
-            <div className="hidden h-12 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
+            <div className="hidden h-10 w-px bg-gradient-to-b from-transparent via-white/15 to-transparent sm:block" />
             <div>
-              <p className="text-3xl font-bold tabular-nums text-emerald-300 sm:text-4xl">
+              <p className="text-3xl font-bold tabular-nums leading-none text-emerald-300 sm:text-4xl">
                 {activeCount}
               </p>
-              <p className="mt-1 text-sm text-zinc-500">Live</p>
+              <p className="mt-1.5 text-sm text-zinc-500">Live</p>
             </div>
             <div>
-              <p className="text-3xl font-bold tabular-nums text-amber-300 sm:text-4xl">
+              <p className="text-3xl font-bold tabular-nums leading-none text-amber-300 sm:text-4xl">
                 {inProgressCount}
               </p>
-              <p className="mt-1 text-sm text-zinc-500">In progress</p>
+              <p className="mt-1.5 text-sm text-zinc-500">In progress</p>
             </div>
           </div>
           {projects.length === 0 && (
-            <p className="mt-5 border-t border-white/10 pt-5 text-sm leading-relaxed text-zinc-500">
+            <p className="mt-4 border-t border-white/10 pt-4 text-sm leading-relaxed text-zinc-500">
               Your services will appear here once they’re set up. Need access? Contact your account manager.
             </p>
           )}
@@ -238,12 +238,12 @@ export default async function DashboardOverviewPage() {
         <GlassCard
           href="/dashboard/support"
           variant="premium"
-          className="flex flex-col justify-center bg-gradient-to-br from-indigo-500/[0.07] to-transparent px-7 py-7 sm:px-8 sm:py-8"
+          className="flex flex-col justify-center bg-gradient-to-br from-indigo-500/[0.07] to-transparent px-5 py-5 sm:px-6 sm:py-6"
         >
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/18">
             <HelpCircle className="h-5 w-5 text-indigo-300" />
           </span>
-          <p className="mt-4 font-semibold text-white">Need help?</p>
+          <p className="mt-3 font-semibold text-white">Need help?</p>
           <p className="mt-1 text-sm leading-relaxed text-zinc-400">
             Open a support thread or escalate through your project team.
           </p>

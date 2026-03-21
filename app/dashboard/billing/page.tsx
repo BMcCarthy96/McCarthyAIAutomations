@@ -46,17 +46,17 @@ export default async function DashboardBillingPage() {
           >
             Your records
           </SectionTitle>
-          <ul className="mt-8 space-y-6">
+          <ul className="mt-6 space-y-4">
             {records.map((r) => (
               <li key={r.id}>
                 <GlassCard hover={false} variant="premium" className="p-0 overflow-hidden">
-                  <div className="p-7 sm:p-8">
+                  <div className="p-5 sm:p-6">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                           Invoice
                         </p>
-                        <p className="mt-2 text-lg font-semibold text-white">{r.description}</p>
+                        <p className="mt-1.5 text-lg font-semibold text-white">{r.description}</p>
                       </div>
                       <span
                         className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge(
@@ -66,22 +66,22 @@ export default async function DashboardBillingPage() {
                         {billingStatusLabels[r.status] ?? r.status}
                       </span>
                     </div>
-                    <p className="mt-6 text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
+                    <p className="mt-4 text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
                       <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">
                         ${r.amount.toLocaleString()}
                       </span>
                     </p>
-                    <p className="mt-2 text-sm text-zinc-500">
+                    <p className="mt-1.5 text-sm text-zinc-500">
                       Due {formatDisplayDate(r.dueDate)}
                       {r.paidAt && ` · Paid ${formatDisplayDate(r.paidAt)}`}
                     </p>
                     {r.status === "paid" ? (
-                      <div className="mt-5 inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
+                      <div className="mt-4 inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
                         <CheckCircle2 className="h-4 w-4" />
                         Paid in full
                       </div>
                     ) : r.status === "pending" && r.stripePaymentLinkUrl ? (
-                      <div className="mt-5">
+                      <div className="mt-4">
                         <Button href={r.stripePaymentLinkUrl} size="md">
                           Pay now
                         </Button>
