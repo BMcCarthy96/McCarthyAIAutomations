@@ -224,32 +224,31 @@ export const faqs: FAQItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "150+", label: "Projects delivered" },
-  { value: "98%", label: "Client satisfaction" },
-  { value: "24/7", label: "AI availability" },
-  { value: "3x", label: "Avg. lead increase" },
+  { value: "150+", label: "AI systems launched" },
+  { value: "98%", label: "Clients who renew or expand" },
+  { value: "24/7", label: "Calls, chats & lead capture" },
+  { value: "3×", label: "Typical lift in qualified leads" },
 ];
 
+/** Homepage “How it works” — three phases from first call to measurable outcomes. */
 export const howItWorksSteps: HowItWorksStep[] = [
   {
     step: 1,
-    title: "Discovery & strategy",
-    description: "We learn your goals, audience, and tech stack so we can recommend the right services and integrations.",
+    title: "Consultation",
+    description:
+      "Free strategy call: we map your goals, tools, and bottlenecks, then recommend automations with a clear ROI story—no jargon, no pressure.",
   },
   {
     step: 2,
-    title: "Proposal & kickoff",
-    description: "You receive a clear scope, timeline, and quote. Once approved, we kick off with a structured project plan.",
+    title: "Setup & launch",
+    description:
+      "Structured build with milestones, demos, and integrations. You always know what’s shipping next and when you go live.",
   },
   {
     step: 3,
-    title: "Build & integrate",
-    description: "We design, build, and integrate your solutions with regular check-ins and demos so you stay in the loop.",
-  },
-  {
-    step: 4,
-    title: "Launch & optimize",
-    description: "We go live, train your team, and support you through the post-launch period—then optimize based on results.",
+    title: "Automation & reporting",
+    description:
+      "Your systems run 24/7 while you track progress in a client portal—onboarding status, support, billing, and monthly impact reporting.",
   },
 ];
 

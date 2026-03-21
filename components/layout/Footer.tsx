@@ -24,8 +24,14 @@ export function Footer() {
               McCarthy AI Automations
             </Link>
             <p className="mt-3 max-w-sm text-sm text-zinc-400">
-              Premium AI automation for businesses that want to scale without the chaos. Voice agents, chatbots, lead capture, and custom integrations.
+              Premium AI automation for businesses that want to scale without the chaos. Voice agents, chatbots, lead capture, custom integrations—and a client portal with measurable reporting.
             </p>
+            <Link
+              href="/contact"
+              className="mt-4 inline-flex text-sm font-semibold text-indigo-400 transition-colors hover:text-indigo-300"
+            >
+              Book a free consultation →
+            </Link>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">

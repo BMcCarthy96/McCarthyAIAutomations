@@ -1,28 +1,49 @@
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden px-4 pt-20 pb-24 sm:px-6 sm:pt-28 sm:pb-32 lg:px-8">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.15),transparent)]" />
+    <section className="relative overflow-hidden px-4 pt-20 pb-20 sm:px-6 sm:pt-28 sm:pb-28 lg:px-8">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(99,102,241,0.18),transparent)]" />
+      <div className="pointer-events-none absolute -right-32 top-1/3 h-96 w-96 rounded-full bg-purple-500/10 blur-3xl" />
       <div className="relative mx-auto max-w-4xl text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl">
-          AI automation that{" "}
-          <span className="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
-            scales your business
-          </span>
-        </h1>
-        <p className="mt-6 text-lg text-zinc-400 sm:text-xl">
-          Voice agents, chatbots, lead capture, and custom integrations—so you
-          focus on closing deals, not repetitive tasks.
+        <p className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium uppercase tracking-wider text-indigo-300">
+          Premium AI operations for growing teams
         </p>
-        <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-          <Button href="/contact" variant="primary" size="lg">
-            Get a free consultation
+        <h1 className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-[3.25rem] lg:leading-[1.1]">
+          Reclaim your week.{" "}
+          <span className="bg-gradient-to-r from-indigo-300 via-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            Fill your pipeline.
+          </span>{" "}
+          Prove the ROI.
+        </h1>
+        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400 sm:text-xl">
+          McCarthy AI Automations designs and runs voice agents, chatbots, lead capture, and custom
+          workflows—then gives you a client portal with onboarding, support, billing, and{" "}
+          <span className="text-zinc-300">monthly impact reporting</span> so leadership sees real
+          numbers, not slide decks.
+        </p>
+        <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+          <Button href="/contact" variant="primary" size="lg" className="w-full min-w-[220px] sm:w-auto">
+            Book your free consultation
           </Button>
-          <Button href="/services" variant="secondary" size="lg">
+          <Button href="/services" variant="secondary" size="lg" className="w-full sm:w-auto">
             Explore services
           </Button>
+          <Link
+            href="/#how-it-works"
+            className={cn(
+              "inline-flex w-full items-center justify-center rounded-xl border border-white/15 px-6 py-3 text-base font-semibold text-zinc-200 transition-colors",
+              "hover:border-white/25 hover:bg-white/5 hover:text-white sm:w-auto"
+            )}
+          >
+            See how it works
+          </Link>
         </div>
+        <p className="mt-6 text-sm text-zinc-600">
+          No obligation—just a clear plan for what to automate and what it should deliver.
+        </p>
       </div>
     </section>
   );

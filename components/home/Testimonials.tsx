@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { testimonials } from "@/lib/data";
 import { SectionHeading } from "./SectionHeading";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -9,9 +10,19 @@ export function Testimonials() {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           title="What clients say"
-          subtitle="Businesses across industries trust us to deliver and support their AI automation."
+          subtitle="Teams use us to ship automation that sticks—then keep improving with the same portal, support, and reporting experience you saw above."
         />
-        <div className="mt-16 grid gap-8 md:grid-cols-3">
+        <p className="mt-4 text-center text-sm text-zinc-500">
+          Next step:{" "}
+          <Link
+            href="/contact"
+            className="font-medium text-indigo-400 underline-offset-2 hover:text-indigo-300 hover:underline"
+          >
+            book a free consultation
+          </Link>{" "}
+          and we&apos;ll show how this maps to your stack.
+        </p>
+        <div className="mt-12 grid gap-8 md:grid-cols-3">
           {testimonials.map((t) => (
             <GlassCard key={t.id} hover>
               <Quote className="h-10 w-10 text-indigo-400/60" />

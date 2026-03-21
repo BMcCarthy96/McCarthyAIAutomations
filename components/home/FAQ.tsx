@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { faqs } from "@/lib/data";
 import { SectionHeading } from "./SectionHeading";
 import { ChevronDown } from "lucide-react";
@@ -14,9 +15,17 @@ export function FAQ() {
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           title="Frequently asked questions"
-          subtitle="Quick answers to common questions. Still have one? Reach out."
+          subtitle="Quick answers to common questions. Still deciding? Start with a free consultation—no pitch deck required."
         />
-        <div className="mt-12 space-y-2">
+        <p className="mt-4 text-center text-sm">
+          <Link
+            href="/contact"
+            className="font-semibold text-indigo-400 underline-offset-2 hover:text-indigo-300 hover:underline"
+          >
+            Book your free consultation →
+          </Link>
+        </p>
+        <div className="mt-10 space-y-2">
           {faqs.map((item) => (
             <div
               key={item.id}
