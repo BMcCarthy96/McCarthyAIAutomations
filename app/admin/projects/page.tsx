@@ -3,6 +3,8 @@ import { getAllProjects, getAllClients } from "@/lib/admin-data";
 import { CreateProjectSetupForm } from "@/components/admin/CreateProjectSetupForm";
 import { AdminProjectsList } from "@/components/admin/AdminProjectsList";
 import { services } from "@/lib/data";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import { AdminSection, AdminCard } from "@/components/admin/AdminSection";
 
 export const metadata: Metadata = {
   title: "Projects | Admin",
@@ -16,35 +18,32 @@ export default async function AdminProjectsPage() {
   ]);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          Projects
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          {projects.length} project{projects.length !== 1 ? "s" : ""}
-        </p>
-      </div>
+    <div className="space-y-10">
+      <PageHeader
+        eyebrow="Delivery"
+        title="Projects"
+        subtitle={`${projects.length} project${projects.length !== 1 ? "s" : ""} — engagements tied to clients and services.`}
+      />
 
-      <section>
-        <h2 className="text-lg font-semibold text-white">New project</h2>
-        <p className="mt-1 text-sm text-zinc-400">
-          Create a client engagement and project. Select client and service, then set name and status.
-        </p>
-        <div className="mt-4 max-w-xl rounded-xl border border-white/10 bg-white/5 p-6">
-          <CreateProjectSetupForm clients={clients} services={services} />
+      <AdminSection
+        eyebrow="Create"
+        title="New project"
+        description="Create a client engagement and project. Select client and service, then set name and status."
+      >
+        <div className="max-w-xl">
+          <AdminCard>
+            <CreateProjectSetupForm clients={clients} services={services} />
+          </AdminCard>
         </div>
-      </section>
+      </AdminSection>
 
-      <section>
-        <h2 className="text-lg font-semibold text-white">All projects</h2>
-        <p className="mt-1 text-sm text-zinc-400">
-          Filter by status to find projects quickly.
-        </p>
-        <div className="mt-4">
-          <AdminProjectsList projects={projects} />
-        </div>
-      </section>
+      <AdminSection
+        eyebrow="Directory"
+        title="All projects"
+        description="Filter by status and jump to edit. Archived projects are hidden from default filters."
+      >
+        <AdminProjectsList projects={projects} />
+      </AdminSection>
     </div>
   );
 }

@@ -9,7 +9,10 @@ import { countPendingLeadFollowUps } from "@/lib/lead-follow-up";
 import { getBookingUrl } from "@/lib/booking-url";
 import { SendLeadFollowUpsForm } from "@/components/admin/SendLeadFollowUpsForm";
 import { LeadFollowUpListBadge } from "@/components/admin/LeadFollowUpListBadge";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import { AD } from "@/components/admin/admin-ui";
 import { Sparkles, Building2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Support | Admin",
@@ -43,22 +46,18 @@ export default async function AdminSupportPage({
   ]);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          Support requests
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          {requests.length} request{requests.length !== 1 ? "s" : ""}
-          {view !== "all" && ` (${view})`}
-        </p>
-      </div>
+    <div className={AD.pageStack}>
+      <PageHeader
+        eyebrow="Inbox"
+        title="Support requests"
+        subtitle={`${requests.length} request${requests.length !== 1 ? "s" : ""}${view !== "all" ? ` · ${view}` : ""} — consultation leads and client portal threads.`}
+      />
 
-      <section className="rounded-xl border border-indigo-400/15 bg-gradient-to-br from-indigo-500/[0.06] to-transparent p-4 sm:p-5">
+      <section className="rounded-xl border border-indigo-400/15 bg-gradient-to-br from-indigo-500/[0.07] to-transparent p-5 ring-1 ring-white/[0.04] shadow-[0_8px_32px_-20px_rgba(0,0,0,0.35)] sm:p-6">
         <h2 className="text-sm font-semibold tracking-tight text-white">
           Consultation lead follow-up
         </h2>
-        <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
+        <p className="mt-1 text-xs leading-relaxed text-zinc-400">
           Batch or cron sends the booking reminder to qualified leads (open
           consultations, not suppressed). Requires Resend + booking URL.
         </p>
@@ -70,46 +69,42 @@ export default async function AdminSupportPage({
         </div>
       </section>
 
-      <div className="flex flex-wrap gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+      <div className={AD.filterWrap}>
         {VIEWS.map((v) => (
           <Link
             key={v.value}
             href={`/admin/support?view=${v.value}`}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-              view === v.value
-                ? "bg-white/10 text-white"
-                : "text-zinc-400 hover:text-white"
-            }`}
+            className={view === v.value ? AD.filterOn : AD.filterOff}
           >
             {v.label}
           </Link>
         ))}
       </div>
-      <div className="overflow-x-auto rounded-xl border border-white/10 bg-white/5">
+
+      <div className={AD.tableOuter}>
         <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/[0.04]">
-              <th className="px-4 py-3 font-medium text-zinc-400">Subject</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">From</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Source</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">
-                Lead follow-up
-              </th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Created</th>
+            <tr className={AD.theadRow}>
+              <th className={AD.th}>Subject</th>
+              <th className={AD.th}>From</th>
+              <th className={AD.th}>Source</th>
+              <th className={AD.th}>Lead follow-up</th>
+              <th className={AD.th}>Status</th>
+              <th className={AD.th}>Created</th>
             </tr>
           </thead>
           <tbody>
             {requests.map((r) => (
               <tr
                 key={r.id}
-                className={`border-b border-white/5 last:border-0 transition-colors ${
+                className={cn(
+                  AD.tbodyTr,
                   r.source === "public"
                     ? "bg-amber-500/[0.02] hover:bg-amber-500/[0.05]"
-                    : "hover:bg-white/[0.03]"
-                }`}
+                    : ""
+                )}
               >
-                <td className="px-4 py-3.5 align-top font-medium text-white">
+                <td className={`${AD.td} align-top font-medium text-white`}>
                   <Link
                     href={`/admin/support/${r.id}`}
                     className="transition-colors hover:text-indigo-400"
@@ -117,14 +112,14 @@ export default async function AdminSupportPage({
                     {r.subject}
                   </Link>
                 </td>
-                <td className="max-w-[200px] px-4 py-3.5 align-top text-zinc-300">
+                <td className={`${AD.td} max-w-[200px] align-top text-zinc-300`}>
                   <span className="line-clamp-2 break-words">
                     {r.source === "public"
                       ? r.publicContact ?? "—"
                       : r.clientName ?? "—"}
                   </span>
                 </td>
-                <td className="px-4 py-3.5 align-top">
+                <td className={`${AD.td} align-top`}>
                   {r.source === "public" ? (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/25 bg-gradient-to-r from-amber-500/15 to-orange-500/10 px-2.5 py-1 text-xs font-semibold text-amber-100 shadow-sm">
                       <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-300/90" />
@@ -137,13 +132,13 @@ export default async function AdminSupportPage({
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3.5 align-top">
+                <td className={`${AD.td} align-top`}>
                   <LeadFollowUpListBadge state={r.leadFollowUp} />
                 </td>
-                <td className="px-4 py-3.5 align-top text-zinc-400 capitalize">
+                <td className={`${AD.td} align-top capitalize text-zinc-400`}>
                   {r.status.replace(/_/g, " ")}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3.5 align-top text-zinc-500">
+                <td className={`${AD.td} whitespace-nowrap align-top text-zinc-500`}>
                   {formatDisplayDate(r.createdAt)}
                 </td>
               </tr>

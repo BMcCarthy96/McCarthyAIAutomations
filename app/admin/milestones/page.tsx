@@ -5,6 +5,9 @@ import {
   type AdminMilestoneListView,
 } from "@/lib/admin-data";
 import { formatDisplayDate } from "@/lib/utils";
+import { PageHeader } from "@/components/dashboard/PageHeader";
+import { AD } from "@/components/admin/admin-ui";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Milestones | Admin",
@@ -21,10 +24,26 @@ function isValidView(v: string | undefined): v is AdminMilestoneListView {
   return v === "upcoming" || v === "overdue" || v === "completed";
 }
 
-function statusLabelFor(row: { completedAt: string | null; dueDate: string }): "Completed" | "Overdue" | "Upcoming" {
+function statusLabelFor(row: {
+  completedAt: string | null;
+  dueDate: string;
+}): "Completed" | "Overdue" | "Upcoming" {
   if (row.completedAt) return "Completed";
   const today = new Date().toISOString().slice(0, 10);
   return row.dueDate < today ? "Overdue" : "Upcoming";
+}
+
+function statusPillClass(
+  status: "Completed" | "Overdue" | "Upcoming"
+): string {
+  switch (status) {
+    case "Completed":
+      return "border border-emerald-400/25 bg-emerald-500/12 text-emerald-100";
+    case "Overdue":
+      return "border border-rose-400/22 bg-rose-500/12 text-rose-100";
+    default:
+      return "border border-indigo-400/22 bg-indigo-500/12 text-indigo-100";
+  }
 }
 
 export default async function AdminMilestonesPage({
@@ -40,63 +59,55 @@ export default async function AdminMilestonesPage({
   const milestones = await getAllMilestones(view);
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-white">
-          Milestones
-        </h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          {milestones.length} milestone{milestones.length !== 1 ? "s" : ""} ({view})
-        </p>
-      </div>
+    <div className={AD.pageStack}>
+      <PageHeader
+        eyebrow="Delivery"
+        title="Milestones"
+        subtitle={`${milestones.length} milestone${milestones.length !== 1 ? "s" : ""} — ${view} view. Cross-client rollout checkpoints.`}
+      />
 
-      <div className="flex flex-wrap gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
+      <div className={AD.filterWrap}>
         {VIEWS.map((v) => (
           <Link
             key={v.value}
             href={`/admin/milestones?view=${v.value}`}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-              view === v.value
-                ? "bg-white/10 text-white"
-                : "text-zinc-400 hover:text-white"
-            }`}
+            className={view === v.value ? AD.filterOn : AD.filterOff}
           >
             {v.label}
           </Link>
         ))}
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-        <table className="w-full text-left text-sm">
+      <div className={AD.tableOuter}>
+        <table className="w-full min-w-[720px] text-left text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-3 font-medium text-zinc-400">Title</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Project</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Due date</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
+            <tr className={AD.theadRow}>
+              <th className={AD.th}>Title</th>
+              <th className={AD.th}>Client</th>
+              <th className={AD.th}>Project</th>
+              <th className={AD.th}>Due date</th>
+              <th className={AD.th}>Status</th>
             </tr>
           </thead>
           <tbody>
             {milestones.map((m) => {
               const status = statusLabelFor(m);
-              const statusClass =
-                status === "Completed"
-                  ? "bg-emerald-500/20 text-emerald-200"
-                  : status === "Overdue"
-                    ? "bg-rose-500/20 text-rose-200"
-                    : "bg-indigo-500/20 text-indigo-200";
               return (
-                <tr key={m.id} className="border-b border-white/5 last:border-0">
-                  <td className="px-4 py-3 font-medium text-white">{m.title}</td>
-                  <td className="px-4 py-3 text-zinc-300">{m.clientName}</td>
-                  <td className="px-4 py-3 text-zinc-300">{m.projectName}</td>
-                  <td className="px-4 py-3 text-zinc-400">
+                <tr key={m.id} className={AD.tbodyTr}>
+                  <td className={`${AD.td} font-medium text-white`}>
+                    {m.title}
+                  </td>
+                  <td className={`${AD.td} text-zinc-300`}>{m.clientName}</td>
+                  <td className={`${AD.td} text-zinc-300`}>{m.projectName}</td>
+                  <td className={`${AD.td} text-zinc-400`}>
                     {formatDisplayDate(m.dueDate)}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className={AD.td}>
                     <span
-                      className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${statusClass}`}
+                      className={cn(
+                        "inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide",
+                        statusPillClass(status)
+                      )}
                     >
                       {status}
                     </span>
@@ -114,4 +125,3 @@ export default async function AdminMilestonesPage({
     </div>
   );
 }
-

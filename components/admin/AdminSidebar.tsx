@@ -42,22 +42,22 @@ export function AdminSidebar() {
             href={item.href}
             onClick={() => setOpen(false)}
             className={cn(
-              "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+              "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
               isActive
-                ? "bg-white/10 text-white"
-                : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                ? "bg-indigo-500/15 text-white shadow-sm ring-1 ring-indigo-400/20"
+                : "text-zinc-400 hover:bg-white/[0.05] hover:text-white"
             )}
           >
             {isActive && (
               <span
-                className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-indigo-500"
+                className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-indigo-400"
                 aria-hidden
               />
             )}
             <Icon
               className={cn(
                 "h-5 w-5 shrink-0",
-                isActive ? "text-indigo-400" : "text-current"
+                isActive ? "text-indigo-300" : "text-current"
               )}
             />
             {item.label}
@@ -86,7 +86,7 @@ export function AdminSidebar() {
       )}
       <aside
         className={cn(
-          "fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-white/10 bg-[var(--background)]/95 shadow-xl backdrop-blur-xl transition-transform duration-200 ease-out lg:translate-x-0",
+          "fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-white/[0.08] bg-[var(--background)]/92 shadow-[8px_0_32px_-12px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-transform duration-200 ease-out lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >

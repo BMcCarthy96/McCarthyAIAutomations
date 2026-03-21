@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import type { AdminProjectRow } from "@/lib/admin-data";
 import { Pencil } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { AD, adminProjectStatusClass } from "@/components/admin/admin-ui";
 
 const FILTERS = [
   { value: "all" as const, label: "All" },
@@ -15,56 +17,63 @@ const FILTERS = [
 ];
 
 export function AdminProjectsList({ projects }: { projects: AdminProjectRow[] }) {
-  const [filter, setFilter] = useState<typeof FILTERS[number]["value"]>("all");
+  const [filter, setFilter] = useState<(typeof FILTERS)[number]["value"]>("all");
 
   const filtered =
     filter === "archived"
       ? projects.filter((p) => p.isArchived)
-      : projects.filter((p) => !p.isArchived && (filter === "all" || p.status === filter));
+      : projects.filter(
+          (p) =>
+            !p.isArchived && (filter === "all" || p.status === filter)
+        );
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className={cn(AD.filterWrap, "mb-4")}>
         {FILTERS.map((f) => (
           <button
             key={f.value}
             type="button"
             onClick={() => setFilter(f.value)}
-            className={
-              filter === f.value
-                ? "rounded-lg border border-indigo-500/50 bg-indigo-500/20 px-3 py-1.5 text-sm font-medium text-white"
-                : "rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-white/20 hover:bg-white/10 hover:text-white"
-            }
+            className={filter === f.value ? AD.filterOn : AD.filterOff}
           >
             {f.label}
           </button>
         ))}
       </div>
-      <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-        <table className="w-full text-left text-sm">
+      <div className={AD.tableOuter}>
+        <table className="w-full min-w-[640px] text-left text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/5">
-              <th className="px-4 py-3 font-medium text-zinc-400">Name</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Client</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Progress</th>
-              <th className="px-4 py-3 font-medium text-zinc-400">Actions</th>
+            <tr className={AD.theadRow}>
+              <th className={AD.th}>Name</th>
+              <th className={AD.th}>Client</th>
+              <th className={AD.th}>Status</th>
+              <th className={AD.th}>Progress</th>
+              <th className={AD.th}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((p) => (
-              <tr
-                key={p.id}
-                className="border-b border-white/5 last:border-0"
-              >
-                <td className="px-4 py-3 font-medium text-white">{p.name}</td>
-                <td className="px-4 py-3 text-zinc-300">{p.clientName}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.status}</td>
-                <td className="px-4 py-3 text-zinc-400">{p.progress}%</td>
-                <td className="px-4 py-3">
+              <tr key={p.id} className={AD.tbodyTr}>
+                <td className={`${AD.td} font-medium text-white`}>{p.name}</td>
+                <td className={`${AD.td} text-zinc-300`}>{p.clientName}</td>
+                <td className={AD.td}>
+                  <span
+                    className={cn(
+                      "inline-flex rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide",
+                      adminProjectStatusClass(p.status)
+                    )}
+                  >
+                    {p.status.replace(/_/g, " ")}
+                  </span>
+                </td>
+                <td className={`${AD.td} tabular-nums text-zinc-400`}>
+                  {p.progress}%
+                </td>
+                <td className={AD.td}>
                   <Link
                     href={`/admin/projects/${p.id}/edit`}
-                    className="inline-flex items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"
+                    className="inline-flex items-center gap-1.5 text-sm font-medium text-zinc-400 transition-colors hover:text-white"
                   >
                     <Pencil className="h-4 w-4" />
                     Edit
@@ -81,7 +90,7 @@ export function AdminProjectsList({ projects }: { projects: AdminProjectRow[] })
             ? "No projects yet."
             : filter === "archived"
               ? "No archived projects."
-              : `No ${filter.replace("_", " ")} projects.`}
+              : `No ${filter.replace(/_/g, " ")} projects.`}
         </p>
       )}
     </>

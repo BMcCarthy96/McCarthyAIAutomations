@@ -32,7 +32,7 @@ export function ClientClerkLinkCell({
 
   if (editing) {
     return (
-      <td className="px-4 py-3 text-zinc-400">
+      <td className="px-4 py-3.5 text-zinc-400">
         <form action={formAction} className="flex flex-col gap-2">
           <input type="hidden" name="clientId" value={clientId} />
           <input
@@ -67,7 +67,7 @@ export function ClientClerkLinkCell({
   }
 
   return (
-    <td className="px-4 py-3 text-zinc-400">
+    <td className="px-4 py-3.5 text-zinc-400">
       <span className="flex flex-wrap items-center gap-2">
         {currentClerkUserId ? (
           <span title={currentClerkUserId}>{truncateId(currentClerkUserId)}</span>
