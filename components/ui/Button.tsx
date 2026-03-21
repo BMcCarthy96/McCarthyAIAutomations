@@ -2,7 +2,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "secondary" | "ghost" | "outline";
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "danger";
   size?: "sm" | "md" | "lg";
   href?: string;
   children: React.ReactNode;
@@ -28,6 +28,8 @@ export function Button({
     ghost: "text-zinc-300 hover:text-white hover:bg-white/5 focus:ring-white/20",
     outline:
       "border-2 border-white/20 text-white hover:bg-white/10 focus:ring-white/30",
+    danger:
+      "bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-500 border border-rose-500/50 shadow-lg shadow-rose-900/30",
   };
   const sizes = {
     sm: "px-4 py-2 text-sm",

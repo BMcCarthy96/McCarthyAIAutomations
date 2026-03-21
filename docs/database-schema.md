@@ -97,6 +97,7 @@ CREATE TABLE clients (
   name          text NOT NULL,
   email         text NOT NULL,
   company       text,
+  is_archived   boolean NOT NULL DEFAULT false,
   clerk_user_id text UNIQUE,
   created_at    timestamptz DEFAULT now(),
   updated_at    timestamptz DEFAULT now()

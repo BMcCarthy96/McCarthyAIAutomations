@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getAllBillingRecords } from "@/lib/admin-data";
 import { BillingRecordStatusForm } from "@/components/admin/BillingRecordStatusForm";
 import { BillingPaymentLinkForm } from "@/components/admin/BillingPaymentLinkForm";
+import { BillingRecordDeleteForm } from "@/components/admin/BillingRecordDeleteForm";
 import { billingStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 
@@ -101,6 +102,10 @@ export default async function AdminBillingPage() {
                       currentPaymentLinkUrl={
                         (r.stripePaymentLinkUrl as string | null) ?? null
                       }
+                    />
+                    <BillingRecordDeleteForm
+                      recordId={r.id}
+                      description={r.description}
                     />
                   </div>
                 </td>

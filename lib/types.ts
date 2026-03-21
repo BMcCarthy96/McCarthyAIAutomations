@@ -75,6 +75,8 @@ export interface Client {
   name: string;
   email: string;
   company?: string;
+  /** When true, hidden from portal and monthly report batch until unarchived. */
+  isArchived?: boolean;
   /** Admin-controlled toggle for monthly impact report emails. */
   monthlyReportEnabled?: boolean;
   /** Clerk user id when linking portal to auth. */

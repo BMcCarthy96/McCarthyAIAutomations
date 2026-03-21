@@ -82,6 +82,44 @@ curl -X POST "http://localhost:3000/api/cron/monthly-impact" \
   -H "x-cron-secret: $CRON_SECRET"
 ```
 
+## Demo Data Setup (Sales / Screenshots)
+
+Use the dedicated SQL seed at:
+
+- `supabase/seeds/demo_showcase.sql`
+
+What it creates:
+
+- 1 polished demo client: **Acme Home Services (Demo)** (`demo@acmehome.example`)
+- 3 demo projects with realistic statuses/progress
+- milestones (upcoming, overdue, completed)
+- project updates
+- project metrics (for monthly impact report)
+- billing records (paid/pending/overdue)
+- support requests + one admin reply
+
+How to seed intentionally:
+
+1. Open Supabase SQL Editor for your demo/staging project.
+2. Run the full contents of `supabase/seeds/demo_showcase.sql`.
+
+How to reset demo data:
+
+- Re-run the same script.  
+  It deletes/recreates only the fixed demo IDs inside the script, so it is safe to run repeatedly for clean screenshots.
+
+Demo account identification:
+
+- **Name:** Alex Rivera
+- **Company:** Acme Home Services (Demo)
+- **Email:** `demo@acmehome.example`
+
+Notes:
+
+- This is separate from runtime logic (no demo-only code paths in app).
+- The script expects services with IDs `2`, `3`, and `4` to exist.
+- For portal-login demos, link this demo client to a Clerk user by setting `clients.clerk_user_id`.
+
 Copy names and example values from `.env.example`, then replace with real production values. Redeploy after changing variables.
 
 See the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

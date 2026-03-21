@@ -5,6 +5,7 @@ import { CreateClientForm } from "@/components/admin/CreateClientForm";
 import { ClientClerkLinkCell } from "@/components/admin/ClientClerkLinkCell";
 import { formatDisplayDate } from "@/lib/utils";
 import { CreateStripeCustomerButton } from "@/components/admin/CreateStripeCustomerButton";
+import { ClientArchiveActions } from "@/components/admin/ClientArchiveActions";
 import { RunMonthlyImpactReportEmailsForm } from "@/components/admin/RunMonthlyImpactReportEmailsForm";
 import { Pencil } from "lucide-react";
 
@@ -54,6 +55,7 @@ export default async function AdminClientsPage() {
             <thead>
               <tr className="border-b border-white/10 bg-white/5">
                 <th className="px-4 py-3 font-medium text-zinc-400">Name</th>
+                <th className="px-4 py-3 font-medium text-zinc-400">Status</th>
                 <th className="px-4 py-3 font-medium text-zinc-400">Email</th>
                 <th className="px-4 py-3 font-medium text-zinc-400">Company</th>
                 <th className="px-4 py-3 font-medium text-zinc-400">Clerk linked</th>
@@ -68,6 +70,15 @@ export default async function AdminClientsPage() {
                   className="border-b border-white/5 last:border-0"
                 >
                   <td className="px-4 py-3 font-medium text-white">{c.name}</td>
+                  <td className="px-4 py-3">
+                    {c.isArchived ? (
+                      <span className="inline-flex rounded-full bg-zinc-500/15 px-2 py-0.5 text-xs font-medium text-zinc-400 ring-1 ring-zinc-500/30">
+                        Archived
+                      </span>
+                    ) : (
+                      <span className="text-xs text-zinc-600">Active</span>
+                    )}
+                  </td>
                   <td className="px-4 py-3 text-zinc-300">{c.email}</td>
                   <td className="px-4 py-3 text-zinc-400">{c.company ?? "—"}</td>
                   <ClientClerkLinkCell
@@ -79,6 +90,10 @@ export default async function AdminClientsPage() {
                   </td>
                   <td className="px-4 py-3">
                     <span className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                      <ClientArchiveActions
+                        clientId={c.id}
+                        isArchived={c.isArchived ?? false}
+                      />
                       {!c.stripeCustomerId && (
                         <CreateStripeCustomerButton clientId={c.id} />
                       )}

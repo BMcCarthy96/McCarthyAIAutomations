@@ -32,6 +32,7 @@ export async function getCurrentClientId(): Promise<string | null> {
     .from("clients")
     .select("id")
     .eq("clerk_user_id", userId)
+    .eq("is_archived", false)
     .maybeSingle();
 
   if (error || !data) return null;

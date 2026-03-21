@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { Resend } from "resend";
 import { renderEmailTemplate } from "@/lib/email/template";
 import { getSupabaseServiceClient } from "@/lib/supabase";
@@ -24,6 +25,9 @@ import type {
   CreateProjectSetupState,
   UpdateClientClerkLinkState,
   UpdateProjectMetricsState,
+  ArchiveClientState,
+  DeleteClientState,
+  DeleteBillingRecordState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
@@ -590,6 +594,36 @@ export async function updateBillingStatusAction(
   return { success: true };
 }
 
+export async function deleteBillingRecordAction(
+  _prevState: DeleteBillingRecordState | null,
+  formData: FormData
+): Promise<DeleteBillingRecordState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const recordId = (formData.get("recordId") as string)?.trim();
+  if (!recordId) {
+    return { success: false, error: "Record is required." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { error } = await supabase.from("billing_records").delete().eq("id", recordId);
+
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  revalidatePath("/admin/billing");
+  revalidatePath("/dashboard/billing");
+  return { success: true };
+}
+
 export async function createStripePaymentLinkAction(
   _prevState: CreateStripePaymentLinkState | null,
   formData: FormData
@@ -790,6 +824,122 @@ export async function updateClientClerkLinkAction(
   revalidatePath(`/admin/clients/${clientId}/edit`);
   revalidatePath(`/admin/clients/${clientId}/link`);
   return { success: true };
+}
+
+/** Single-argument form actions for `<form action={...}>` (no useActionState). */
+export async function archiveClientFormAction(formData: FormData): Promise<void> {
+  await archiveClientAction(null, formData);
+}
+
+export async function unarchiveClientFormAction(formData: FormData): Promise<void> {
+  await unarchiveClientAction(null, formData);
+}
+
+export async function archiveClientAction(
+  _prevState: ArchiveClientState | null,
+  formData: FormData
+): Promise<ArchiveClientState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  if (!clientId) return { success: false, error: "Client is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("clients")
+    .update({ is_archived: true, updated_at: new Date().toISOString() })
+    .eq("id", clientId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/clients");
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/admin/clients/${clientId}/edit`);
+  revalidatePath(`/admin/clients/${clientId}/link`);
+  return { success: true };
+}
+
+export async function unarchiveClientAction(
+  _prevState: ArchiveClientState | null,
+  formData: FormData
+): Promise<ArchiveClientState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  if (!clientId) return { success: false, error: "Client is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { error } = await supabase
+    .from("clients")
+    .update({ is_archived: false, updated_at: new Date().toISOString() })
+    .eq("id", clientId);
+
+  if (error) return { success: false, error: error.message };
+
+  revalidatePath("/admin/clients");
+  revalidatePath(`/admin/clients/${clientId}`);
+  revalidatePath(`/admin/clients/${clientId}/edit`);
+  revalidatePath(`/admin/clients/${clientId}/link`);
+  return { success: true };
+}
+
+/**
+ * Permanently removes the client and all related rows (see migration `delete_client_cascade`).
+ * Requires typing the client email exactly. Does not delete the Stripe customer in Stripe.
+ */
+export async function deleteClientAction(
+  _prevState: DeleteClientState | null,
+  formData: FormData
+): Promise<DeleteClientState> {
+  const allowed = await isAdminUser();
+  if (!allowed) return { success: false, error: "Unauthorized." };
+
+  const clientId = (formData.get("clientId") as string)?.trim();
+  const confirmEmail = (formData.get("confirmEmail") as string)?.trim() ?? "";
+
+  if (!clientId) return { success: false, error: "Client is required." };
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return { success: false, error: "Database unavailable." };
+
+  const { data: row, error: fetchErr } = await supabase
+    .from("clients")
+    .select("email")
+    .eq("id", clientId)
+    .maybeSingle();
+
+  if (fetchErr || !row) {
+    return { success: false, error: fetchErr?.message ?? "Client not found." };
+  }
+
+  const email = String(row.email ?? "").trim();
+  if (!email || confirmEmail !== email) {
+    return {
+      success: false,
+      error: "Type the client email exactly to confirm permanent deletion.",
+    };
+  }
+
+  const { error: rpcErr } = await supabase.rpc("delete_client_cascade", {
+    p_client_id: clientId,
+  });
+
+  if (rpcErr) {
+    return { success: false, error: rpcErr.message };
+  }
+
+  revalidatePath("/admin/clients");
+  revalidatePath("/admin/billing");
+  revalidatePath("/admin/projects");
+  revalidatePath("/dashboard");
+  revalidatePath("/dashboard/billing");
+  redirect("/admin/clients");
 }
 
 // ---------------------------------------------------------------------------

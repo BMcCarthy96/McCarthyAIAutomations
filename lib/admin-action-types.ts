@@ -75,6 +75,18 @@ export type UpdateClientClerkLinkState =
   | { success: false; error: string }
   | { success: true };
 
+export type ArchiveClientState =
+  | { success: false; error: string }
+  | { success: true };
+
+export type DeleteClientState =
+  | { success: false; error: string }
+  | { success: true };
+
+export type DeleteBillingRecordState =
+  | { success: false; error: string }
+  | { success: true };
+
 export type UpdateProjectMetricsState =
   | { success: false; error: string }
   | { success: true };

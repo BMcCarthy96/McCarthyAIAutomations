@@ -14,6 +14,7 @@ interface DbClient {
   email: string;
   company: string | null;
   monthly_report_enabled: boolean;
+  is_archived: boolean;
   clerk_user_id: string | null;
   stripe_customer_id: string | null;
   stripe_subscription_id: string | null;
@@ -54,7 +55,9 @@ export async function getAllClients(): Promise<Client[]> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, monthly_report_enabled, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
+    .select(
+      "id, name, email, company, monthly_report_enabled, is_archived, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at"
+    )
     .order("name");
 
   if (error || !data) return [];
@@ -65,6 +68,7 @@ export async function getAllClients(): Promise<Client[]> {
     email: row.email,
     company: row.company ?? undefined,
     monthlyReportEnabled: row.monthly_report_enabled,
+    isArchived: row.is_archived,
     clerkUserId: row.clerk_user_id,
     stripeCustomerId: row.stripe_customer_id ?? undefined,
     stripeSubscriptionId: row.stripe_subscription_id ?? undefined,
@@ -79,7 +83,9 @@ export async function getClientById(id: string): Promise<Client | null> {
 
   const { data, error } = await supabase
     .from("clients")
-    .select("id, name, email, company, monthly_report_enabled, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at")
+    .select(
+      "id, name, email, company, monthly_report_enabled, is_archived, clerk_user_id, stripe_customer_id, stripe_subscription_id, created_at, updated_at"
+    )
     .eq("id", id)
     .maybeSingle();
 
@@ -91,11 +97,78 @@ export async function getClientById(id: string): Promise<Client | null> {
     email: row.email,
     company: row.company ?? undefined,
     monthlyReportEnabled: row.monthly_report_enabled,
+    isArchived: row.is_archived,
     clerkUserId: row.clerk_user_id,
     stripeCustomerId: row.stripe_customer_id ?? undefined,
     stripeSubscriptionId: row.stripe_subscription_id ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+  };
+}
+
+/** Row counts shown before permanent client delete (related data removed in one DB transaction). */
+export interface ClientDeletionImpact {
+  clientServices: number;
+  projects: number;
+  billingRecords: number;
+  supportRequests: number;
+  supportReplies: number;
+}
+
+export async function getClientDeletionImpact(
+  clientId: string
+): Promise<ClientDeletionImpact | null> {
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) return null;
+
+  const { data: csRows, error: e1 } = await supabase
+    .from("client_services")
+    .select("id")
+    .eq("client_id", clientId);
+
+  if (e1) return null;
+
+  const clientServices = csRows?.length ?? 0;
+  const csIds = (csRows ?? []).map((r: { id: string }) => r.id);
+  let projects = 0;
+  if (csIds.length > 0) {
+    const { count: pc } = await supabase
+      .from("projects")
+      .select("id", { count: "exact", head: true })
+      .in("client_service_id", csIds);
+    projects = pc ?? 0;
+  }
+
+  const { count: billingRecords, error: e2 } = await supabase
+    .from("billing_records")
+    .select("id", { count: "exact", head: true })
+    .eq("client_id", clientId);
+
+  if (e2) return null;
+
+  const { data: srRows } = await supabase
+    .from("support_requests")
+    .select("id")
+    .eq("client_id", clientId);
+
+  const supportRequests = srRows?.length ?? 0;
+  const srIds = (srRows ?? []).map((r: { id: string }) => r.id);
+
+  let supportReplies = 0;
+  if (srIds.length > 0) {
+    const { count: rc } = await supabase
+      .from("support_replies")
+      .select("id", { count: "exact", head: true })
+      .in("support_request_id", srIds);
+    supportReplies = rc ?? 0;
+  }
+
+  return {
+    clientServices: clientServices ?? 0,
+    projects,
+    billingRecords: billingRecords ?? 0,
+    supportRequests,
+    supportReplies,
   };
 }
 

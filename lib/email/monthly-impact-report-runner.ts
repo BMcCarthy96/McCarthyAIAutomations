@@ -27,6 +27,7 @@ export async function runMonthlyImpactReportEmails(): Promise<MonthlyImpactRepor
   const { data: rows, error } = await supabase
     .from("clients")
     .select("id, name, email, monthly_report_enabled")
+    .eq("is_archived", false)
     .order("name");
 
   if (error) {
