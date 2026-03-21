@@ -29,10 +29,12 @@ import type {
   DeleteClientState,
   DeleteBillingRecordState,
   SendPendingLeadFollowUpsState,
+  SetLeadFollowUpSuppressedState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
   sendSupportReplyAction as implSendSupportReplyAction,
+  setLeadFollowUpSuppressedAction as implSetLeadFollowUpSuppressedAction,
 } from "@/lib/support/admin-actions";
 import { runMonthlyImpactReportEmails } from "@/lib/email/monthly-impact-report-runner";
 import { getBookingUrl } from "@/lib/booking-url";
@@ -517,6 +519,13 @@ export async function sendSupportReplyAction(
   formData: FormData
 ) {
   return implSendSupportReplyAction(prevState, formData);
+}
+
+export async function setLeadFollowUpSuppressedAction(
+  prevState: SetLeadFollowUpSuppressedState | null,
+  formData: FormData
+) {
+  return implSetLeadFollowUpSuppressedAction(prevState, formData);
 }
 
 /**

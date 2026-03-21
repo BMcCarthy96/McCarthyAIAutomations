@@ -5,22 +5,47 @@ import { processPendingLeadFollowUps } from "@/lib/lead-follow-up";
 
 /**
  * Protected batch trigger for lead follow-up emails (Vercel Cron, external scheduler, or webhook).
- * POST with Authorization: Bearer LEAD_FOLLOW_UP_CRON_SECRET
+ * Vercel Cron invokes **GET**; manual tools may use POST.
+ * Authorization: Bearer <LEAD_FOLLOW_UP_CRON_SECRET> or Bearer <CRON_SECRET> (Vercel auto-sends CRON_SECRET).
  *
- * Same processing as admin "Send pending follow-ups" — add scheduler when ready.
+ * Set LEAD_FOLLOW_UP_CRON_ENABLED=true to allow sending; otherwise returns ok + skipped (admin manual send unchanged).
  */
-export async function POST(request: Request) {
-  const secret = process.env.LEAD_FOLLOW_UP_CRON_SECRET?.trim();
-  if (!secret) {
+function isLeadFollowUpCronEnabled(): boolean {
+  return process.env.LEAD_FOLLOW_UP_CRON_ENABLED?.trim() === "true";
+}
+
+function getCronBearerSecrets(): string[] {
+  const a = process.env.LEAD_FOLLOW_UP_CRON_SECRET?.trim();
+  const b = process.env.CRON_SECRET?.trim();
+  return [a, b].filter((s): s is string => Boolean(s));
+}
+
+function isAuthorizedCron(request: Request): boolean {
+  const secrets = getCronBearerSecrets();
+  const auth = request.headers.get("authorization");
+  if (!auth?.startsWith("Bearer ")) return false;
+  const token = auth.slice("Bearer ".length).trim();
+  return secrets.some((s) => s === token);
+}
+
+async function handleLeadFollowUpCron(request: Request) {
+  const secrets = getCronBearerSecrets();
+  if (secrets.length === 0) {
     return NextResponse.json(
-      { error: "LEAD_FOLLOW_UP_CRON_SECRET is not configured" },
+      {
+        error:
+          "LEAD_FOLLOW_UP_CRON_SECRET or CRON_SECRET must be configured",
+      },
       { status: 503 }
     );
   }
 
-  const auth = request.headers.get("authorization");
-  if (auth !== `Bearer ${secret}`) {
+  if (!isAuthorizedCron(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (!isLeadFollowUpCronEnabled()) {
+    return NextResponse.json({ ok: true, skipped: "disabled" });
   }
 
   const bookingUrl = getBookingUrl();
@@ -50,4 +75,13 @@ export async function POST(request: Request) {
       { status: 500 }
     );
   }
+}
+
+/** Vercel Cron invokes GET. */
+export async function GET(request: Request) {
+  return handleLeadFollowUpCron(request);
+}
+
+export async function POST(request: Request) {
+  return handleLeadFollowUpCron(request);
 }

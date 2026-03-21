@@ -112,6 +112,7 @@ export interface Database {
           requester_email: string | null;
           lead_follow_up_eligible: boolean;
           follow_up_sent_at: string | null;
+          lead_follow_up_suppressed: boolean;
           created_at: string;
           updated_at: string | null;
         };
@@ -127,6 +128,7 @@ export interface Database {
           requester_email?: string | null;
           lead_follow_up_eligible?: boolean;
           follow_up_sent_at?: string | null;
+          lead_follow_up_suppressed?: boolean;
           created_at?: string;
           updated_at?: string | null;
         };
@@ -142,6 +144,7 @@ export interface Database {
           requester_email?: string | null;
           lead_follow_up_eligible?: boolean;
           follow_up_sent_at?: string | null;
+          lead_follow_up_suppressed?: boolean;
           created_at?: string;
           updated_at?: string | null;
         };

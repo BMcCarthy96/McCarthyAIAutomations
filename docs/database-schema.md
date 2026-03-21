@@ -17,7 +17,7 @@ A single reference for the future Supabase schema. **No database is implemented 
 - **projects** — A delivery engagement. **One-to-one** with client_services: each client_service has one project (the delivery). The project has its own status and progress and holds milestones and updates.
 - **milestones** — **One-to-many** from projects: each project has many milestones (due dates, titles, completed flag).
 - **project_updates** — **One-to-many** from projects: each project has many updates (title, body, created_at).
-- **support_requests** — Mostly **one-to-many** from clients (portal). Rows may also have **no** `client_id` (public marketing submissions) with `requester_name` / `requester_email` instead. Optionally linked to a project via `project_id`. Public consultation rows can use **`lead_follow_up_eligible`** / **`follow_up_sent_at`** for the booking follow-up automation (see migration `20250317170000_lead_follow_up_support_requests.sql`).
+- **support_requests** — Mostly **one-to-many** from clients (portal). Rows may also have **no** `client_id` (public marketing submissions) with `requester_name` / `requester_email` instead. Optionally linked to a project via `project_id`. Public consultation rows can use **`lead_follow_up_eligible`** / **`follow_up_sent_at`** / **`lead_follow_up_suppressed`** for the booking follow-up automation (see migrations `20250317170000_lead_follow_up_support_requests.sql`, `20250317180000_lead_follow_up_suppressed.sql`).
 - **support_replies** — **One-to-many** from support_requests: admin replies stored for threading; `sender_type` defaults to `admin` for future expansion.
 - **billing_records** — **One-to-many** from clients: each client has many invoices/payments.
 
@@ -184,7 +184,7 @@ CREATE TABLE support_requests (
     )
   )
 );
--- Also: lead_follow_up_eligible boolean NOT NULL DEFAULT false; follow_up_sent_at timestamptz (migration 20250317170000).
+-- Also: lead_follow_up_eligible boolean NOT NULL DEFAULT false; follow_up_sent_at timestamptz (migration 20250317170000); lead_follow_up_suppressed boolean NOT NULL DEFAULT false (20250317180000).
 
 CREATE INDEX idx_support_requests_client_id ON support_requests (client_id);
 

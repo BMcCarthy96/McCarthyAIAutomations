@@ -29,6 +29,7 @@ export async function fetchPendingLeadFollowUps(): Promise<PendingLeadFollowUpRo
     .is("client_id", null)
     .eq("category", "public")
     .eq("lead_follow_up_eligible", true)
+    .eq("lead_follow_up_suppressed", false)
     .is("follow_up_sent_at", null)
     .in("status", [...OPEN_STATUSES])
     .not("requester_email", "is", null);
@@ -89,6 +90,7 @@ export async function processPendingLeadFollowUps(
       .update({ follow_up_sent_at: now, updated_at: now })
       .eq("id", row.id)
       .is("follow_up_sent_at", null)
+      .eq("lead_follow_up_suppressed", false)
       .select("id")
       .maybeSingle();
 

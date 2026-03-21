@@ -12,6 +12,7 @@ import { isAdminUser } from "@/lib/admin-auth";
 import type {
   UpdateSupportRequestStatusState,
   SendSupportReplyState,
+  SetLeadFollowUpSuppressedState,
 } from "@/lib/admin-action-types";
 
 const SUPPORT_REPLY_EMAIL_FOOTER =
@@ -213,5 +214,71 @@ export async function sendSupportReplyAction(
     );
   }
 
+  return { success: true };
+}
+
+/**
+ * Per-lead opt-out for automated booking follow-up (public consultation rows only).
+ */
+export async function setLeadFollowUpSuppressedAction(
+  _prevState: SetLeadFollowUpSuppressedState | null,
+  formData: FormData
+): Promise<SetLeadFollowUpSuppressedState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const requestId = (formData.get("requestId") as string)?.trim();
+  const suppressedRaw = (formData.get("suppressed") as string)?.trim();
+  const suppressed = suppressedRaw === "true";
+
+  if (!requestId) {
+    return { success: false, error: "Request is required." };
+  }
+  if (suppressedRaw !== "true" && suppressedRaw !== "false") {
+    return { success: false, error: "Invalid action." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { data: row, error: fetchError } = await supabase
+    .from("support_requests")
+    .select("id, client_id")
+    .eq("id", requestId)
+    .maybeSingle();
+
+  if (fetchError || !row) {
+    return {
+      success: false,
+      error: fetchError?.message ?? "Support request not found.",
+    };
+  }
+
+  const typed = row as { id: string; client_id: string | null };
+  if (typed.client_id !== null) {
+    return {
+      success: false,
+      error: "Follow-up suppression applies to public consultation requests only.",
+    };
+  }
+
+  const { error: updateError } = await supabase
+    .from("support_requests")
+    .update({
+      lead_follow_up_suppressed: suppressed,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", requestId);
+
+  if (updateError) {
+    return { success: false, error: updateError.message };
+  }
+
+  revalidatePath("/admin/support");
+  revalidatePath(`/admin/support/${requestId}`);
   return { success: true };
 }

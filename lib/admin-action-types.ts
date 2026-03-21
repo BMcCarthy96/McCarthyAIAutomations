@@ -95,3 +95,7 @@ export type UpdateProjectMetricsState =
 export type SendPendingLeadFollowUpsState =
   | { success: false; error: string }
   | { success: true; sent: number; failed: number };
+
+export type SetLeadFollowUpSuppressedState =
+  | { success: false; error: string }
+  | { success: true };

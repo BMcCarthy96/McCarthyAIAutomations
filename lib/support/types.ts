@@ -42,6 +42,8 @@ export interface AdminSupportDetail {
   /** Public consultation lead follow-up automation (client rows: always ineligible / N/A). */
   leadFollowUpEligible: boolean;
   followUpSentAt: string | null;
+  /** When true, cron/manual batch skips this lead for follow-up (public rows only). */
+  leadFollowUpSuppressed: boolean;
 }
 
 export type SupportRequestListView = "active" | "resolved" | "closed" | "all";

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getSupportRequestById } from "@/lib/admin-data";
 import { SupportRequestStatusForm } from "@/components/admin/SupportRequestStatusForm";
 import { SupportRequestReplyForm } from "@/components/admin/SupportRequestReplyForm";
+import { LeadFollowUpSuppressionForm } from "@/components/admin/LeadFollowUpSuppressionForm";
 import { supportRequestStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
@@ -75,17 +76,43 @@ export default async function AdminSupportRequestPage({
               </p>
             </div>
           )}
-        {request.source === "public" && (
-          <div>
+        {request.source === "public" && request.leadFollowUpEligible && (
+          <div className="rounded-lg border border-white/10 bg-white/[0.03] p-4">
             <p className="text-sm font-medium text-zinc-400">
               Lead follow-up email
             </p>
             <p className="mt-0.5 text-sm text-zinc-300">
               {request.followUpSentAt
                 ? `Sent ${formatDisplayDate(request.followUpSentAt)}`
-                : request.leadFollowUpEligible
-                  ? "Eligible — pending send (still open; use Support → Send pending follow-ups)."
-                  : "Not eligible (legacy submission or not marked for automation)."}
+                : request.leadFollowUpSuppressed
+                  ? "Suppressed — automated follow-up will not be sent for this lead."
+                  : "Eligible — pending send (still open; use Support → Send pending follow-ups or cron)."}
+            </p>
+            {!request.followUpSentAt && (
+              <div className="mt-3">
+                <LeadFollowUpSuppressionForm
+                  requestId={request.id}
+                  suppressed={request.leadFollowUpSuppressed}
+                  showDisable={
+                    !request.leadFollowUpSuppressed
+                  }
+                  showReEnable={request.leadFollowUpSuppressed}
+                />
+                <p className="mt-2 text-xs text-zinc-500 leading-relaxed">
+                  Disabling stops this lead from receiving the scheduled or batch
+                  booking reminder. Does not affect global cron or other leads.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+        {request.source === "public" && !request.leadFollowUpEligible && (
+          <div>
+            <p className="text-sm font-medium text-zinc-400">
+              Lead follow-up email
+            </p>
+            <p className="mt-0.5 text-sm text-zinc-300">
+              Not eligible (legacy submission or not marked for automation).
             </p>
           </div>
         )}
