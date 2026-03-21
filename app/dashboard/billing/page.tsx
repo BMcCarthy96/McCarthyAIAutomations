@@ -8,81 +8,107 @@ import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Button } from "@/components/ui/Button";
 import { DemoHint } from "@/components/dashboard/DemoHint";
-import { CheckCircle2, Receipt } from "lucide-react";
+import { Receipt } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Billing",
   description: "Billing and invoices.",
 };
 
+function statusBadgeClasses(status: string): string {
+  switch (status) {
+    case "paid":
+      return "border border-emerald-500/20 bg-emerald-500/[0.08] text-emerald-100/95 shadow-[0_0_24px_-14px_rgba(52,211,153,0.35)]";
+    case "overdue":
+      return "border border-rose-400/20 bg-rose-500/[0.09] text-rose-100/95";
+    case "pending":
+    default:
+      return "border border-amber-400/20 bg-amber-500/[0.09] text-amber-100/90";
+  }
+}
+
 export default async function DashboardBillingPage() {
   const records = await fetchBillingRecordsForClient();
 
-  function statusBadge(status: string): string {
-    switch (status) {
-      case "paid":
-        return "border border-emerald-400/25 bg-emerald-500/10 text-emerald-200 shadow-[0_0_20px_-10px_rgba(52,211,153,0.35)]";
-      case "overdue":
-        return "border border-rose-400/25 bg-rose-500/10 text-rose-200";
-      case "pending":
-      default:
-        return "border border-amber-400/22 bg-amber-500/10 text-amber-200";
-    }
-  }
-
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       <PageHeader
         eyebrow="Account"
         title="Billing"
-        subtitle="Invoices, payment links, and status—aligned with what your team sees in admin."
+        subtitle="Invoices and payment status—aligned with your account team."
       />
       <DemoHint topic="billing" />
       {records.length > 0 ? (
         <section>
           <SectionTitle
             eyebrow="Invoices"
-            description="Pay open balances via the secure Stripe link when your team sends one."
+            description="Open balances can be paid securely via Stripe when your team enables a link."
           >
             Your records
           </SectionTitle>
-          <ul className="mt-6 space-y-4">
+          <ul className="mt-5 space-y-3">
             {records.map((r) => (
               <li key={r.id}>
-                <GlassCard hover={false} variant="premium" className="p-0 overflow-hidden">
-                  <div className="p-5 sm:p-6">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                <GlassCard
+                  hover={false}
+                  variant="premium"
+                  className="overflow-hidden p-0 ring-1 ring-white/[0.06]"
+                >
+                  <div className="p-4 sm:p-5">
+                    <div className="flex flex-wrap items-start justify-between gap-3 gap-y-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
                           Invoice
                         </p>
-                        <p className="mt-1.5 text-lg font-semibold text-white">{r.description}</p>
+                        <p className="mt-1 text-base font-semibold leading-snug text-white sm:text-[1.0625rem]">
+                          {r.description}
+                        </p>
                       </div>
                       <span
-                        className={`rounded-full px-3 py-1 text-xs font-semibold ${statusBadge(
+                        className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide ${statusBadgeClasses(
                           r.status
                         )}`}
                       >
                         {billingStatusLabels[r.status] ?? r.status}
                       </span>
                     </div>
-                    <p className="mt-4 text-4xl font-bold tracking-tight tabular-nums text-white sm:text-5xl">
-                      <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">
-                        ${r.amount.toLocaleString()}
-                      </span>
-                    </p>
-                    <p className="mt-1.5 text-sm text-zinc-500">
-                      Due {formatDisplayDate(r.dueDate)}
-                      {r.paidAt && ` · Paid ${formatDisplayDate(r.paidAt)}`}
-                    </p>
-                    {r.status === "paid" ? (
-                      <div className="mt-4 inline-flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-200">
-                        <CheckCircle2 className="h-4 w-4" />
-                        Paid in full
-                      </div>
-                    ) : r.status === "pending" && r.stripePaymentLinkUrl ? (
-                      <div className="mt-4">
-                        <Button href={r.stripePaymentLinkUrl} size="md">
+
+                    <div className="mt-3 border-t border-white/[0.06] pt-3">
+                      <p className="text-3xl font-bold leading-none tracking-tight tabular-nums text-white sm:text-4xl">
+                        <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-300 bg-clip-text text-transparent">
+                          ${r.amount.toLocaleString()}
+                        </span>
+                      </p>
+                      <p className="mt-2 text-sm text-zinc-500">
+                        {r.status === "paid" ? (
+                          r.paidAt ? (
+                            <>
+                              Paid{" "}
+                              <span className="font-medium text-zinc-400">
+                                {formatDisplayDate(r.paidAt)}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-zinc-400">Recorded as paid</span>
+                          )
+                        ) : (
+                          <>
+                            Due{" "}
+                            <span className="font-medium text-zinc-400">
+                              {formatDisplayDate(r.dueDate)}
+                            </span>
+                          </>
+                        )}
+                      </p>
+                    </div>
+
+                    {r.status === "pending" && r.stripePaymentLinkUrl ? (
+                      <div className="mt-4 flex justify-end border-t border-white/[0.05] pt-3 sm:justify-start">
+                        <Button
+                          href={r.stripePaymentLinkUrl}
+                          size="sm"
+                          className="min-w-[7.5rem] shadow-md shadow-indigo-500/20"
+                        >
                           Pay now
                         </Button>
                       </div>
@@ -97,7 +123,7 @@ export default async function DashboardBillingPage() {
         <EmptyState
           icon={Receipt}
           title="No invoices yet"
-          description="Invoices will appear here when they’re issued. For billing questions or to request an invoice, contact your project manager or use the contact form."
+          description="Invoices will appear here when they’re issued. For billing questions, contact your project manager or use the contact form."
         />
       )}
     </div>
