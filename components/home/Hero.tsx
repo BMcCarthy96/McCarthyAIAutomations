@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { TryLiveDemoButton } from "@/components/home/TryLiveDemoButton";
+import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketingGate";
 import { cn } from "@/lib/utils";
 
 export function Hero() {
@@ -44,6 +46,25 @@ export function Hero() {
         <p className="mt-6 text-sm text-zinc-600">
           No obligation—just a clear plan for what to automate and what it should deliver.
         </p>
+
+        <TryLiveDemoMarketingGate>
+          <div className="mx-auto mt-10 max-w-md border-t border-white/[0.06] pt-10">
+            <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+              Prefer to explore first?
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+              Open the client portal with curated sample data—no forms, no pitch.
+            </p>
+            <div className="mt-5 flex justify-center">
+              <TryLiveDemoButton
+                gated={false}
+                variant="ghost"
+                size="md"
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-6 py-2.5 text-sm font-semibold text-indigo-200/95 ring-1 ring-white/[0.04] transition-colors hover:border-indigo-400/25 hover:bg-indigo-500/10 hover:text-indigo-100"
+              />
+            </div>
+          </div>
+        </TryLiveDemoMarketingGate>
       </div>
     </section>
   );

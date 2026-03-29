@@ -40,7 +40,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider afterSignOutUrl="/">
       <html lang="en" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-premium min-h-screen`}>
           {children}

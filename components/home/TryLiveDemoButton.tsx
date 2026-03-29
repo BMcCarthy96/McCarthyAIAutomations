@@ -1,0 +1,26 @@
+"use client";
+
+import { Button } from "@/components/ui/Button";
+import { useShowTryLiveDemoCta } from "@/hooks/useShowTryLiveDemoCta";
+
+export function TryLiveDemoButton({
+  variant = "outline",
+  size = "lg",
+  className,
+  gated = true,
+}: {
+  variant?: "primary" | "secondary" | "ghost" | "outline" | "danger";
+  size?: "sm" | "md" | "lg";
+  className?: string;
+  /** When true, hide for the demo Clerk user (default). Set false only if parent already gates. */
+  gated?: boolean;
+}) {
+  const show = useShowTryLiveDemoCta();
+  if (gated && !show) return null;
+
+  return (
+    <Button href="/demo" variant={variant} size={size} className={className}>
+      Try Live Demo
+    </Button>
+  );
+}

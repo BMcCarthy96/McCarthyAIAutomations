@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { BarChart3, Check, Circle, LayoutDashboard, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { TryLiveDemoButton } from "@/components/home/TryLiveDemoButton";
+import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketingGate";
 import { SectionHeading } from "./SectionHeading";
 
 /** Illustrative metrics for marketing preview only (not live client data). */
@@ -123,7 +125,7 @@ export function PortalPreview() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-4 text-center sm:flex-row sm:text-left">
+          <div className="mt-10 flex flex-col items-center justify-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
             <Button href="/contact" variant="primary" size="lg">
               Get your custom roadmap
             </Button>
@@ -135,6 +137,21 @@ export function PortalPreview() {
               —we&apos;ll reply with next steps.
             </p>
           </div>
+          <TryLiveDemoMarketingGate>
+            <div className="mx-auto mt-8 max-w-md border-t border-white/[0.06] pt-8 text-center">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                See it live
+              </p>
+              <div className="mt-3 flex justify-center">
+                <TryLiveDemoButton
+                  gated={false}
+                  variant="ghost"
+                  size="md"
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-semibold text-indigo-200/90 ring-1 ring-white/[0.04] transition-colors hover:border-indigo-400/20 hover:bg-indigo-500/10 hover:text-indigo-100"
+                />
+              </div>
+            </div>
+          </TryLiveDemoMarketingGate>
         </div>
       </div>
     </section>

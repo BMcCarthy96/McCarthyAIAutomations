@@ -1,4 +1,6 @@
 import { Button } from "@/components/ui/Button";
+import { TryLiveDemoButton } from "@/components/home/TryLiveDemoButton";
+import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketingGate";
 
 export function CTABanner() {
   return (
@@ -27,6 +29,21 @@ export function CTABanner() {
             </a>{" "}
             — same team, same response time.
           </p>
+          <TryLiveDemoMarketingGate>
+            <div className="mx-auto mt-8 max-w-sm border-t border-white/[0.06] pt-8">
+              <p className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+                Explore the portal
+              </p>
+              <div className="mt-3 flex justify-center">
+                <TryLiveDemoButton
+                  gated={false}
+                  variant="ghost"
+                  size="md"
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-semibold text-indigo-200/90 ring-1 ring-white/[0.04] transition-colors hover:border-indigo-400/25 hover:bg-indigo-500/10 hover:text-indigo-100"
+                />
+              </div>
+            </div>
+          </TryLiveDemoMarketingGate>
         </div>
       </div>
     </section>

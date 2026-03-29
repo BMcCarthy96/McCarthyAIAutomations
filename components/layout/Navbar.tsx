@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { SignInButton, SignUpButton, UserButton, useUser } from "@clerk/nextjs";
+import { usePathname, useRouter } from "next/navigation";
+import { SignInButton, SignUpButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useShowTryLiveDemoCta } from "@/hooks/useShowTryLiveDemoCta";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -18,8 +19,19 @@ const navLinks = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const { isSignedIn } = useUser();
+  const { sessionId } = useAuth();
+  const showTryLiveDemo = useShowTryLiveDemoCta();
+  const isHome = pathname === "/";
+
+  function refreshIfAlreadyOnHome(e: React.MouseEvent<HTMLAnchorElement>) {
+    if (pathname === "/") {
+      e.preventDefault();
+      router.refresh();
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[var(--background)]/80 backdrop-blur-xl">
@@ -27,6 +39,7 @@ export function Navbar() {
         <Link
           href="/"
           className="text-xl font-bold tracking-tight text-white"
+          onClick={refreshIfAlreadyOnHome}
         >
           McCarthy AI
         </Link>
@@ -42,13 +55,25 @@ export function Navbar() {
                   ? "text-white"
                   : "text-zinc-400 hover:text-white"
               )}
+              onClick={link.href === "/" ? refreshIfAlreadyOnHome : undefined}
             >
               {link.label}
             </Link>
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div
+          key={sessionId ?? "signed-out"}
+          className="hidden items-center gap-3 md:flex"
+        >
+          {isHome && showTryLiveDemo ? (
+            <Link
+              href="/demo"
+              className="text-sm font-semibold text-indigo-300/90 transition-colors hover:text-indigo-200"
+            >
+              Try Live Demo
+            </Link>
+          ) : null}
           {isSignedIn ? (
             <>
               <Button variant="ghost" size="sm" href="/dashboard">
@@ -89,7 +114,10 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="border-t border-white/10 bg-[var(--background)]/95 px-4 py-4 backdrop-blur-xl md:hidden">
+        <div
+          key={sessionId ?? "signed-out"}
+          className="border-t border-white/10 bg-[var(--background)]/95 px-4 py-4 backdrop-blur-xl md:hidden"
+        >
           <nav className="flex flex-col gap-2">
             {navLinks.map((link) => (
               <Link
@@ -106,6 +134,15 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            {showTryLiveDemo ? (
+              <Link
+                href="/demo"
+                className="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/5"
+                onClick={() => setOpen(false)}
+              >
+                Try Live Demo
+              </Link>
+            ) : null}
             <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
               {isSignedIn ? (
                 <Link
