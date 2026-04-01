@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
+import { isConfiguredDemoUser } from "@/lib/demo-display";
 
 /**
  * Whether to show “Try Live Demo” CTAs on the marketing site.
@@ -10,7 +11,6 @@ import { useUser } from "@clerk/nextjs";
  */
 export function useShowTryLiveDemoCta(): boolean {
   const { user, isLoaded } = useUser();
-  const demoId = process.env.NEXT_PUBLIC_DEMO_CLERK_USER_ID?.trim();
 
   if (!isLoaded) {
     return true;
@@ -18,8 +18,5 @@ export function useShowTryLiveDemoCta(): boolean {
   if (!user) {
     return true;
   }
-  if (!demoId) {
-    return true;
-  }
-  return user.id !== demoId;
+  return !isConfiguredDemoUser(user.id);
 }

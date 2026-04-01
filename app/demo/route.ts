@@ -15,9 +15,21 @@ function redirectToSignIn(requestUrl: string) {
 }
 
 export async function GET(request: Request) {
+  if (process.env.DEMO_AUTH_ENABLED === "false") {
+    return redirectToSignIn(request.url);
+  }
+
   const demoUserId = process.env.DEMO_CLERK_USER_ID?.trim();
+  const adminId = process.env.ADMIN_CLERK_USER_ID?.trim();
 
   if (!demoUserId) {
+    return redirectToSignIn(request.url);
+  }
+
+  if (adminId && demoUserId === adminId) {
+    console.error(
+      "[demo] Refusing sign-in token: DEMO_CLERK_USER_ID must not match ADMIN_CLERK_USER_ID"
+    );
     return redirectToSignIn(request.url);
   }
 

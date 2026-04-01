@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignInButton, SignUpButton, UserButton, useAuth, useUser } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, useAuth, useUser } from "@clerk/nextjs";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { DemoSafeUserMenu, shouldMaskDemoIdentity } from "@/components/auth/DemoSafeUserMenu";
 import { cn } from "@/lib/utils";
 import { useShowTryLiveDemoCta } from "@/hooks/useShowTryLiveDemoCta";
 
@@ -21,7 +22,7 @@ export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const { sessionId } = useAuth();
   const showTryLiveDemo = useShowTryLiveDemoCta();
   const isHome = pathname === "/";
@@ -79,13 +80,7 @@ export function Navbar() {
               <Button variant="ghost" size="sm" href="/dashboard">
                 Dashboard
               </Button>
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "w-9 h-9",
-                  },
-                }}
-              />
+              <DemoSafeUserMenu forceDemoMask={shouldMaskDemoIdentity(user?.id)} />
             </>
           ) : (
             <>

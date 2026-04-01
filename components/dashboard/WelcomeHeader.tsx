@@ -2,10 +2,13 @@
 
 import { LayoutDashboard } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import { useDemoPortal } from "@/components/dashboard/DemoPortalProvider";
+import { DEMO_DISPLAY_PROFILE } from "@/lib/demo-display";
 
 export function WelcomeHeader() {
   const { user } = useUser();
-  const firstName = user?.firstName ?? "";
+  const isDemoPortal = useDemoPortal();
+  const firstName = isDemoPortal ? "Jordan" : (user?.firstName ?? "");
   return (
     <header className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-gradient-to-br from-white/[0.07] via-white/[0.025] to-transparent p-7 shadow-lg shadow-black/25 backdrop-blur-xl sm:p-9">
       <div className="pointer-events-none absolute -right-20 -top-20 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl" />
@@ -30,6 +33,12 @@ export function WelcomeHeader() {
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
             Your automation performance, projects, and next steps—same clarity we promise on day one.
           </p>
+          {isDemoPortal ? (
+            <p className="mt-2 text-xs text-zinc-500">
+              {DEMO_DISPLAY_PROFILE.businessName} · {DEMO_DISPLAY_PROFILE.displayEmail} ·{" "}
+              {DEMO_DISPLAY_PROFILE.phone}
+            </p>
+          ) : null}
         </div>
       </div>
     </header>

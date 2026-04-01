@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { NoClientAccount } from "@/components/dashboard/NoClientAccount";
 import { getCurrentClientId } from "@/lib/portal-data";
@@ -8,6 +7,7 @@ import { isAdminUser } from "@/lib/admin-auth";
 import { getPortalDemoMode } from "@/lib/demo-portal";
 import { DemoPortalProvider } from "@/components/dashboard/DemoPortalProvider";
 import { DemoModeBanner } from "@/components/dashboard/DemoModeBanner";
+import { DemoSafeUserMenu } from "@/components/auth/DemoSafeUserMenu";
 
 export default async function DashboardLayout({
   children,
@@ -49,7 +49,7 @@ export default async function DashboardLayout({
             >
               Back to site
             </Link>
-            <UserButton />
+            <DemoSafeUserMenu forceDemoMask={isDemo} />
           </div>
         </div>
       </header>
