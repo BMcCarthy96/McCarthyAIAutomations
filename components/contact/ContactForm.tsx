@@ -76,6 +76,14 @@ export function ContactForm() {
 
   return (
     <form action={formAction} className="mt-12 space-y-6">
+      <input
+        type="text"
+        name="website"
+        autoComplete="off"
+        tabIndex={-1}
+        className="hidden"
+        aria-hidden
+      />
       <div>
         <label
           htmlFor="subject"

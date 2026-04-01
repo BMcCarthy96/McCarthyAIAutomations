@@ -14,14 +14,8 @@ export async function POST(request: Request) {
     const fromEmail = contactFromEmail || "onboarding@resend.dev";
 
     if (!resendApiKey || !contactEmail) {
-      const missing = [];
-      if (!resendApiKey) missing.push("RESEND_API_KEY");
-      if (!contactEmail) missing.push("CONTACT_EMAIL");
       return NextResponse.json(
-        {
-          error: "Contact form is not configured.",
-          details: `Missing: ${missing.join(", ")}. Set these in Vercel → Project → Settings → Environment Variables and redeploy.`,
-        },
+        { error: "Contact form is temporarily unavailable." },
         { status: 503 }
       );
     }
@@ -31,12 +25,37 @@ export async function POST(request: Request) {
     const visitorEmail = typeof body.email === "string" ? body.email.trim() : "";
     const company = typeof body.company === "string" ? body.company.trim() : "";
     const message = typeof body.message === "string" ? body.message.trim() : "";
+    const WEBSITE_MAX = 512;
+    const NAME_MAX = 200;
+    const EMAIL_MAX = 320;
+    const COMPANY_MAX = 200;
+    const MESSAGE_MAX = 10_000;
+
+    const looksLikeEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
     if (!name || !visitorEmail || !message) {
       return NextResponse.json(
         { error: "Name, email, and message are required." },
         { status: 400 }
       );
+    }
+    if (
+      name.length > NAME_MAX ||
+      visitorEmail.length > EMAIL_MAX ||
+      company.length > COMPANY_MAX ||
+      message.length > MESSAGE_MAX
+    ) {
+      return NextResponse.json({ error: "Invalid form input." }, { status: 400 });
+    }
+    if (!looksLikeEmail(visitorEmail)) {
+      return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
+    }
+    // Basic bot trap: reject hidden honeypot field submissions.
+    if (typeof body.website === "string" && body.website.trim().length > 0) {
+      if (body.website.trim().length > WEBSITE_MAX) {
+        return NextResponse.json({ error: "Invalid form input." }, { status: 400 });
+      }
+      return NextResponse.json({ ok: true });
     }
 
     // Always send to configured inbox; visitor email is replyTo only (required for Resend sandbox).

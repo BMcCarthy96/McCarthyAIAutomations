@@ -59,6 +59,11 @@ function debugBilling(stage: string, payload: Record<string, unknown>) {
   console.log(`[billing-debug] ${stage}`, payload);
 }
 
+function debugProjectUpdateMail(stage: string, payload: Record<string, unknown>) {
+  if (process.env.NODE_ENV !== "development") return;
+  console.log(`[project-update-mail] ${stage}`, payload);
+}
+
 // ---------------------------------------------------------------------------
 // Project updates
 // ---------------------------------------------------------------------------
@@ -101,9 +106,6 @@ export async function createProjectUpdateAction(
     return { success: false, error: error.message };
   }
 
-  // DEBUG: temporary logging for project update email troubleshooting
-  console.log("[createProjectUpdateAction] 1. project update insert succeeded");
-
   // Notify client by email (best-effort; do not fail the action if email fails)
   try {
     const { data: projectRow, error: projectError } = await supabase
@@ -113,11 +115,10 @@ export async function createProjectUpdateAction(
       .single();
 
     const projectLookupSucceeded = !projectError && projectRow != null;
-    console.log(
-      "[createProjectUpdateAction] 2. project lookup succeeded:",
-      projectLookupSucceeded,
-      projectError ? `(${projectError.message})` : ""
-    );
+    debugProjectUpdateMail("project_lookup", {
+      ok: projectLookupSucceeded,
+      error: projectError?.message ?? null,
+    });
 
     type ProjectWithClient = {
       name?: string;
@@ -127,15 +128,15 @@ export async function createProjectUpdateAction(
     const projectName = row?.name ?? "Your project";
     const clientEmail = row?.client_services?.clients?.email?.trim?.();
 
-    console.log("[createProjectUpdateAction] 3. resolved project name:", projectName);
-    console.log("[createProjectUpdateAction] 4. resolved client email:", clientEmail ?? "(empty or missing)");
-
     const apiKey = process.env.RESEND_API_KEY?.trim();
     const fromEmail =
       (process.env.CONTACT_FROM_EMAIL ?? "").trim() || "onboarding@resend.dev";
-
-    console.log("[createProjectUpdateAction] 5. RESEND_API_KEY exists:", Boolean(apiKey));
-    console.log("[createProjectUpdateAction] 6. from address:", fromEmail);
+    debugProjectUpdateMail("resolved_recipients", {
+      projectName,
+      hasClientEmail: Boolean(clientEmail),
+      hasResendApiKey: Boolean(apiKey),
+      fromEmail,
+    });
 
     if (apiKey && clientEmail) {
       const baseUrl =
@@ -171,23 +172,26 @@ export async function createProjectUpdateAction(
       });
 
       if (sendResult.error) {
-        console.log("[createProjectUpdateAction] 7. Resend send: failed");
-        console.log("[createProjectUpdateAction] 8. Resend error:", sendResult.error.message);
+        debugProjectUpdateMail("send_result", {
+          ok: false,
+          error: sendResult.error.message,
+        });
       } else {
-        console.log("[createProjectUpdateAction] 7. Resend send: succeeded");
+        debugProjectUpdateMail("send_result", { ok: true });
       }
     } else {
-      console.log(
-        "[createProjectUpdateAction] 7. Resend send: skipped (no apiKey or no clientEmail)"
-      );
+      debugProjectUpdateMail("send_result", {
+        ok: false,
+        skipped: true,
+        reason: "missing_api_key_or_client_email",
+      });
     }
   } catch (err) {
     // Ignore email errors; update was saved successfully
-    console.log("[createProjectUpdateAction] 7. Resend send: threw exception");
-    console.log(
-      "[createProjectUpdateAction] 8. exception:",
-      err instanceof Error ? err.message : String(err)
-    );
+    debugProjectUpdateMail("send_result", {
+      ok: false,
+      exception: err instanceof Error ? err.message : String(err),
+    });
   }
 
   return { success: true };

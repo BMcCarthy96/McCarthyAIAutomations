@@ -76,11 +76,27 @@ export async function POST(req: Request) {
       }
     }
 
+    const { data: current, error: currentError } = await supabase
+      .from("billing_records")
+      .select("status, paid_at")
+      .eq("id", billingRecordId)
+      .maybeSingle();
+
+    if (currentError) {
+      return NextResponse.json({ error: currentError.message }, { status: 500 });
+    }
+    if (!current) {
+      return NextResponse.json({ error: "Billing record not found." }, { status: 404 });
+    }
+    if (current.status === "paid") {
+      return NextResponse.json({ received: true });
+    }
+
     const { error } = await supabase
       .from("billing_records")
       .update({
         status: "paid",
-        paid_at: new Date().toISOString(),
+        paid_at: current.paid_at ?? new Date().toISOString(),
         updated_at: new Date().toISOString(),
       })
       .eq("id", billingRecordId);

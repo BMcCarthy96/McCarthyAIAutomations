@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getCurrentClientId } from "@/lib/portal-data";
+import { getPortalDemoMode } from "@/lib/demo-portal";
 import { sendPublicConsultationEmails } from "@/lib/email/public-consultation-emails";
 
 /**
@@ -21,6 +22,11 @@ export async function createSupportRequestAction(
   _prevState: CreateSupportRequestState | null,
   formData: FormData
 ): Promise<CreateSupportRequestState> {
+  // Keep demo UX seamless while preventing demo users from creating real support workload.
+  if (await getPortalDemoMode()) {
+    return { success: true };
+  }
+
   const clientId = await getCurrentClientId();
   if (!clientId) {
     return {
@@ -87,6 +93,7 @@ const NAME_MAX = 200;
 const EMAIL_MAX = 320;
 const PUBLIC_SUBJECT_MAX = 500;
 const PUBLIC_BODY_MAX = 10000;
+const WEBSITE_MAX = 512;
 const DEFAULT_PUBLIC_SUBJECT = "Free consultation";
 
 function looksLikeEmail(s: string): boolean {
@@ -101,6 +108,15 @@ export async function createPublicSupportRequestAction(
   _prevState: CreatePublicSupportRequestState | null,
   formData: FormData
 ): Promise<CreatePublicSupportRequestState> {
+  const website = (formData.get("website") as string)?.trim() ?? "";
+  if (website.length > WEBSITE_MAX) {
+    return { success: false, error: "Invalid form input." };
+  }
+  if (website) {
+    // Bot/honeypot submission: return success to avoid signaling defenses.
+    return { success: true };
+  }
+
   const name = (formData.get("name") as string)?.trim() ?? "";
   const email = (formData.get("email") as string)?.trim() ?? "";
   const company = (formData.get("company") as string)?.trim() ?? "";
