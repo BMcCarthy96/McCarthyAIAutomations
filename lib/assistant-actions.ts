@@ -6,6 +6,10 @@ import {
   buildContextPromptText,
 } from "@/lib/assistant/gather-context";
 import { runAssistantLlm } from "@/lib/assistant/generate";
+import {
+  AssistantApiError,
+  assistantGenericUserMessage,
+} from "@/lib/assistant/openai-errors";
 import type { AssistantAskState } from "@/lib/assistant/types";
 
 const QUESTION_MAX = 2_000;
@@ -64,8 +68,17 @@ export async function askAssistantAction(
       sources: result.sources,
     };
   } catch (e) {
-    const msg =
-      e instanceof Error ? e.message : "Something went wrong. Please try again later.";
-    return { success: false, error: msg };
+    if (e instanceof AssistantApiError) {
+      if (process.env.NODE_ENV === "development") {
+        console.error("[assistant]", e.kind, e.logDetail);
+      } else {
+        console.error("[assistant] failure kind:", e.kind);
+      }
+      return { success: false, error: e.userMessage };
+    }
+    if (process.env.NODE_ENV === "development") {
+      console.error("[assistant] unexpected error:", e);
+    }
+    return { success: false, error: assistantGenericUserMessage() };
   }
 }

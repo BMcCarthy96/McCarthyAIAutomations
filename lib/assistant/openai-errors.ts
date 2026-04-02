@@ -1,0 +1,123 @@
+/**
+ * Maps OpenAI HTTP/API failures to safe, user-facing copy.
+ * Raw bodies and technical details stay server-side (logged in development).
+ */
+
+export type AssistantFailureKind =
+  | "missing_key"
+  | "auth"
+  | "quota"
+  | "rate_limit"
+  | "invalid_response"
+  | "server"
+  | "unknown";
+
+const USER_SAFE: Record<AssistantFailureKind, string> = {
+  missing_key:
+    "The assistant is not fully configured yet. Please try again later or contact support.",
+  auth:
+    "The assistant is temporarily unavailable. Please try again later or contact support.",
+  quota:
+    "The assistant is temporarily unavailable due to API usage limits. Please try again later or contact support.",
+  rate_limit:
+    "The assistant is receiving too many requests right now. Please wait a moment and try again.",
+  invalid_response:
+    "We couldn’t process the assistant response. Please try again or contact support.",
+  server:
+    "The assistant service is temporarily unavailable. Please try again in a few minutes.",
+  unknown:
+    "The assistant is temporarily unavailable. Please try again later or contact support.",
+};
+
+export class AssistantApiError extends Error {
+  readonly kind: AssistantFailureKind;
+  /** Technical detail for server logs only — never send to the client. */
+  readonly logDetail: string;
+
+  constructor(kind: AssistantFailureKind, logDetail: string) {
+    super(USER_SAFE[kind]);
+    this.name = "AssistantApiError";
+    this.kind = kind;
+    this.logDetail = logDetail;
+  }
+
+  /** Safe string for UI and server action responses. */
+  get userMessage(): string {
+    return USER_SAFE[this.kind];
+  }
+}
+
+interface OpenAiErrorBody {
+  error?: {
+    message?: string;
+    type?: string;
+    code?: string;
+  };
+}
+
+function tryParseOpenAiJson(body: string): OpenAiErrorBody | null {
+  try {
+    return JSON.parse(body) as OpenAiErrorBody;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Classify OpenAI chat/completions HTTP failures. Always log `logDetail` server-side.
+ */
+export function openAiHttpErrorToAssistantError(
+  status: number,
+  bodyText: string
+): AssistantApiError {
+  const trimmed = bodyText.trim();
+  const parsed = tryParseOpenAiJson(trimmed);
+  const apiMsg = parsed?.error?.message ?? "";
+  const apiCode = parsed?.error?.code ?? "";
+  const apiType = parsed?.error?.type ?? "";
+  const combined = `${apiMsg} ${apiCode} ${apiType}`.toLowerCase();
+
+  const logDetail = `[OpenAI ${status}] ${trimmed.slice(0, 800)}`;
+
+  if (status === 401) {
+    return new AssistantApiError("auth", logDetail);
+  }
+
+  if (status === 429) {
+    if (
+      combined.includes("quota") ||
+      combined.includes("billing") ||
+      apiCode === "insufficient_quota"
+    ) {
+      return new AssistantApiError("quota", logDetail);
+    }
+    if (
+      combined.includes("rate") ||
+      apiCode === "rate_limit_exceeded" ||
+      apiType === "requests"
+    ) {
+      return new AssistantApiError("rate_limit", logDetail);
+    }
+    return new AssistantApiError("quota", logDetail);
+  }
+
+  if (status >= 500 && status < 600) {
+    return new AssistantApiError("server", logDetail);
+  }
+
+  if (status === 400 && combined.includes("invalid")) {
+    return new AssistantApiError("invalid_response", logDetail);
+  }
+
+  return new AssistantApiError("unknown", logDetail);
+}
+
+export function logAssistantFailure(err: AssistantApiError): void {
+  if (process.env.NODE_ENV !== "development") return;
+  console.error("[assistant] OpenAI failure:", err.kind, err.logDetail);
+}
+
+/** Non–OpenAI failures (unexpected throws) — safe for UI. */
+export function assistantGenericUserMessage(): string {
+  return USER_SAFE.unknown;
+}

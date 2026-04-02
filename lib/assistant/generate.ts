@@ -1,4 +1,9 @@
 import type { AssistantContextChunk, AssistantSourceDisplay } from "@/lib/assistant/types";
+import {
+  AssistantApiError,
+  logAssistantFailure,
+  openAiHttpErrorToAssistantError,
+} from "@/lib/assistant/openai-errors";
 
 interface LlmJson {
   answer: string;
@@ -19,7 +24,10 @@ export async function runAssistantLlm(params: {
 }> {
   const apiKey = process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) {
-    throw new Error("OPENAI_API_KEY is not configured.");
+    throw new AssistantApiError(
+      "missing_key",
+      "OPENAI_API_KEY is not set in environment."
+    );
   }
 
   const model =
@@ -57,9 +65,9 @@ Rules:
 
   if (!res.ok) {
     const errText = await res.text().catch(() => "");
-    throw new Error(
-      errText ? `OpenAI error (${res.status}): ${errText.slice(0, 200)}` : `OpenAI error (${res.status})`
-    );
+    const classified = openAiHttpErrorToAssistantError(res.status, errText);
+    logAssistantFailure(classified);
+    throw classified;
   }
 
   const data = (await res.json()) as {
@@ -70,7 +78,12 @@ Rules:
   try {
     parsed = JSON.parse(raw) as LlmJson;
   } catch {
-    throw new Error("Assistant returned invalid JSON.");
+    const classified = new AssistantApiError(
+      "invalid_response",
+      `Model JSON parse failed. Raw (truncated): ${raw.slice(0, 500)}`
+    );
+    logAssistantFailure(classified);
+    throw classified;
   }
 
   const answer =
