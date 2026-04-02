@@ -377,6 +377,13 @@ export const dashboardQuickActions: DashboardQuickAction[] = [
   { id: "1", label: "Contact support", href: "/dashboard/support", description: "Get help or request changes", icon: "HelpCircle" },
   { id: "2", label: "View all services", href: "/dashboard/services", description: "See project status and milestones", icon: "Layers" },
   { id: "3", label: "Project updates", href: "/dashboard/updates", description: "Latest updates from our team", icon: "FileText" },
+  {
+    id: "4",
+    label: "Knowledge assistant",
+    href: "/dashboard/assistant",
+    description: "Ask questions grounded in your portal data",
+    icon: "Sparkles",
+  },
 ];
 
 export function getServiceBySlug(slug: string): Service | undefined {

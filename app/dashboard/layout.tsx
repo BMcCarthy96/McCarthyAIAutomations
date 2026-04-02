@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
-import { NoClientAccount } from "@/components/dashboard/NoClientAccount";
 import { getCurrentClientId } from "@/lib/portal-data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { isAdminUser } from "@/lib/admin-auth";
@@ -8,6 +7,7 @@ import { getPortalDemoMode } from "@/lib/demo-portal";
 import { DemoPortalProvider } from "@/components/dashboard/DemoPortalProvider";
 import { DemoModeBanner } from "@/components/dashboard/DemoModeBanner";
 import { DemoSafeUserMenu } from "@/components/auth/DemoSafeUserMenu";
+import { DashboardContentGate } from "@/components/dashboard/DashboardContentGate";
 
 export default async function DashboardLayout({
   children,
@@ -32,6 +32,13 @@ export default async function DashboardLayout({
               className="truncate bg-gradient-to-r from-white to-zinc-300 bg-clip-text text-xl font-bold tracking-tight text-transparent"
             >
               Client portal
+            </Link>
+            <span className="hidden h-4 w-px bg-white/15 sm:block" aria-hidden />
+            <Link
+              href="/dashboard/assistant"
+              className="hidden text-sm font-medium text-indigo-300/90 transition-colors hover:text-indigo-200 sm:inline"
+            >
+              Knowledge assistant
             </Link>
           </div>
           <div className="flex shrink-0 items-center gap-3">
@@ -61,14 +68,12 @@ export default async function DashboardLayout({
             aria-hidden
           />
           <div className="relative">
-            {showNoClientState ? (
-              <NoClientAccount />
-            ) : (
+            <DashboardContentGate hasLinkedClient={!showNoClientState}>
               <DemoPortalProvider isDemo={isDemo}>
                 <DemoModeBanner />
                 {children}
               </DemoPortalProvider>
-            )}
+            </DashboardContentGate>
           </div>
         </div>
       </div>

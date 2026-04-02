@@ -10,6 +10,7 @@ import {
   ListChecks,
   HelpCircle,
   CreditCard,
+  Sparkles,
   Menu,
   X,
 } from "lucide-react";
@@ -17,6 +18,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/assistant", label: "Assistant", icon: Sparkles },
   { href: "/dashboard/services", label: "My Services", icon: Layers },
   { href: "/dashboard/milestones", label: "Roadmap", icon: ListChecks },
   { href: "/dashboard/updates", label: "Project Updates", icon: FileText },
@@ -86,11 +88,11 @@ export function DashboardSidebar() {
       )}
       <aside
         className={cn(
-          "fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-white/10 bg-[var(--background)]/95 shadow-xl backdrop-blur-xl transition-transform duration-200 ease-out lg:translate-x-0",
+          "fixed left-0 top-16 z-50 flex h-[calc(100vh-4rem)] w-64 flex-col border-r border-white/10 bg-[var(--background)]/95 shadow-xl backdrop-blur-xl transition-transform duration-200 ease-out lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        <div className="flex h-14 items-center justify-between border-b border-white/10 px-4 lg:hidden">
+        <div className="flex h-14 shrink-0 items-center justify-between border-b border-white/10 px-4 lg:hidden">
           <span className="text-sm font-medium text-zinc-400">Navigation</span>
           <button
             type="button"
@@ -101,7 +103,7 @@ export function DashboardSidebar() {
             <X className="h-5 w-5" />
           </button>
         </div>
-        {content}
+        <div className="min-h-0 flex-1 overflow-y-auto">{content}</div>
       </aside>
     </>
   );

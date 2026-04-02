@@ -46,7 +46,7 @@ export interface DashboardQuickAction {
   label: string;
   href: string;
   description: string;
-  icon: "HelpCircle" | "Layers" | "FileText";
+  icon: "HelpCircle" | "Layers" | "FileText" | "Sparkles";
 }
 
 export interface HowItWorksStep {

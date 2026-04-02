@@ -32,7 +32,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-const quickActionIcons = { HelpCircle, Layers, FileText } as const;
+const quickActionIcons = { HelpCircle, Layers, FileText, Sparkles } as const;
 
 /** List row links — single border, no ring (avoids stacked chrome with section headers). */
 const rowLinkClass =
@@ -402,7 +402,7 @@ export default async function DashboardOverviewPage() {
         <SectionTitle eyebrow="Shortcuts" description="Jump to the most-used areas of your portal.">
           Quick actions
         </SectionTitle>
-        <div className="mt-8 grid gap-5 sm:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {dashboardQuickActions.map((action) => {
             const Icon = quickActionIcons[action.icon];
             return (
