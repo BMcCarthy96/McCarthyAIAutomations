@@ -14,19 +14,16 @@ export type AssistantFailureKind =
 
 const USER_SAFE: Record<AssistantFailureKind, string> = {
   missing_key:
-    "The assistant is not fully configured yet. Please try again later or contact support.",
-  auth:
-    "The assistant is temporarily unavailable. Please try again later or contact support.",
+    "Configuration required: the assistant needs a valid API key on the server.",
+  auth: "Assistant temporarily unavailable. Please try again shortly.",
   quota:
-    "The assistant is temporarily unavailable due to API usage limits. Please try again later or contact support.",
+    "Assistant temporarily unavailable due to usage limits. Try again later.",
   rate_limit:
-    "The assistant is receiving too many requests right now. Please wait a moment and try again.",
+    "Too many requests to the assistant right now. Please wait a moment.",
   invalid_response:
-    "We couldn’t process the assistant response. Please try again or contact support.",
-  server:
-    "The assistant service is temporarily unavailable. Please try again in a few minutes.",
-  unknown:
-    "The assistant is temporarily unavailable. Please try again later or contact support.",
+    "Assistant couldn’t process that response. Please try again.",
+  server: "Assistant temporarily unavailable. Please try again in a few minutes.",
+  unknown: "Assistant temporarily unavailable. Please try again shortly.",
 };
 
 export class AssistantApiError extends Error {

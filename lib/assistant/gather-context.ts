@@ -3,9 +3,9 @@ import { faqs } from "@/lib/data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import type { AssistantContextChunk, AssistantSourceKind } from "@/lib/assistant/types";
 
-const MAX_BODY_CHARS = 3_500;
-const MAX_SUPPORT_THREADS = 30;
-const MAX_UPDATES = 40;
+const MAX_BODY_CHARS = 2_200;
+const MAX_SUPPORT_THREADS = 12;
+const MAX_UPDATES = 12;
 
 function clip(s: string, max: number): string {
   const t = s.trim();
@@ -24,7 +24,7 @@ export async function gatherAssistantContext(
   const chunks: AssistantContextChunk[] = [];
 
   if (!supabase) {
-    return assignRefs(globalFaqChunks());
+    return globalFaqChunks();
   }
 
   const { data: clientRow, error: clientErr } = await supabase
@@ -243,7 +243,7 @@ export async function gatherAssistantContext(
   }
 
   chunks.push(...globalFaqChunks());
-  return assignRefs(chunks);
+  return chunks;
 }
 
 function globalFaqChunks(): AssistantContextChunk[] {
@@ -255,43 +255,16 @@ function globalFaqChunks(): AssistantContextChunk[] {
   }));
 }
 
-function assignRefs(chunks: AssistantContextChunk[]): AssistantContextChunk[] {
-  return chunks.map((c, i) => ({
-    ...c,
-    ref: `S${i + 1}`,
-  }));
-}
-
 /**
- * Serialize chunks for the model. Enforces a rough token budget by dropping lowest-priority tail.
+ * Serialize selected chunks for the model. Trims by character budget (selected set is already small).
  */
 export function buildContextPromptText(
   chunks: AssistantContextChunk[],
-  maxChars = 48_000
+  maxChars = 10_000
 ): string {
-  const priority = (k: AssistantContextChunk["kind"]) => {
-    switch (k) {
-      case "account":
-      case "service_plan":
-      case "project":
-        return 0;
-      case "milestone":
-      case "project_update":
-      case "support_thread":
-        return 1;
-      case "billing":
-        return 2;
-      case "global_faq":
-        return 3;
-      default:
-        return 4;
-    }
-  };
-
-  const ordered = [...chunks].sort((a, b) => priority(a.kind) - priority(b.kind));
   const lines: string[] = [];
   let used = 0;
-  for (const c of ordered) {
+  for (const c of chunks) {
     const block = `[${c.ref}] ${c.label}\n${c.content}\n`;
     if (used + block.length > maxChars) break;
     lines.push(block.trimEnd());

@@ -6,7 +6,8 @@ import { askAssistantAction } from "@/lib/assistant-actions";
 import type { AssistantAskState } from "@/lib/assistant/types";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Sparkles, BookOpen, AlertCircle } from "lucide-react";
+import { Sparkles, BookOpen, AlertCircle, Loader2 } from "lucide-react";
+import { assistantSourceKindTitle } from "@/lib/assistant/types";
 
 const initialState: AssistantAskState = { success: false, error: "" };
 
@@ -39,7 +40,7 @@ export function KnowledgeAssistantPanel({
             <p className="font-medium text-amber-50">Assistant is in setup mode</p>
             <p className="mt-1 text-amber-100/80">
               Add <span className="font-mono text-xs">OPENAI_API_KEY</span> to your
-              server environment to enable AI answers. You can still read how the
+              server environment to enable answers. You can still read how the
               assistant works below.
             </p>
           </div>
@@ -107,6 +108,18 @@ export function KnowledgeAssistantPanel({
             Need human help? Open support
           </Link>
         </div>
+        {isPending ? (
+          <div
+            className="flex items-center gap-2 text-sm text-indigo-200/90"
+            aria-live="polite"
+          >
+            <Loader2
+              className="h-4 w-4 shrink-0 animate-spin text-indigo-400"
+              aria-hidden
+            />
+            <span>Reviewing your project data…</span>
+          </div>
+        ) : null}
       </form>
 
       {state.success === false && state.error ? (
@@ -121,21 +134,45 @@ export function KnowledgeAssistantPanel({
 
       {state.success === true ? (
         <div className="space-y-6">
+          <GlassCard
+            hover={false}
+            variant="default"
+            className="border-white/[0.08] px-6 py-6 sm:px-8 sm:py-7"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              Your question
+            </p>
+            <p className="mt-3 text-base font-medium leading-snug text-zinc-100">
+              {state.question}
+            </p>
+          </GlassCard>
+
           {state.insufficientContext ? (
-            <div className="flex gap-3 rounded-xl border border-zinc-500/25 bg-white/[0.04] px-4 py-3 text-sm text-zinc-300">
-              <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-zinc-500" />
-              <p>
-                Limited grounded information was available for this question. Review
-                the answer carefully and check{" "}
-                <Link href="/dashboard/updates" className="text-indigo-300 underline-offset-2 hover:underline">
-                  Project updates
-                </Link>{" "}
-                or{" "}
-                <Link href="/dashboard/support" className="text-indigo-300 underline-offset-2 hover:underline">
-                  Support
-                </Link>{" "}
-                for the full picture.
-              </p>
+            <div className="flex gap-3 rounded-xl border border-amber-500/20 bg-amber-500/[0.06] px-4 py-3 text-sm text-zinc-200">
+              <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-amber-300/90" />
+              <div className="space-y-2">
+                <p className="font-medium text-amber-50/95">
+                  I couldn&apos;t find enough specific information in your project
+                  data.
+                </p>
+                <p className="text-zinc-300/95">
+                  Review the answer below, then try{" "}
+                  <Link
+                    href="/dashboard/updates"
+                    className="font-semibold text-indigo-300 underline-offset-2 hover:underline"
+                  >
+                    View updates
+                  </Link>{" "}
+                  or{" "}
+                  <Link
+                    href="/dashboard/support"
+                    className="font-semibold text-indigo-300 underline-offset-2 hover:underline"
+                  >
+                    Contact support
+                  </Link>{" "}
+                  for details.
+                </p>
+              </div>
             </div>
           ) : null}
 
@@ -147,7 +184,7 @@ export function KnowledgeAssistantPanel({
             <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Answer
             </p>
-            <div className="mt-4 max-w-none text-sm leading-relaxed text-zinc-300">
+            <div className="mt-4 max-w-none text-sm leading-relaxed text-zinc-200 [&_strong]:text-zinc-50">
               <AssistantAnswerMarkdown text={state.answer} />
             </div>
           </GlassCard>
@@ -155,18 +192,20 @@ export function KnowledgeAssistantPanel({
           {state.sources.length > 0 ? (
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Sources used
+                Sources
               </p>
-              <ul className="mt-3 space-y-2">
+              <ul className="mt-3 space-y-2.5">
                 {state.sources.map((s) => (
                   <li
                     key={`${s.ref}-${s.label}`}
-                    className="flex gap-3 rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2.5 text-sm text-zinc-300"
+                    className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-3"
                   >
-                    <span className="shrink-0 font-mono text-xs text-indigo-300/90">
-                      {s.ref}
-                    </span>
-                    <span>{s.label}</span>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-indigo-300/90">
+                      {assistantSourceKindTitle(s.kind)}
+                    </p>
+                    <p className="mt-1 text-sm leading-snug text-zinc-200">
+                      {s.label}
+                    </p>
                   </li>
                 ))}
               </ul>

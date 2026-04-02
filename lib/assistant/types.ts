@@ -33,7 +33,33 @@ export type AssistantAskState =
   | { success: false; error: string }
   | {
       success: true;
+      /** Echo of the question (form resets after submit). */
+      question: string;
       answer: string;
       insufficientContext: boolean;
       sources: AssistantSourceDisplay[];
     };
+
+/** Short category line for citations (portfolio-quality labels). */
+export function assistantSourceKindTitle(kind: AssistantSourceKind): string {
+  switch (kind) {
+    case "account":
+      return "Account";
+    case "service_plan":
+      return "Service plan";
+    case "project":
+      return "Project";
+    case "milestone":
+      return "Milestone";
+    case "project_update":
+      return "Project update";
+    case "support_thread":
+      return "Support";
+    case "billing":
+      return "Billing";
+    case "global_faq":
+      return "FAQ";
+    default:
+      return "Source";
+  }
+}

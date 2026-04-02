@@ -33,17 +33,14 @@ export async function runAssistantLlm(params: {
   const model =
     process.env.OPENAI_ASSISTANT_MODEL?.trim() || "gpt-4o-mini";
 
-  const system = `You are the McCarthy AI Automations client portal assistant.
-You answer questions using ONLY the CONTEXT blocks below. Each block starts with a reference id like [S1], [S2].
+  const system = `McCarthy client portal assistant. Use ONLY CONTEXT blocks marked [S1], [S2], …
 
-Rules:
-- Ground every factual claim in the CONTEXT. When you use information from a block, include its reference id in cited_refs.
-- If the CONTEXT does not contain enough information to answer confidently, set insufficient_context to true and give a brief, honest answer that tells the user what is missing and points them to Support or Project Updates in the portal. Do not invent project names, dates, milestones, invoices, or team messages.
-- Do not reveal internal ids (UUIDs). Use human-friendly names from the context only.
-- cited_refs must only contain ids that appear in the CONTEXT (e.g. S1, S2). Use an empty array if insufficient_context is true.
-- Keep the answer concise and professional. Markdown is allowed (short bullets, bold sparingly).`;
+- Ground every fact in CONTEXT; add that block's id to cited_refs when you use it.
+- If CONTEXT is too thin to answer safely, set insufficient_context true, say what's missing briefly, suggest Support / Project updates—never invent projects, dates, invoices, or messages.
+- No UUIDs; names from CONTEXT only. cited_refs must be ids from CONTEXT only; use [] if insufficient_context.
+- Concise, professional; light markdown OK.`;
 
-  const user = `CONTEXT:\n\n${params.contextText}\n\n---\n\nQUESTION:\n${params.question}\n\nRespond with a single JSON object only, no markdown fence, with keys: answer (string), insufficient_context (boolean), cited_refs (array of strings like "S1").`;
+  const user = `CONTEXT:\n\n${params.contextText}\n\n---\n\nQ:\n${params.question}\n\nReply with one JSON object only (no markdown fences): {"answer":"string","insufficient_context":boolean,"cited_refs":["S1"]}`;
 
   const res = await fetch(OPENAI_URL, {
     method: "POST",
