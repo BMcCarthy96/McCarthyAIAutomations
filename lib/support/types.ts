@@ -2,6 +2,8 @@
  * Support domain types for admin (list/detail views and list filter).
  */
 
+import type { AiLeadAnalysisStatus, AiLeadTemperature } from "@/lib/lead-ai/types";
+
 /** Lead follow-up pipeline for public consultation rows (admin list). */
 export type AdminLeadFollowUpListState =
   | "pending"
@@ -24,6 +26,9 @@ export interface AdminSupportRow {
   source: "client" | "public";
   /** Public consultation lead follow-up (null for client portal requests). */
   leadFollowUp: AdminLeadFollowUpListState | null;
+  /** AI Lead Engine — null for client portal rows or not yet processed. */
+  aiLeadTemperature: AiLeadTemperature | null;
+  aiLeadAnalysisStatus: AiLeadAnalysisStatus | null;
 }
 
 /** Stored admin reply on a support thread. */
@@ -54,6 +59,23 @@ export interface AdminSupportDetail {
   followUpSentAt: string | null;
   /** When true, cron/manual batch skips this lead for follow-up (public rows only). */
   leadFollowUpSuppressed: boolean;
+  /** AI Lead Engine (public leads); omitted fields are null when not analyzed. */
+  aiLeadAnalysisStatus: AiLeadAnalysisStatus | null;
+  aiLeadSummary: string | null;
+  aiBusinessType: string | null;
+  aiLikelyService: string | null;
+  aiUrgency: string | null;
+  aiBudgetSignal: string | null;
+  aiLeadTemperature: AiLeadTemperature | null;
+  aiConfidence: number | null;
+  aiNextAction: string | null;
+  aiFollowUpTone: string | null;
+  aiSuggestedReply: string | null;
+  aiClassificationNote: string | null;
+  aiProcessedAt: string | null;
+  /** Internal-only; shown to admins for debugging failed runs. */
+  aiErrorMessage: string | null;
+  aiModel: string | null;
 }
 
 export type SupportRequestListView = "active" | "resolved" | "closed" | "all";

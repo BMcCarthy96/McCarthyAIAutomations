@@ -78,7 +78,23 @@ Keeps the sheet aligned with confirmed meetings.
 
 ---
 
-## 4. Future Improvements
+## 4. In-app AI Lead Engine (McCarthy app) vs Zapier
+
+The Next.js app stores **public consultation** submissions in Supabase (`support_requests` with `category = public`). **AI Lead Engine (MVP)** runs **after** each successful insert (non-blocking): it classifies the message, scores temperature/urgency/budget signals, and writes structured fields back to the same row (`ai_*` columns). Admins review results under **Admin → Support → request detail**.
+
+**How this fits the Zap above**
+
+| Layer | Role |
+|--------|------|
+| **App + Supabase** | System of record for the raw lead + **AI intelligence** (summary, temperature, suggested reply, etc.). |
+| **Zapier** | Still ideal for **downstream comms** (Gmail, timed follow-ups) and **Sheets** as your operational pipeline. |
+| **In-app cron** | Optional booking reminder (`/api/cron/lead-follow-up`) remains separate from Zapier; use either or both deliberately. |
+
+**Optional v2 idea:** Add a Zap step (e.g. Supabase insert/update webhook or scheduled poll) to copy `ai_lead_temperature` / summary into the **Lead Temperature** or **Notes** columns in Google Sheets so the sheet matches the app without replacing Zapier.
+
+---
+
+## 5. Future Improvements
 
 | Improvement | Description |
 |-------------|---------------|
@@ -86,6 +102,7 @@ Keeps the sheet aligned with confirmed meetings.
 | **SMS follow-ups** | Add SMS steps (Twilio, etc.) parallel to email for higher response rates; respect opt-in and regulations. |
 | **CRM integration** | Sync sheet ↔ HubSpot / Salesforce / Pipedrive so **Status**, **Revenue**, and **Lead ID** stay authoritative in one system. |
 | **Revenue & conversion metrics** | Dashboards from **Closed Won** revenue, time-to-book, and stage conversion (sheet pivot tables, Looker Studio, or BI tool). |
+| **Sheet sync from AI fields** | Push `ai_lead_temperature` / `ai_lead_summary` from Supabase into the sheet row for a single view of lead quality. |
 
 ---
 

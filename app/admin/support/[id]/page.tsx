@@ -6,6 +6,7 @@ import { SupportRequestStatusForm } from "@/components/admin/SupportRequestStatu
 import { SupportRequestReplyForm } from "@/components/admin/SupportRequestReplyForm";
 import { LeadFollowUpSuppressionForm } from "@/components/admin/LeadFollowUpSuppressionForm";
 import { LeadFollowUpListBadge } from "@/components/admin/LeadFollowUpListBadge";
+import { LeadIntelligencePanel } from "@/components/admin/LeadIntelligencePanel";
 import { supportRequestStatusLabels } from "@/lib/data";
 import { formatDisplayDate } from "@/lib/utils";
 import type { AdminSupportDetail } from "@/lib/support/types";
@@ -202,6 +203,10 @@ export default async function AdminSupportRequestPage({
 
         {/* Sidebar: pipeline + actions */}
         <div className="space-y-6 lg:col-span-1">
+          {request.source === "public" && (
+            <LeadIntelligencePanel request={request} />
+          )}
+
           {request.source === "public" && request.leadFollowUpEligible && (
             <div className="rounded-2xl border border-amber-400/20 bg-gradient-to-b from-amber-500/[0.07] to-transparent p-5">
               <h2 className="text-xs font-semibold uppercase tracking-wider text-amber-200/80">

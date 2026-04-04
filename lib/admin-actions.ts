@@ -31,11 +31,13 @@ import type {
   DeleteBillingRecordState,
   SendPendingLeadFollowUpsState,
   SetLeadFollowUpSuppressedState,
+  RerunLeadAiAnalysisState,
 } from "@/lib/admin-action-types";
 import {
   updateSupportRequestStatusAction as implUpdateSupportRequestStatusAction,
   sendSupportReplyAction as implSendSupportReplyAction,
   setLeadFollowUpSuppressedAction as implSetLeadFollowUpSuppressedAction,
+  rerunLeadAiAnalysisAction as implRerunLeadAiAnalysisAction,
 } from "@/lib/support/admin-actions";
 import { runMonthlyImpactReportEmails } from "@/lib/email/monthly-impact-report-runner";
 import { getBookingUrl } from "@/lib/booking-url";
@@ -543,6 +545,13 @@ export async function setLeadFollowUpSuppressedAction(
   formData: FormData
 ) {
   return implSetLeadFollowUpSuppressedAction(prevState, formData);
+}
+
+export async function rerunLeadAiAnalysisAction(
+  prevState: RerunLeadAiAnalysisState | null,
+  formData: FormData
+) {
+  return implRerunLeadAiAnalysisAction(prevState, formData);
 }
 
 /**

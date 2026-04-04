@@ -103,3 +103,8 @@ export type SendPendingLeadFollowUpsState =
 export type SetLeadFollowUpSuppressedState =
   | { success: false; error: string }
   | { success: true };
+
+/** Re-run AI Lead Engine for a public consultation row (admin only). */
+export type RerunLeadAiAnalysisState =
+  | { success: false; error: string }
+  | { success: true };

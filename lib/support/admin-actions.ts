@@ -13,7 +13,9 @@ import type {
   UpdateSupportRequestStatusState,
   SendSupportReplyState,
   SetLeadFollowUpSuppressedState,
+  RerunLeadAiAnalysisState,
 } from "@/lib/admin-action-types";
+import { processPublicLeadAnalysis } from "@/lib/lead-ai/analyze-public-lead";
 
 const SUPPORT_REPLY_EMAIL_FOOTER =
   "You are receiving this email regarding a support or consultation request with McCarthy AI Automations. Reply to this message to continue the conversation.";
@@ -276,6 +278,74 @@ export async function setLeadFollowUpSuppressedAction(
 
   if (updateError) {
     return { success: false, error: updateError.message };
+  }
+
+  revalidatePath("/admin/support");
+  revalidatePath(`/admin/support/${requestId}`);
+  return { success: true };
+}
+
+/**
+ * Admin-only: re-run structured AI classification for a public consultation lead.
+ */
+export async function rerunLeadAiAnalysisAction(
+  _prevState: RerunLeadAiAnalysisState | null,
+  formData: FormData
+): Promise<RerunLeadAiAnalysisState> {
+  const allowed = await isAdminUser();
+  if (!allowed) {
+    return { success: false, error: "Unauthorized." };
+  }
+
+  const requestId = (formData.get("requestId") as string)?.trim();
+  if (!requestId) {
+    return { success: false, error: "Request is required." };
+  }
+
+  const supabase = getSupabaseServiceClient();
+  if (!supabase) {
+    return { success: false, error: "Database unavailable." };
+  }
+
+  const { data: row, error: fetchError } = await supabase
+    .from("support_requests")
+    .select("id, client_id, category")
+    .eq("id", requestId)
+    .maybeSingle();
+
+  if (fetchError || !row) {
+    return {
+      success: false,
+      error: fetchError?.message ?? "Support request not found.",
+    };
+  }
+
+  const typed = row as {
+    id: string;
+    client_id: string | null;
+    category: string | null;
+  };
+  if (typed.client_id !== null) {
+    return {
+      success: false,
+      error: "AI lead analysis applies to public consultation requests only.",
+    };
+  }
+  if (typed.category != null && typed.category !== "public") {
+    return {
+      success: false,
+      error: "This request is not a public marketing lead.",
+    };
+  }
+
+  try {
+    await processPublicLeadAnalysis(requestId, { force: true });
+  } catch (e) {
+    return {
+      success: false,
+      error:
+        e instanceof Error ? e.message : "AI analysis failed unexpectedly.",
+    };
   }
 
   revalidatePath("/admin/support");

@@ -1,10 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getCurrentClientId } from "@/lib/portal-data";
 import { getPortalDemoMode } from "@/lib/demo-portal";
 import { sendPublicConsultationEmails } from "@/lib/email/public-consultation-emails";
+import { processPublicLeadAnalysis } from "@/lib/lead-ai/analyze-public-lead";
 
 /**
  * Portal actions: server actions for the client dashboard.
@@ -165,21 +167,38 @@ export async function createPublicSupportRequestAction(
     return { success: false, error: "Database unavailable." };
   }
 
-  const { error } = await supabase.from("support_requests").insert({
-    client_id: null,
-    project_id: null,
-    requester_name: name,
-    requester_email: email,
-    subject,
-    body,
-    status: "open",
-    category: "public",
-    lead_follow_up_eligible: true,
-  });
+  const { data: inserted, error } = await supabase
+    .from("support_requests")
+    .insert({
+      client_id: null,
+      project_id: null,
+      requester_name: name,
+      requester_email: email,
+      subject,
+      body,
+      status: "open",
+      category: "public",
+      lead_follow_up_eligible: true,
+      ai_lead_analysis_status: "pending",
+    })
+    .select("id")
+    .single();
 
-  if (error) {
-    return { success: false, error: error.message };
+  if (error || !inserted?.id) {
+    return {
+      success: false,
+      error: error?.message ?? "Failed to save your request.",
+    };
   }
+
+  after(() => {
+    processPublicLeadAnalysis(inserted.id).catch((e) =>
+      console.warn(
+        "[createPublicSupportRequestAction] lead-ai:",
+        e instanceof Error ? e.message : String(e)
+      )
+    );
+  });
 
   try {
     await sendPublicConsultationEmails({
