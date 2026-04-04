@@ -93,6 +93,7 @@ export type CreatePublicSupportRequestState =
 
 const NAME_MAX = 200;
 const EMAIL_MAX = 320;
+const PHONE_MAX = 50;
 const PUBLIC_SUBJECT_MAX = 500;
 const PUBLIC_BODY_MAX = 10000;
 const WEBSITE_MAX = 512;
@@ -121,6 +122,7 @@ export async function createPublicSupportRequestAction(
 
   const name = (formData.get("name") as string)?.trim() ?? "";
   const email = (formData.get("email") as string)?.trim() ?? "";
+  const phone = (formData.get("phone") as string)?.trim() ?? "";
   const company = (formData.get("company") as string)?.trim() ?? "";
   const message = (formData.get("message") as string)?.trim() ?? "";
   const subjectRaw = (formData.get("subject") as string)?.trim() ?? "";
@@ -156,6 +158,12 @@ export async function createPublicSupportRequestAction(
       error: `Subject must be ${PUBLIC_SUBJECT_MAX} characters or less.`,
     };
   }
+  if (phone.length > PHONE_MAX) {
+    return {
+      success: false,
+      error: `Phone must be ${PHONE_MAX} characters or less.`,
+    };
+  }
 
   let body = message;
   if (company) {
@@ -174,6 +182,7 @@ export async function createPublicSupportRequestAction(
       project_id: null,
       requester_name: name,
       requester_email: email,
+      requester_phone: phone || null,
       subject,
       body,
       status: "open",
@@ -204,6 +213,7 @@ export async function createPublicSupportRequestAction(
     await sendPublicConsultationEmails({
       requesterName: name,
       requesterEmail: email,
+      requesterPhone: phone || undefined,
       company,
       subject,
       message,

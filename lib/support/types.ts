@@ -51,6 +51,8 @@ export interface AdminSupportDetail {
   clientEmail: string | null;
   requesterName: string | null;
   requesterEmail: string | null;
+  /** Public consultation phone when provided. */
+  requesterPhone: string | null;
   source: "client" | "public";
   projectName: string | null;
   replies: AdminSupportReply[];

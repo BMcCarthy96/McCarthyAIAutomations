@@ -16,6 +16,7 @@ import {
   Building2,
   Calendar,
   Mail,
+  Phone,
   Sparkles,
   User,
 } from "lucide-react";
@@ -155,6 +156,17 @@ export default async function AdminSupportRequestPage({
                   </dt>
                   <dd className="mt-1 font-mono text-sm text-indigo-200/90">
                     {request.requesterEmail}
+                  </dd>
+                </div>
+              )}
+              {request.source === "public" && request.requesterPhone && (
+                <div>
+                  <dt className="flex items-center gap-1.5 text-xs font-medium text-zinc-500">
+                    <Phone className="h-3.5 w-3.5" aria-hidden />
+                    Phone
+                  </dt>
+                  <dd className="mt-1 font-mono text-sm text-zinc-200">
+                    {request.requesterPhone}
                   </dd>
                 </div>
               )}

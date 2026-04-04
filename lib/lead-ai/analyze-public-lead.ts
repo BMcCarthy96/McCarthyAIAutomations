@@ -209,6 +209,7 @@ interface ZapierLeadEnrichmentPayload {
   site_url: string | null;
   name: string;
   email: string | null;
+  phone: string | null;
   message: string;
   summary: string | null;
   business_type: string | null;
@@ -289,7 +290,7 @@ export async function processPublicLeadAnalysis(
   const { data: row, error: fetchErr } = await supabase
     .from("support_requests")
     .select(
-      "id, client_id, category, requester_name, requester_email, subject, body, created_at, ai_lead_analysis_status"
+      "id, client_id, category, requester_name, requester_email, requester_phone, subject, body, created_at, ai_lead_analysis_status"
     )
     .eq("id", requestId)
     .maybeSingle();
@@ -435,6 +436,7 @@ export async function processPublicLeadAnalysis(
         site_url: leadEnginePublicSiteUrl(),
         name: requesterName,
         email: (row.requester_email as string | null)?.trim() || null,
+        phone: (row.requester_phone as string | null)?.trim() || null,
         message: body || subject || "",
         summary: normalized.ai_lead_summary,
         business_type: normalized.ai_business_type,

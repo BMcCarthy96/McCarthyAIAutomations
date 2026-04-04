@@ -22,6 +22,8 @@ function getAppBaseUrl(): string {
 export type PublicConsultationEmailPayload = {
   requesterName: string;
   requesterEmail: string;
+  /** Optional; included in admin notification only when set. */
+  requesterPhone?: string;
   company: string;
   subject: string;
   message: string;
@@ -57,6 +59,9 @@ export async function sendPublicConsultationEmails(
         "",
         `Name: ${payload.requesterName}`,
         `Email: ${payload.requesterEmail}`,
+        ...(payload.requesterPhone
+          ? [`Phone: ${payload.requesterPhone}`]
+          : []),
         `Subject: ${payload.subject}`,
         ...(payload.company ? [`Company: ${payload.company}`] : []),
         "",

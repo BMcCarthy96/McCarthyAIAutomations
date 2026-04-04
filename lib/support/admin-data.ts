@@ -129,7 +129,7 @@ export async function getSupportRequestById(
   const { data, error } = await supabase
     .from("support_requests")
     .select(
-      "id, subject, body, status, created_at, client_id, requester_name, requester_email, lead_follow_up_eligible, follow_up_sent_at, lead_follow_up_suppressed, ai_lead_analysis_status, ai_lead_summary, ai_business_type, ai_likely_service, ai_urgency, ai_budget_signal, ai_lead_temperature, ai_confidence, ai_next_action, ai_follow_up_tone, ai_suggested_reply, ai_classification_note, ai_processed_at, ai_error_message, ai_model, clients(name, email), projects(name), support_replies(id, body, sender_type, created_at)"
+      "id, subject, body, status, created_at, client_id, requester_name, requester_email, requester_phone, lead_follow_up_eligible, follow_up_sent_at, lead_follow_up_suppressed, ai_lead_analysis_status, ai_lead_summary, ai_business_type, ai_likely_service, ai_urgency, ai_budget_signal, ai_lead_temperature, ai_confidence, ai_next_action, ai_follow_up_tone, ai_suggested_reply, ai_classification_note, ai_processed_at, ai_error_message, ai_model, clients(name, email), projects(name), support_replies(id, body, sender_type, created_at)"
     )
     .eq("id", id)
     .maybeSingle();
@@ -145,6 +145,7 @@ export async function getSupportRequestById(
     client_id: string | null;
     requester_name: string | null;
     requester_email: string | null;
+    requester_phone: string | null;
     lead_follow_up_eligible: boolean;
     follow_up_sent_at: string | null;
     lead_follow_up_suppressed: boolean;
@@ -207,6 +208,7 @@ export async function getSupportRequestById(
     clientEmail: row.clients?.email?.trim() || null,
     requesterName: row.requester_name,
     requesterEmail: row.requester_email,
+    requesterPhone: row.requester_phone,
     source: isPublic ? ("public" as const) : ("client" as const),
     projectName: row.projects?.name ?? null,
     replies,

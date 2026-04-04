@@ -137,6 +137,23 @@ export function ContactForm() {
       </div>
       <div>
         <label
+          htmlFor="phone"
+          className="block text-sm font-medium text-zinc-300"
+        >
+          Phone (optional)
+        </label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          maxLength={50}
+          autoComplete="tel"
+          className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          placeholder="+1 (555) 000-0000"
+        />
+      </div>
+      <div>
+        <label
           htmlFor="company"
           className="block text-sm font-medium text-zinc-300"
         >
