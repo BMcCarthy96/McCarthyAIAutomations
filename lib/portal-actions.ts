@@ -191,14 +191,14 @@ export async function createPublicSupportRequestAction(
     };
   }
 
-  after(() => {
+  after(() =>
     processPublicLeadAnalysis(inserted.id).catch((e) =>
       console.warn(
         "[createPublicSupportRequestAction] lead-ai:",
         e instanceof Error ? e.message : String(e)
       )
-    );
-  });
+    )
+  );
 
   try {
     await sendPublicConsultationEmails({

@@ -229,7 +229,18 @@ async function sendZapierLeadEnrichmentWebhook(
 ): Promise<void> {
   const url = process.env.ZAPIER_LEAD_WEBHOOK_URL?.trim();
   if (!url) {
+    console.info("[lead-ai] zapier: skip (ZAPIER_LEAD_WEBHOOK_URL unset or empty)");
     return;
+  }
+
+  const debug =
+    process.env.LEAD_ENGINE_DEBUG_ZAPIER?.trim() === "true";
+
+  if (debug) {
+    console.info("[lead-ai] zapier: sending", {
+      keys: Object.keys(payload),
+      hasEmail: Boolean(payload.email),
+    });
   }
 
   try {
@@ -239,7 +250,11 @@ async function sendZapierLeadEnrichmentWebhook(
       body: JSON.stringify(payload),
       signal: AbortSignal.timeout(15_000),
     });
-    if (!res.ok) {
+    if (res.ok) {
+      if (debug) {
+        console.info("[lead-ai] zapier: POST ok", { status: res.status });
+      }
+    } else {
       const text = await res.text().catch(() => "");
       console.warn(
         "[lead-ai] Zapier webhook non-OK:",
@@ -413,7 +428,9 @@ export async function processPublicLeadAnalysis(
       console.error("[lead-ai] persist completed failed:", upErr.message);
     } else {
       const createdAt = row.created_at as string;
-      void sendZapierLeadEnrichmentWebhook({
+      // Await so serverless / after() keeps the isolate alive until Zapier POST finishes.
+      // sendZapierLeadEnrichmentWebhook swallows errors; lead data is already persisted.
+      await sendZapierLeadEnrichmentWebhook({
         source: ZAPIER_LEAD_SOURCE_LABEL,
         site_url: leadEnginePublicSiteUrl(),
         name: requesterName,
