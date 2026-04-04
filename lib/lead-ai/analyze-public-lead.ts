@@ -190,6 +190,71 @@ function safeErrorMessage(err: unknown): string {
   return msg.length > 800 ? msg.slice(0, 800) : msg;
 }
 
+/** Stable label for Zapier / Sheets “Source” columns (not read from request body). */
+const ZAPIER_LEAD_SOURCE_LABEL = "McCarthy AI Automations";
+
+function leadEnginePublicSiteUrl(): string | null {
+  const explicit = process.env.NEXT_PUBLIC_APP_URL?.trim();
+  if (explicit) return explicit;
+  const vercel = process.env.VERCEL_URL?.trim();
+  if (vercel) return `https://${vercel}`;
+  return null;
+}
+
+/** Payload for ZAPIER_LEAD_WEBHOOK_URL (downstream only; app remains source of truth). */
+interface ZapierLeadEnrichmentPayload {
+  /** Product / site identity for downstream automations (e.g. Sheet “Source”). */
+  source: string;
+  /** Public app URL when configured (matches email link behavior). */
+  site_url: string | null;
+  name: string;
+  email: string | null;
+  message: string;
+  summary: string | null;
+  business_type: string | null;
+  service: string | null;
+  urgency: string | null;
+  temperature: string | null;
+  confidence: number | null;
+  next_action: string | null;
+  suggested_reply: string | null;
+  created_at: string;
+}
+
+/**
+ * POST enriched lead JSON to Zapier after AI completion. No retries; failures are logged only.
+ */
+async function sendZapierLeadEnrichmentWebhook(
+  payload: ZapierLeadEnrichmentPayload
+): Promise<void> {
+  const url = process.env.ZAPIER_LEAD_WEBHOOK_URL?.trim();
+  if (!url) {
+    return;
+  }
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.warn(
+        "[lead-ai] Zapier webhook non-OK:",
+        res.status,
+        text.slice(0, 300)
+      );
+    }
+  } catch (e) {
+    console.warn(
+      "[lead-ai] Zapier webhook:",
+      e instanceof Error ? e.message : String(e)
+    );
+  }
+}
+
 /**
  * Runs classification for a single support_request id.
  * - Public rows only (client_id is null).
@@ -209,7 +274,7 @@ export async function processPublicLeadAnalysis(
   const { data: row, error: fetchErr } = await supabase
     .from("support_requests")
     .select(
-      "id, client_id, category, requester_name, subject, body, ai_lead_analysis_status"
+      "id, client_id, category, requester_name, requester_email, subject, body, created_at, ai_lead_analysis_status"
     )
     .eq("id", requestId)
     .maybeSingle();
@@ -346,6 +411,24 @@ export async function processPublicLeadAnalysis(
 
     if (upErr) {
       console.error("[lead-ai] persist completed failed:", upErr.message);
+    } else {
+      const createdAt = row.created_at as string;
+      void sendZapierLeadEnrichmentWebhook({
+        source: ZAPIER_LEAD_SOURCE_LABEL,
+        site_url: leadEnginePublicSiteUrl(),
+        name: requesterName,
+        email: (row.requester_email as string | null)?.trim() || null,
+        message: body || subject || "",
+        summary: normalized.ai_lead_summary,
+        business_type: normalized.ai_business_type,
+        service: normalized.ai_likely_service,
+        urgency: normalized.ai_urgency,
+        temperature: normalized.ai_lead_temperature,
+        confidence: normalized.ai_confidence,
+        next_action: normalized.ai_next_action,
+        suggested_reply: normalized.ai_suggested_reply,
+        created_at: createdAt,
+      });
     }
   } catch (e) {
     const errMsg = safeErrorMessage(e);

@@ -1,5 +1,7 @@
 # Perfect ETA Lead System
 
+> **McCarthy AI Automations:** The title reflects an original “Perfect ETA” playbook. This repo’s app is **McCarthy AI Automations** (`www.mccarthyaiautomations.com`); use the same Zap/Sheets ideas below and set **Source** / branding in Zapier (or map the webhook’s `source` + `site_url` fields from the AI Lead Engine) so sheets and emails match your business—not another project.
+
 This document describes the **Perfect ETA** lead workflow: inquiry intake automation, Google Sheets structure, and booking tracker integration. It is intended as operational reference for Zapier (or similar) automations—not as application code.
 
 ---
@@ -89,6 +91,8 @@ The Next.js app stores **public consultation** submissions in Supabase (`support
 | **App + Supabase** | System of record for the raw lead + **AI intelligence** (summary, temperature, suggested reply, etc.). |
 | **Zapier** | Still ideal for **downstream comms** (Gmail, timed follow-ups) and **Sheets** as your operational pipeline. |
 | **In-app cron** | Optional booking reminder (`/api/cron/lead-follow-up`) remains separate from Zapier; use either or both deliberately. |
+
+**Webhook payload:** When `ZAPIER_LEAD_WEBHOOK_URL` is set, the app POSTs JSON after AI completes, including **`source`** (`McCarthy AI Automations`) and **`site_url`** (from `NEXT_PUBLIC_APP_URL` or `VERCEL_URL`) so Zapier can map a correct **Source** column without hardcoding another brand.
 
 **Optional v2 idea:** Add a Zap step (e.g. Supabase insert/update webhook or scheduled poll) to copy `ai_lead_temperature` / summary into the **Lead Temperature** or **Notes** columns in Google Sheets so the sheet matches the app without replacing Zapier.
 
