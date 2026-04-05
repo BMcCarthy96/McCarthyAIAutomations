@@ -1,5 +1,7 @@
 "use client";
 
+// Added lead webhook url
+
 import { useState } from "react";
 import type { AdminSupportDetail } from "@/lib/support/types";
 import { LeadAiListBadge } from "@/components/admin/LeadAiListBadge";

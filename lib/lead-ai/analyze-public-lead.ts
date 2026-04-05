@@ -207,6 +207,8 @@ interface ZapierLeadEnrichmentPayload {
   source: string;
   /** Public app URL when configured (matches email link behavior). */
   site_url: string | null;
+  /** support_requests.id */
+  lead_id: string;
   name: string;
   email: string | null;
   phone: string | null;
@@ -434,6 +436,7 @@ export async function processPublicLeadAnalysis(
       await sendZapierLeadEnrichmentWebhook({
         source: ZAPIER_LEAD_SOURCE_LABEL,
         site_url: leadEnginePublicSiteUrl(),
+        lead_id: row.id as string,
         name: requesterName,
         email: (row.requester_email as string | null)?.trim() || null,
         phone: (row.requester_phone as string | null)?.trim() || null,
