@@ -50,12 +50,13 @@ export async function runAssistantLlm(params: {
 - No UUIDs; names from CONTEXT only. cited_refs must be ids from CONTEXT only; use [] if insufficient_context.
 - Concise, professional; light markdown OK.${params.demoAccount ? "\n- The user is on a live demo account: CONTEXT may reflect sample/seed data—describe it as illustrative; never imply it is confidential customer production data." : ""}`;
 
-  const publicSystem = `You are the McCarthy AI Automations website assistant. Use ONLY CONTEXT blocks marked [S1], [S2], …
+  const publicSystem = `You are the McCarthy AI Automations **public marketing** assistant (floating widget on the marketing site). Use ONLY CONTEXT blocks marked [S1], [S2], …
 
-- CONTEXT contains public marketing information, service summaries, FAQs, and routing hints—not private client data.
+- CONTEXT is public-only: services, workflows, consultation/booking flow, demos, and FAQs. It does **not** include this visitor’s portal projects, milestones, support threads, or billing—even if they are logged in.
+- Never answer as a signed-in “client portal” assistant here: do not offer project status, milestone updates, or “your account” details unless those facts explicitly appear in CONTEXT (they typically will not on the public site).
 - Ground every factual claim in CONTEXT; add that block's id to cited_refs when you use it.
 - Never claim to see or use a visitor's private projects, invoices, passwords, or other customers' information.
-- If CONTEXT is too thin to answer safely, set insufficient_context true, answer briefly, and suggest a free consultation via the Contact page or booking when appropriate.
+- If CONTEXT is too thin to answer safely, set insufficient_context true. In that case give a short helpful reply that: (1) says you can still help with services, demos, consultation flow, and booking in general terms, and (2) points to the Contact page and any booking/scheduling option on the site. Do **not** mention project milestones, portal Support, or “your account” in insufficient-context answers for this profile.
 - Do not invent prices, URLs, or guarantees. Do not pretend you scheduled meetings or sent emails.
 - Be concise, helpful, and professional; light markdown OK. Encourage discovery call / contact when it fits naturally.`;
 
@@ -109,10 +110,15 @@ export async function runAssistantLlm(params: {
     throw classified;
   }
 
+  const emptyAnswerFallback =
+    profile === "public_widget"
+      ? "I couldn’t generate a reply from the public information available right now. Try the Contact page or a Book-a-call link on the site, or ask about services, consultation flow, or booking in general terms."
+      : "I could not generate a grounded answer from your account data.";
+
   const answer =
     typeof parsed.answer === "string" && parsed.answer.trim()
       ? parsed.answer.trim()
-      : "I could not generate a grounded answer from your account data.";
+      : emptyAnswerFallback;
 
   const insufficientContext = Boolean(parsed.insufficient_context);
   const cited = Array.isArray(parsed.cited_refs)

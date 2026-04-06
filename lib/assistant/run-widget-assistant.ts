@@ -16,6 +16,10 @@ import {
   selectRelevantChunks,
 } from "@/lib/assistant/select-context";
 import { gatherPublicWidgetChunks } from "@/lib/assistant/public-widget-context";
+import {
+  ensurePublicWidgetChunksSelected,
+  sortPublicWidgetChunksForPrompt,
+} from "@/lib/assistant/public-widget-knowledge";
 import { runAssistantLlm } from "@/lib/assistant/generate";
 import {
   AssistantApiError,
@@ -27,7 +31,11 @@ import {
   getAssistantCached,
   setAssistantCached,
 } from "@/lib/assistant/response-cache";
-import type { AssistantAskState, AssistantSourceDisplay } from "@/lib/assistant/types";
+import type {
+  AssistantAskState,
+  AssistantContextChunk,
+  AssistantSourceDisplay,
+} from "@/lib/assistant/types";
 
 export type WidgetAssistantMode = "public" | "demo" | "client";
 
@@ -95,8 +103,12 @@ export async function runWidgetAssistantQuery(input: {
   const clientId = await getCurrentClientId();
   const isDemo = await getPortalDemoMode();
 
+  /** Marketing routes use public CONTEXT + public_widget profile even when the user is signed in. */
+  const widgetUsesPortalContext =
+    Boolean(userId && clientId) && pathname.startsWith("/dashboard");
+
   let mode: WidgetAssistantMode = "public";
-  if (userId && clientId) {
+  if (widgetUsesPortalContext) {
     mode = isDemo ? "demo" : "client";
   }
 
@@ -114,7 +126,7 @@ export async function runWidgetAssistantQuery(input: {
     }
   }
 
-  if (mode !== "public" && clientId) {
+  if (widgetUsesPortalContext && clientId) {
     const cached = getAssistantCached(clientId, question);
     if (cached) {
       return {
@@ -143,16 +155,29 @@ export async function runWidgetAssistantQuery(input: {
   }
 
   try {
-    let rawChunks;
-    if (mode === "public" || !clientId) {
+    let rawChunks: AssistantContextChunk[];
+    let selected: AssistantContextChunk[];
+
+    if (mode === "public") {
       rawChunks = gatherPublicWidgetChunks(pathname);
+      selected = selectRelevantChunks(rawChunks, question, {
+        maxChunks: MAX_CONTEXT_CHUNKS,
+        publicWidget: true,
+      });
+      selected = ensurePublicWidgetChunksSelected(
+        rawChunks,
+        selected,
+        question,
+        MAX_CONTEXT_CHUNKS
+      );
+      selected = sortPublicWidgetChunksForPrompt(selected);
     } else {
-      rawChunks = await gatherAssistantContext(clientId);
+      rawChunks = await gatherAssistantContext(clientId!);
+      selected = selectRelevantChunks(rawChunks, question, {
+        maxChunks: MAX_CONTEXT_CHUNKS,
+      });
     }
 
-    const selected = selectRelevantChunks(rawChunks, question, {
-      maxChunks: MAX_CONTEXT_CHUNKS,
-    });
     const withRefs = assignChunkRefs(selected);
     const contextText = buildContextPromptText(withRefs, CONTEXT_CHAR_CAP);
     const chunkByRef = new Map(withRefs.map((c) => [c.ref, c]));

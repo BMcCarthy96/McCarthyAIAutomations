@@ -25,8 +25,9 @@ export function getWidgetSuggestedPrompts(
 
   const publicByPath: Record<string, string[]> = {
     home: [
-      "What AI systems can you build for a small business?",
-      "How does your AI lead capture and qualification work?",
+      "What happens after I submit a consultation request?",
+      "How does your AI lead qualification system work?",
+      "What can the assistant help me with?",
       "What’s the difference between voice agents and website chatbots?",
     ],
     pricing: [
@@ -42,6 +43,7 @@ export function getWidgetSuggestedPrompts(
     contact: [
       "What happens after I submit a consultation request?",
       "How quickly do you usually respond?",
+      "What happens after I book a call?",
     ],
     demo: [
       "What can I try in the live demo?",
@@ -55,7 +57,9 @@ export function getWidgetSuggestedPrompts(
       "What kinds of businesses do you work with?",
     ],
     other: [
-      "What AI automations do you offer?",
+      "What happens after I submit a consultation request?",
+      "What can the assistant help me with?",
+      "How does your AI lead qualification system work?",
       "How do I book a discovery call?",
     ],
   };

@@ -5,6 +5,7 @@
 
 import { services } from "@/lib/data";
 import { buildGlobalFaqChunks } from "@/lib/assistant/gather-context";
+import { getPublicProcessKnowledgeChunks } from "@/lib/assistant/public-widget-knowledge";
 import type { AssistantContextChunk } from "@/lib/assistant/types";
 
 const MAX_SERVICE_BLURB = 400;
@@ -46,6 +47,8 @@ export function gatherPublicWidgetChunks(pathname: string): AssistantContextChun
     ].join("\n"),
   });
 
+  chunks.push(...getPublicProcessKnowledgeChunks());
+
   const serviceLines = services.map(
     (s) =>
       `• ${s.name} — ${s.tagline}\n  ${clip(s.description, MAX_SERVICE_BLURB)}`
@@ -60,11 +63,11 @@ export function gatherPublicWidgetChunks(pathname: string): AssistantContextChun
   chunks.push({
     ref: "",
     kind: "public_info",
-    label: "How to engage",
+    label: "How to engage (quick reference)",
     content: [
-      "Free consultation: visitors can use the Contact page to submit goals and questions.",
-      "Booking: if a public booking/scheduling URL exists on the site, it may be linked from marketing CTAs — do not invent a URL; suggest Contact if unsure.",
-      "This assistant only sees public marketing context — it cannot see private client projects, invoices, or other customers' data.",
+      "Free consultation: Contact page form — see CONTEXT blocks about consultation flow for what happens next.",
+      "Booking: use any scheduling link shown in the marketing site or widget; if none is configured in the visitor’s view, suggest Contact.",
+      "This chat on public pages uses only public CONTEXT — never private client records unless the user is signed into their own portal (client mode).",
     ].join("\n"),
   });
 
