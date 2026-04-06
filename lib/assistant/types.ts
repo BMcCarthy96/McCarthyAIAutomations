@@ -13,7 +13,11 @@ export type AssistantSourceKind =
   | "billing"
   | "global_faq"
   /** Public site widget — marketing / CTAs (no client data). */
-  | "public_info";
+  | "public_info"
+  /** Shared workflow / operations — not client-specific; safe Process Guide context for portal. */
+  | "shared_process"
+  /** Explicit empty scope in portal export (e.g. no support threads loaded), not missing context. */
+  | "portal_snapshot";
 
 export interface AssistantContextChunk {
   /** Stable citation id, e.g. S1, S2 (assigned when building prompt). */
@@ -63,6 +67,10 @@ export function assistantSourceKindTitle(kind: AssistantSourceKind): string {
       return "FAQ";
     case "public_info":
       return "McCarthy AI";
+    case "shared_process":
+      return "Process Guide";
+    case "portal_snapshot":
+      return "Portal snapshot";
     default:
       return "Source";
   }

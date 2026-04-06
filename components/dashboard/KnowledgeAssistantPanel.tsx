@@ -66,9 +66,9 @@ export function KnowledgeAssistantPanel({
                 <span className="text-zinc-300">only your account</span>—projects,
                 milestones, updates, support threads, billing summaries, and your
                 service plans—plus{" "}
-                <span className="text-zinc-300">general McCarthy FAQs</span>. Nothing
-                from other clients is ever included. If the portal does not contain
-                enough detail, the assistant will say so instead of guessing.
+                <span className="text-zinc-300">shared process guides and general FAQs</span>.
+                Nothing from other clients is ever included. If we don’t have enough
+                detail in your portal context, we’ll say so instead of guessing.
               </p>
             </div>
           </div>
@@ -117,7 +117,7 @@ export function KnowledgeAssistantPanel({
               className="h-4 w-4 shrink-0 animate-spin text-indigo-400"
               aria-hidden
             />
-            <span>Reviewing your project data…</span>
+            <span>Reviewing your portal context…</span>
           </div>
         ) : null}
       </form>
@@ -152,11 +152,11 @@ export function KnowledgeAssistantPanel({
               <BookOpen className="mt-0.5 h-5 w-5 shrink-0 text-amber-300/90" />
               <div className="space-y-2">
                 <p className="font-medium text-amber-50/95">
-                  I couldn&apos;t find enough specific information in your project
-                  data.
+                  We don&apos;t have enough detail in your portal context to answer
+                  that precisely.
                 </p>
                 <p className="text-zinc-300/95">
-                  Review the answer below, then try{" "}
+                  Read the note below, then try{" "}
                   <Link
                     href="/dashboard/updates"
                     className="font-semibold text-indigo-300 underline-offset-2 hover:underline"
@@ -168,9 +168,9 @@ export function KnowledgeAssistantPanel({
                     href="/dashboard/support"
                     className="font-semibold text-indigo-300 underline-offset-2 hover:underline"
                   >
-                    Contact support
+                    Open support
                   </Link>{" "}
-                  for details.
+                  and we can help confirm the latest status.
                 </p>
               </div>
             </div>

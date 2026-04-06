@@ -1,6 +1,7 @@
 import { formatDisplayDate } from "@/lib/utils";
 import { faqs } from "@/lib/data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { getSharedOperationalKnowledgeChunks } from "@/lib/assistant/shared-operational-knowledge";
 import type { AssistantContextChunk, AssistantSourceKind } from "@/lib/assistant/types";
 
 const MAX_BODY_CHARS = 2_200;
@@ -24,7 +25,7 @@ export async function gatherAssistantContext(
   const chunks: AssistantContextChunk[] = [];
 
   if (!supabase) {
-    return buildGlobalFaqChunks();
+    return [...getSharedOperationalKnowledgeChunks(), ...buildGlobalFaqChunks()];
   }
 
   const { data: clientRow, error: clientErr } = await supabase
@@ -117,7 +118,8 @@ export async function gatherAssistantContext(
       .select("id, project_id, title, due_date, completed_at, projects!inner(name)")
       .in("project_id", projectIds);
 
-    for (const m of milestones ?? []) {
+    const milestoneRows = milestones ?? [];
+    for (const m of milestoneRows) {
       const row = m as {
         title: string;
         due_date: string;
@@ -139,6 +141,16 @@ export async function gatherAssistantContext(
       });
     }
 
+    if (milestoneRows.length === 0) {
+      chunks.push({
+        ref: "",
+        kind: "portal_snapshot",
+        label: "Portal snapshot — Milestones",
+        content:
+          "No milestone rows appear in this assistant export for your active projects. If you expected milestones here, they may not be created yet or may live outside this export.",
+      });
+    }
+
     const { data: updates } = await supabase
       .from("project_updates")
       .select("id, title, body, created_at, projects!inner(name)")
@@ -146,7 +158,8 @@ export async function gatherAssistantContext(
       .order("created_at", { ascending: false })
       .limit(MAX_UPDATES);
 
-    for (const u of updates ?? []) {
+    const updateRows = updates ?? [];
+    for (const u of updateRows) {
       const row = u as {
         title: string;
         body: string;
@@ -165,6 +178,16 @@ export async function gatherAssistantContext(
           `Title: ${row.title}`,
           `Body: ${clip(row.body, MAX_BODY_CHARS)}`,
         ].join("\n"),
+      });
+    }
+
+    if (updateRows.length === 0) {
+      chunks.push({
+        ref: "",
+        kind: "portal_snapshot",
+        label: "Portal snapshot — Project updates",
+        content:
+          "No project update posts appear in this assistant export for your active projects. That usually means none have been published to the portal yet—not that context failed to load.",
       });
     }
   }
@@ -210,6 +233,16 @@ export async function gatherAssistantContext(
     });
   }
 
+  if (!(supportRows ?? []).length) {
+    chunks.push({
+      ref: "",
+      kind: "portal_snapshot",
+      label: "Portal snapshot — Support requests",
+      content:
+        "No support request threads appear in this assistant export for your account. That usually means none have been created yet in the portal—not that context failed to load.",
+    });
+  }
+
   const { data: billing } = await supabase
     .from("billing_records")
     .select("description, status, due_date, paid_at, amount_cents")
@@ -242,6 +275,7 @@ export async function gatherAssistantContext(
     });
   }
 
+  chunks.push(...getSharedOperationalKnowledgeChunks());
   chunks.push(...buildGlobalFaqChunks());
   return chunks;
 }
@@ -251,7 +285,7 @@ export function buildGlobalFaqChunks(): AssistantContextChunk[] {
   return faqs.map((f) => ({
     ref: "",
     kind: "global_faq" as AssistantSourceKind,
-    label: `McCarthy FAQ — ${f.question}`,
+    label: `General FAQ — ${f.question}`,
     content: `Q: ${f.question}\nA: ${f.answer}`,
   }));
 }

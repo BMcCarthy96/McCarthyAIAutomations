@@ -77,11 +77,11 @@ function saveSession(s: StoredSession) {
 function modeSubtitle(mode: WidgetAssistantMode): string {
   switch (mode) {
     case "public":
-      return "McCarthy services & FAQs — ask anything";
+      return "Our services & FAQs — ask anything";
     case "demo":
       return "Demo account — sample portal data only";
     case "client":
-      return "Your projects & portal data";
+      return "Your projects & our portal context";
     default:
       return "";
   }
@@ -287,7 +287,7 @@ export default function AssistantWidget() {
                     {msg.insufficientContext ? (
                       <p className="mb-2 flex gap-2 text-amber-200/90">
                         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-                        <span>Limited context for that question.</span>
+                        <span>We have limited context for that question.</span>
                       </p>
                     ) : null}
                     <div className="whitespace-pre-wrap">{msg.content}</div>

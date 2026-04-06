@@ -1,4 +1,8 @@
 import type { AssistantContextChunk, AssistantSourceKind } from "@/lib/assistant/types";
+import {
+  scorePortalProcessGuideBoost,
+  scorePortalSnapshotBoost,
+} from "@/lib/assistant/shared-operational-knowledge";
 
 const STOPWORDS = new Set([
   "the",
@@ -127,7 +131,11 @@ function scoreChunk(
   chunk: AssistantContextChunk,
   keywords: string[],
   projectUpdateOrdinal: number | null,
-  options?: { publicWidget?: boolean; questionLower?: string }
+  options?: {
+    publicWidget?: boolean;
+    portalAssistant?: boolean;
+    questionLower?: string;
+  }
 ): number {
   const hay = `${chunk.label}\n${chunk.content}`.toLowerCase();
   let s = 0;
@@ -138,6 +146,11 @@ function scoreChunk(
 
   if (options?.publicWidget && options.questionLower) {
     s += publicWidgetIntentBoost(options.questionLower, chunk);
+  }
+
+  if (options?.portalAssistant && options.questionLower) {
+    s += scorePortalProcessGuideBoost(options.questionLower, chunk);
+    s += scorePortalSnapshotBoost(options.questionLower, chunk);
   }
 
   switch (chunk.kind) {
@@ -164,6 +177,10 @@ function scoreChunk(
       return s + (options?.publicWidget ? 10 : 6);
     case "public_info":
       return s + (options?.publicWidget ? 24 : 10);
+    case "shared_process":
+      return s + 14;
+    case "portal_snapshot":
+      return s + 22;
     default:
       return s;
   }
@@ -176,7 +193,11 @@ function scoreChunk(
 export function selectRelevantChunks(
   chunks: AssistantContextChunk[],
   question: string,
-  options?: { maxChunks?: number; publicWidget?: boolean }
+  options?: {
+    maxChunks?: number;
+    publicWidget?: boolean;
+    portalAssistant?: boolean;
+  }
 ): AssistantContextChunk[] {
   const maxChunks = options?.maxChunks ?? 10;
   const keywords = tokenizeQuestion(question);
@@ -184,7 +205,9 @@ export function selectRelevantChunks(
   const scoreOpts =
     options?.publicWidget === true
       ? { publicWidget: true as const, questionLower }
-      : undefined;
+      : options?.portalAssistant === true
+        ? { portalAssistant: true as const, questionLower }
+        : undefined;
 
   let updateOrd = 0;
   const scored = chunks.map((c) => {
@@ -230,6 +253,18 @@ export function selectRelevantChunks(
     } else {
       const byKind = (k: AssistantSourceKind) =>
         chunks.filter((c) => c.kind === k).slice(0, 2);
+      for (const c of chunks.filter((c) => c.kind === "portal_snapshot").slice(0, 3)) {
+        if (!picked.has(c) && out.length < maxChunks) {
+          picked.add(c);
+          out.push(c);
+        }
+      }
+      for (const c of chunks.filter((c) => c.kind === "shared_process").slice(0, 4)) {
+        if (!picked.has(c) && out.length < maxChunks) {
+          picked.add(c);
+          out.push(c);
+        }
+      }
       for (const c of [...byKind("project"), ...byKind("project_update").slice(0, 2)]) {
         if (!picked.has(c) && out.length < maxChunks) {
           picked.add(c);

@@ -24,7 +24,7 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
       "When someone submits the free consultation form on the website:",
       "1) The request is received and stored so the team can act on it.",
       "2) The submitter typically receives a confirmation email acknowledging the message (when email is configured for the site).",
-      "3) The McCarthy team reviews the goals and details you shared.",
+      "3) Our team reviews the goals and details you shared.",
       "4) Automated assistive steps may run in the background to help categorize and summarize the request so the team can respond faster—this supports triage only and does not replace a human follow-up.",
       "5) A team member usually follows up by email within about one business day (often sooner during business hours)—exact timing can vary by volume.",
       "6) Next steps often include a short discovery conversation and, when it makes sense, a link to book a call or continue over email.",
@@ -34,10 +34,10 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
   {
     label: "AI lead qualification and Lead Engine (high-level, public)",
     lines: [
-      "McCarthy builds AI-powered lead workflows for businesses that want faster, more consistent handling of inbound interest.",
+      "We build AI-powered lead workflows for businesses that want faster, more consistent handling of inbound interest.",
       "At a high level, an “AI Lead Engine” or lead qualification layer can: summarize what the prospect asked for, estimate urgency or fit, suggest next actions for the team, and optionally draft follow-up ideas—always for human review before anything important goes out.",
       "On mccarthyaiautomations.com, public consultation submissions may be enriched automatically to help the team prioritize—visitors are not shown internal scores; this is an internal productivity aid.",
-      "Nothing here replaces compliance, consent, or your own sales process; McCarthy scopes what is built per client.",
+      "Nothing here replaces compliance, consent, or your own sales process; we scope what is built per client.",
     ],
   },
   {
@@ -61,7 +61,7 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
     label: "Booking tracker and pipeline (conceptual, public)",
     lines: [
       "Many clients track leads in a simple pipeline: submitted → followed up → booked → attended → qualified.",
-      "McCarthy can connect automations so status updates live alongside email and your existing operational tools. Exact tools and steps are chosen during implementation.",
+      "We can connect automations so status updates live alongside email and your existing operational tools. Exact tools and steps are chosen during implementation.",
       "The assistant cannot see a visitor’s private pipeline unless they are signed into their own client portal.",
     ],
   },
@@ -70,12 +70,12 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
     lines: [
       "On the marketing website, this floating assistant always uses public marketing and FAQ-style CONTEXT only—even if you are logged in. It does not load your private portal projects, milestones, invoices, or support history in this widget on public pages.",
       "In the client dashboard, the dedicated Knowledge Assistant page can answer from your organization’s delivery context when you are signed in there.",
-      "Here on the public site, the assistant can: explain McCarthy AI Automations services and how AI automations work at a high level; walk through consultation and booking flow; compare solution types (voice, chat, lead capture, CRM workflows); and point you to Contact or a Book-a-call link.",
+      "Here on the public site, we can: explain our services and how AI automations work at a high level; walk through consultation and booking flow; compare solution types (voice, chat, lead capture, CRM workflows); and point you to Contact or a Book-a-call link.",
       "It does not change settings, send emails, or book meetings for you; it explains options and next steps.",
     ],
   },
   {
-    label: "How to contact McCarthy AI Automations or get support",
+    label: "How to contact us or get support",
     lines: [
       "Marketing visitors: use the Contact page to send a consultation request, or use any “Book a call” / scheduling link shown on the site.",
       "Existing clients: use the client portal Support area to thread messages with the team when that has been enabled for their account.",
@@ -85,7 +85,7 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
   {
     label: "Knowledge Assistant (portal product — demo-safe description)",
     lines: [
-      "The Knowledge Assistant is a client-portal feature that answers questions using the customer’s own delivery context when they are signed in—projects, milestones, updates, support history, and billing summaries that exist in their portal, plus general McCarthy FAQs.",
+      "The Knowledge Assistant is a client-portal feature that answers questions using the customer’s own delivery context when they are signed in—projects, milestones, updates, support history, and billing summaries that exist in their portal, plus our general FAQs.",
       "It is designed to cite what it used and to say when context is missing instead of guessing.",
       "Live demos may use sample data so prospects can explore the experience safely.",
     ],
@@ -101,7 +101,7 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
     label: "Email automation (product area — public description)",
     lines: [
       "Email automation can include transactional messages (confirmations, handoffs) and nurture-style follow-ups where appropriate and compliant.",
-      "McCarthy integrates with the email and CRM tools the customer already uses when possible.",
+      "We integrate with the email and CRM tools the customer already uses when possible.",
     ],
   },
 ];

@@ -10,6 +10,10 @@ import {
   assignChunkRefs,
   selectRelevantChunks,
 } from "@/lib/assistant/select-context";
+import {
+  ensurePortalProcessGuideChunks,
+  sortPortalChunksForPrompt,
+} from "@/lib/assistant/shared-operational-knowledge";
 import { runAssistantLlm } from "@/lib/assistant/generate";
 import {
   AssistantApiError,
@@ -84,9 +88,17 @@ export async function askAssistantAction(
   try {
     const isDemoAccount = await getPortalDemoMode();
     const rawChunks = await gatherAssistantContext(clientId);
-    const selected = selectRelevantChunks(rawChunks, question, {
+    let selected = selectRelevantChunks(rawChunks, question, {
       maxChunks: MAX_CONTEXT_CHUNKS,
+      portalAssistant: true,
     });
+    selected = ensurePortalProcessGuideChunks(
+      rawChunks,
+      selected,
+      question,
+      MAX_CONTEXT_CHUNKS
+    );
+    selected = sortPortalChunksForPrompt(selected);
     const withRefs = assignChunkRefs(selected);
     const contextText = buildContextPromptText(withRefs, CONTEXT_CHAR_CAP);
     const chunkByRef = new Map(withRefs.map((c) => [c.ref, c]));
