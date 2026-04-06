@@ -112,6 +112,8 @@ function scoreChunk(
       return s + 8;
     case "global_faq":
       return s + 6;
+    case "public_info":
+      return s + 10;
     default:
       return s;
   }

@@ -24,7 +24,7 @@ export async function gatherAssistantContext(
   const chunks: AssistantContextChunk[] = [];
 
   if (!supabase) {
-    return globalFaqChunks();
+    return buildGlobalFaqChunks();
   }
 
   const { data: clientRow, error: clientErr } = await supabase
@@ -242,11 +242,12 @@ export async function gatherAssistantContext(
     });
   }
 
-  chunks.push(...globalFaqChunks());
+  chunks.push(...buildGlobalFaqChunks());
   return chunks;
 }
 
-function globalFaqChunks(): AssistantContextChunk[] {
+/** Shared FAQ chunks for portal assistant and public widget. */
+export function buildGlobalFaqChunks(): AssistantContextChunk[] {
   return faqs.map((f) => ({
     ref: "",
     kind: "global_faq" as AssistantSourceKind,

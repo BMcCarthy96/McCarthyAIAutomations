@@ -13,10 +13,18 @@ interface LlmJson {
 
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
+export type AssistantLlmProfile = "portal" | "public_widget";
+
 export async function runAssistantLlm(params: {
   question: string;
   contextText: string;
   chunkByRef: Map<string, AssistantContextChunk>;
+  /** Default portal — same behavior as historical dashboard assistant. */
+  profile?: AssistantLlmProfile;
+  /** Browsing path for light tone hints (public widget). */
+  pathname?: string;
+  /** Portal profile only: demo showcase account — stay accurate that data is illustrative. */
+  demoAccount?: boolean;
 }): Promise<{
   answer: string;
   insufficientContext: boolean;
@@ -33,14 +41,32 @@ export async function runAssistantLlm(params: {
   const model =
     process.env.OPENAI_ASSISTANT_MODEL?.trim() || "gpt-4o-mini";
 
-  const system = `McCarthy client portal assistant. Use ONLY CONTEXT blocks marked [S1], [S2], …
+  const profile = params.profile ?? "portal";
+
+  const portalSystem = `McCarthy client portal assistant. Use ONLY CONTEXT blocks marked [S1], [S2], …
 
 - Ground every fact in CONTEXT; add that block's id to cited_refs when you use it.
 - If CONTEXT is too thin to answer safely, set insufficient_context true, say what's missing briefly, suggest Support / Project updates—never invent projects, dates, invoices, or messages.
 - No UUIDs; names from CONTEXT only. cited_refs must be ids from CONTEXT only; use [] if insufficient_context.
-- Concise, professional; light markdown OK.`;
+- Concise, professional; light markdown OK.${params.demoAccount ? "\n- The user is on a live demo account: CONTEXT may reflect sample/seed data—describe it as illustrative; never imply it is confidential customer production data." : ""}`;
 
-  const user = `CONTEXT:\n\n${params.contextText}\n\n---\n\nQ:\n${params.question}\n\nReply with one JSON object only (no markdown fences): {"answer":"string","insufficient_context":boolean,"cited_refs":["S1"]}`;
+  const publicSystem = `You are the McCarthy AI Automations website assistant. Use ONLY CONTEXT blocks marked [S1], [S2], …
+
+- CONTEXT contains public marketing information, service summaries, FAQs, and routing hints—not private client data.
+- Ground every factual claim in CONTEXT; add that block's id to cited_refs when you use it.
+- Never claim to see or use a visitor's private projects, invoices, passwords, or other customers' information.
+- If CONTEXT is too thin to answer safely, set insufficient_context true, answer briefly, and suggest a free consultation via the Contact page or booking when appropriate.
+- Do not invent prices, URLs, or guarantees. Do not pretend you scheduled meetings or sent emails.
+- Be concise, helpful, and professional; light markdown OK. Encourage discovery call / contact when it fits naturally.`;
+
+  const system = profile === "public_widget" ? publicSystem : portalSystem;
+
+  const pathNote =
+    profile === "public_widget" && params.pathname
+      ? `\n\nVisitor path (for tone only; do not invent page-specific private facts): ${params.pathname}\n`
+      : "";
+
+  const user = `CONTEXT:\n\n${params.contextText}\n\n---\n\nQ:\n${params.question}${pathNote}\n\nReply with one JSON object only (no markdown fences): {"answer":"string","insufficient_context":boolean,"cited_refs":["S1"]}`;
 
   const res = await fetch(OPENAI_URL, {
     method: "POST",

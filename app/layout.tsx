@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { AssistantWidgetRoot } from "@/components/assistant/AssistantWidgetRoot";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -44,6 +45,7 @@ export default function RootLayout({
       <html lang="en" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-premium min-h-screen`}>
           {children}
+          <AssistantWidgetRoot />
         </body>
       </html>
     </ClerkProvider>

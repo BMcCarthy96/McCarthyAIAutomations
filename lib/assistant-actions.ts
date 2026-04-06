@@ -16,6 +16,7 @@ import {
   assistantGenericUserMessage,
 } from "@/lib/assistant/openai-errors";
 import { checkAssistantRateLimit } from "@/lib/assistant/rate-limit";
+import { getPortalDemoMode } from "@/lib/demo-portal";
 import {
   getAssistantCached,
   setAssistantCached,
@@ -81,6 +82,7 @@ export async function askAssistantAction(
   }
 
   try {
+    const isDemoAccount = await getPortalDemoMode();
     const rawChunks = await gatherAssistantContext(clientId);
     const selected = selectRelevantChunks(rawChunks, question, {
       maxChunks: MAX_CONTEXT_CHUNKS,
@@ -93,6 +95,8 @@ export async function askAssistantAction(
       question,
       contextText,
       chunkByRef,
+      profile: "portal",
+      demoAccount: isDemoAccount,
     });
 
     const success: AssistantAskState = {
