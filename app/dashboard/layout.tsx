@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { getCurrentClientId } from "@/lib/portal-data";
 import { getSupabaseServiceClient } from "@/lib/supabase";
@@ -22,6 +23,21 @@ export default async function DashboardLayout({
   ]);
   const showNoClientState = supabase !== null && clientId === null;
 
+  if (process.env.NODE_ENV === "development") {
+    const { userId: clerkUserId } = await auth();
+    const cu = await currentUser();
+    const clerkEmails =
+      cu?.emailAddresses?.map((e) => e.emailAddress) ?? [];
+    console.info("[portal-auth-debug]", {
+      clerkUserId: clerkUserId ?? null,
+      isAdmin,
+      isDemoUserPortal: isDemo,
+      resolvedClientId: clientId,
+      clerkEmailCount: clerkEmails.length,
+      clerkEmails,
+    });
+  }
+
   return (
     <div className="min-h-screen bg-premium">
       <header className="sticky top-0 z-50 border-b border-white/[0.06] bg-[var(--background)]/90 shadow-md shadow-black/15 backdrop-blur-xl">
@@ -41,26 +57,26 @@ export default async function DashboardLayout({
               Knowledge assistant
             </Link>
           </div>
-          <div className="flex shrink-0 items-center gap-3">
+          <div className="flex shrink-0 flex-wrap items-center justify-end gap-x-2 gap-y-1 sm:gap-3">
             {isAdmin && (
               <Link
                 href="/admin"
-                className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:inline"
+                className="whitespace-nowrap text-sm font-medium text-zinc-200 transition-colors hover:text-white"
               >
                 Admin
               </Link>
             )}
             <Link
               href="/"
-              className="hidden text-sm text-zinc-400 transition-colors hover:text-white sm:inline"
+              className="whitespace-nowrap text-sm text-zinc-400 transition-colors hover:text-white"
             >
               Back to site
             </Link>
-            <DemoSafeUserMenu forceDemoMask={isDemo} />
+            <DemoSafeUserMenu forceDemoMask={isDemo} isAdmin={isAdmin} />
           </div>
         </div>
       </header>
-      <DashboardSidebar />
+      <DashboardSidebar isAdmin={isAdmin} />
       <div className="lg:pl-64">
         <div className="relative mx-auto max-w-5xl px-4 py-10 pl-14 sm:px-6 sm:pl-6 lg:px-8 lg:py-12 lg:pl-8">
           <div

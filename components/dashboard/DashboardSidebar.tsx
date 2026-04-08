@@ -13,6 +13,7 @@ import {
   Sparkles,
   Menu,
   X,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -26,12 +27,38 @@ const navItems = [
   { href: "/dashboard/billing", label: "Billing", icon: CreditCard },
 ];
 
-export function DashboardSidebar() {
+export function DashboardSidebar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
   const content = (
     <nav className="flex flex-col gap-0.5 p-4 lg:pt-5">
+      {isAdmin ? (
+        <Link
+          href="/admin"
+          onClick={() => setOpen(false)}
+          className={cn(
+            "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors duration-200",
+            pathname.startsWith("/admin")
+              ? "border border-indigo-400/20 bg-indigo-500/12 text-white"
+              : "border border-transparent text-indigo-200/90 hover:bg-white/5 hover:text-white"
+          )}
+        >
+          {pathname.startsWith("/admin") && (
+            <span
+              className="absolute left-0 top-2 bottom-2 w-0.5 rounded-r bg-indigo-500"
+              aria-hidden
+            />
+          )}
+          <Shield
+            className={cn(
+              "h-5 w-5 shrink-0",
+              pathname.startsWith("/admin") ? "text-indigo-400" : "text-current"
+            )}
+          />
+          Admin dashboard
+        </Link>
+      ) : null}
       {navItems.map((item) => {
         const isActive =
           item.href === "/dashboard"

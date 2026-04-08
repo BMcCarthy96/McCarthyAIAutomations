@@ -110,6 +110,12 @@ export default function AssistantWidget() {
   }, []);
 
   useEffect(() => {
+    const handler = () => setOpen(true);
+    window.addEventListener("open-assistant-widget", handler);
+    return () => window.removeEventListener("open-assistant-widget", handler);
+  }, []);
+
+  useEffect(() => {
     if (!loadedRef.current) return;
     saveSession({ mode, messages });
   }, [mode, messages]);

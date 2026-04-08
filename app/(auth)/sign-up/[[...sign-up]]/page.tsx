@@ -1,9 +1,15 @@
 import { SignUp } from "@clerk/nextjs";
+import { ClerkAuthDevLog } from "@/components/dev/ClerkAuthDevLog";
 
 export default function SignUpPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-premium px-4">
+      <ClerkAuthDevLog context="sign-up" />
       <SignUp
+        routing="path"
+        path="/sign-up"
+        signInUrl="/sign-in"
+        fallbackRedirectUrl="/dashboard"
         appearance={{
           elements: {
             rootBox: "mx-auto",

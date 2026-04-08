@@ -5,6 +5,8 @@ import {
   type SupportRequest,
   type ProjectUpdate,
 } from "@/lib/types";
+import { isAdminUser } from "@/lib/admin-auth";
+import { isDemoClientId } from "@/lib/demo-config";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getTodayDateString } from "@/lib/utils";
 
@@ -20,6 +22,10 @@ import { getTodayDateString } from "@/lib/utils";
  * 2. Looks up the clients row in Supabase where clerk_user_id = Clerk userId.
  * 3. Returns that client's id (uuid), or null if not found / no user / Supabase unavailable.
  * When this returns null, the user has no linked client (dashboard shows NoClientAccount or empty states).
+ *
+ * Admins never resolve to a demo/showcase client row: if `clients.clerk_user_id` points at a demo
+ * client UUID (mis-link or shared test data), we return null so admin identity and portal data stay
+ * separated from the public demo experience.
  */
 export async function getCurrentClientId(): Promise<string | null> {
   const { userId } = await auth();
@@ -36,7 +42,13 @@ export async function getCurrentClientId(): Promise<string | null> {
     .maybeSingle();
 
   if (error || !data) return null;
-  return data.id;
+
+  const id = data.id as string;
+  if ((await isAdminUser()) && isDemoClientId(id)) {
+    return null;
+  }
+
+  return id;
 }
 
 interface DbProject {

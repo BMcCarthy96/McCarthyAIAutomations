@@ -18,7 +18,7 @@ const navLinks = [
   { href: "/contact", label: "Consultation" },
 ];
 
-export function Navbar() {
+export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -67,20 +67,32 @@ export function Navbar() {
           key={sessionId ?? "signed-out"}
           className="hidden items-center gap-3 md:flex"
         >
-          {isHome && showTryLiveDemo ? (
+          {isHome && showTryLiveDemo && !isAdmin ? (
             <Link
               href="/demo"
-              className="text-sm font-semibold text-indigo-300/90 transition-colors hover:text-indigo-200"
+              prefetch={false}
+              className="text-sm font-medium text-zinc-400 transition-colors hover:text-white"
             >
-              Try Live Demo
+              Portal demo
             </Link>
           ) : null}
           {isSignedIn ? (
             <>
+              {isAdmin ? (
+                <Link
+                  href="/admin"
+                  className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+                >
+                  Admin
+                </Link>
+              ) : null}
               <Button variant="ghost" size="sm" href="/dashboard">
                 Dashboard
               </Button>
-              <DemoSafeUserMenu forceDemoMask={shouldMaskDemoIdentity(user?.id)} />
+              <DemoSafeUserMenu
+                forceDemoMask={shouldMaskDemoIdentity(user?.id, isAdmin)}
+                isAdmin={isAdmin}
+              />
             </>
           ) : (
             <>
@@ -129,24 +141,36 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
-            {showTryLiveDemo ? (
+            {showTryLiveDemo && !isAdmin ? (
               <Link
                 href="/demo"
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-indigo-300 hover:bg-white/5"
+                prefetch={false}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-white/5 hover:text-white"
                 onClick={() => setOpen(false)}
               >
-                Try Live Demo
+                Portal demo
               </Link>
             ) : null}
             <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4">
               {isSignedIn ? (
-                <Link
-                  href="/dashboard"
-                  className="w-full rounded-lg px-3 py-2 text-center text-sm font-medium text-white hover:bg-white/5"
-                  onClick={() => setOpen(false)}
-                >
-                  Dashboard
-                </Link>
+                <>
+                  {isAdmin ? (
+                    <Link
+                      href="/admin"
+                      className="w-full rounded-lg px-3 py-2 text-center text-sm font-medium text-zinc-300 hover:bg-white/5"
+                      onClick={() => setOpen(false)}
+                    >
+                      Admin
+                    </Link>
+                  ) : null}
+                  <Link
+                    href="/dashboard"
+                    className="w-full rounded-lg px-3 py-2 text-center text-sm font-medium text-white hover:bg-white/5"
+                    onClick={() => setOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                </>
               ) : (
                 <>
                   <SignInButton mode="modal">

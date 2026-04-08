@@ -5,6 +5,10 @@ interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   href?: string;
+  /** When set without `href`, renders a full-width button (e.g. open assistant widget). */
+  onClick?: () => void;
+  /** Set false for routes that must not be prefetched (e.g. auth handoffs like `/demo`). */
+  prefetch?: boolean;
   hover?: boolean;
   /**
    * `default` — standard portal panels.
@@ -18,6 +22,8 @@ export function GlassCard({
   children,
   className,
   href,
+  onClick,
+  prefetch = true,
   hover = true,
   variant = "default",
 }: GlassCardProps) {
@@ -41,9 +47,21 @@ export function GlassCard({
 
   if (href) {
     return (
-      <Link href={href} className={cardClasses}>
+      <Link href={href} prefetch={prefetch} className={cardClasses}>
         {children}
       </Link>
+    );
+  }
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn(cardClasses, "w-full cursor-pointer text-left")}
+      >
+        {children}
+      </button>
     );
   }
 

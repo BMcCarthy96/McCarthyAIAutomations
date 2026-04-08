@@ -5,11 +5,15 @@ import { DEMO_DISPLAY_PROFILE, isConfiguredDemoUser } from "@/lib/demo-display";
 
 export function DemoSafeUserMenu({
   forceDemoMask = false,
+  isAdmin = false,
 }: {
   forceDemoMask?: boolean;
+  /** When true, never show demo identity mask (avoids mis-set DEMO_CLERK_USER_ID vs admin). */
+  isAdmin?: boolean;
 }) {
   const { user } = useUser();
-  const shouldMask = forceDemoMask || isConfiguredDemoUser(user?.id);
+  const shouldMask =
+    !isAdmin && (forceDemoMask || isConfiguredDemoUser(user?.id));
 
   if (!shouldMask) {
     return (
@@ -55,6 +59,10 @@ export function DemoSafeUserMenu({
   );
 }
 
-export function shouldMaskDemoIdentity(userId: string | null | undefined): boolean {
+export function shouldMaskDemoIdentity(
+  userId: string | null | undefined,
+  isAdmin = false
+): boolean {
+  if (isAdmin) return false;
   return isConfiguredDemoUser(userId);
 }
