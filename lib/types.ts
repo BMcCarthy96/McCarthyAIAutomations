@@ -23,11 +23,9 @@ export interface PricingTier {
 
 export interface Testimonial {
   id: string;
-  quote: string;
-  author: string;
-  role: string;
-  company: string;
-  avatar?: string;
+  headline: string;
+  body: string;
+  metric?: string;
 }
 
 export interface FAQItem {

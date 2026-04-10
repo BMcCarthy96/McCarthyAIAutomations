@@ -351,33 +351,60 @@ export default function AssistantWidget() {
             </div>
           ) : null}
 
-          <div className="border-t border-white/10 px-3 py-2">
-            <div className="flex flex-wrap gap-2">
-              {bookingHref ? (
+          {messages.filter((m) => m.role === "assistant").length >= 3 ? (
+            <div className="border-t border-indigo-500/20 bg-indigo-500/[0.06] px-3 py-2.5">
+              <p className="mb-2 text-[11px] font-medium text-indigo-200">
+                Ready to talk specifics? Get a free consultation.
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {bookingHref ? (
+                  <Link
+                    href={bookingHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-500 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-indigo-400"
+                  >
+                    Book a free call
+                    <ExternalLink className="h-3 w-3 opacity-80" aria-hidden />
+                  </Link>
+                ) : null}
                 <Link
-                  href={bookingHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => {
-                    /* TODO(analytics): assistant_cta_clicked book_call */
-                  }}
-                  className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1.5 text-[11px] font-medium text-emerald-100 transition hover:bg-emerald-500/15"
+                  href="/contact"
+                  className="inline-flex items-center gap-1 rounded-lg border border-indigo-400/30 px-3 py-1.5 text-[11px] font-medium text-indigo-200 transition hover:bg-indigo-500/10"
                 >
-                  Book a call
-                  <ExternalLink className="h-3 w-3 opacity-70" aria-hidden />
+                  Send us a message
                 </Link>
-              ) : null}
-              <Link
-                href="/contact"
-                onClick={() => {
-                  /* TODO(analytics): assistant_cta_clicked contact */
-                }}
-                className="inline-flex items-center gap-1 rounded-lg border border-indigo-500/25 bg-indigo-500/10 px-2.5 py-1.5 text-[11px] font-medium text-indigo-100 transition hover:bg-indigo-500/15"
-              >
-                Contact us
-              </Link>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="border-t border-white/10 px-3 py-2">
+              <div className="flex flex-wrap gap-2">
+                {bookingHref ? (
+                  <Link
+                    href={bookingHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => {
+                      /* TODO(analytics): assistant_cta_clicked book_call */
+                    }}
+                    className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1.5 text-[11px] font-medium text-emerald-100 transition hover:bg-emerald-500/15"
+                  >
+                    Book a call
+                    <ExternalLink className="h-3 w-3 opacity-70" aria-hidden />
+                  </Link>
+                ) : null}
+                <Link
+                  href="/contact"
+                  onClick={() => {
+                    /* TODO(analytics): assistant_cta_clicked contact */
+                  }}
+                  className="inline-flex items-center gap-1 rounded-lg border border-indigo-500/25 bg-indigo-500/10 px-2.5 py-1.5 text-[11px] font-medium text-indigo-100 transition hover:bg-indigo-500/15"
+                >
+                  Contact us
+                </Link>
+              </div>
+            </div>
+          )}
 
           <form
             className="border-t border-white/10 p-3"

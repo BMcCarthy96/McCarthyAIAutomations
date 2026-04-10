@@ -179,24 +179,21 @@ export const pricingTiers: PricingTier[] = [
 export const testimonials: Testimonial[] = [
   {
     id: "1",
-    quote: "McCarthy AI Automations revamped our site and added an AI chatbot. Our lead quality and volume both went up within weeks.",
-    author: "Sarah Chen",
-    role: "Marketing Director",
-    company: "TechFlow Inc",
+    headline: "Your leads stop falling through the cracks",
+    body: "Every inquiry gets captured, classified, and followed up automatically — whether it comes in at 2 pm or 2 am. No more manual triage, no missed opportunities.",
+    metric: "24/7 lead capture & follow-up",
   },
   {
     id: "2",
-    quote: "The AI voice agent handles after-hours calls and books appointments we would have missed. Game changer for a small team.",
-    author: "James Rivera",
-    role: "Owner",
-    company: "Rivera Legal",
+    headline: "You see exactly what your automation is doing",
+    body: "Every hour saved, lead captured, and revenue influenced is tracked in your client portal. Monthly impact reports land in your inbox so the ROI is always visible.",
+    metric: "Real-time reporting included",
   },
   {
     id: "3",
-    quote: "They connected our CRM to our ads and calendar. We finally have one source of truth and way less manual work.",
-    author: "Michelle Park",
-    role: "VP Sales",
-    company: "ScaleUp Solutions",
+    headline: "Your first system is live in weeks, not months",
+    body: "We scope, build, and launch your first AI automation in 2–4 weeks. You own the system — no lock-in, no black boxes, full documentation handed off at launch.",
+    metric: "2–4 week typical delivery",
   },
 ];
 
@@ -224,10 +221,10 @@ export const faqs: FAQItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "150+", label: "AI systems launched" },
-  { value: "98%", label: "Clients who renew or expand" },
+  { value: "2–4 wks", label: "Typical time to first live deployment" },
   { value: "24/7", label: "Calls, chats & lead capture" },
-  { value: "3×", label: "Typical lift in qualified leads" },
+  { value: "Fixed", label: "Scope & price — no billable-hour surprises" },
+  { value: "1 portal", label: "Track every automation, metric & invoice" },
 ];
 
 /** Homepage “How it works” — three phases from first call to measurable outcomes. */

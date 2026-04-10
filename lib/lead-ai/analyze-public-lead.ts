@@ -5,6 +5,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { Resend } from "resend";
 import type {
   LeadAnalysisLlmPayload,
   NormalizedLeadAnalysis,
@@ -190,6 +191,31 @@ function safeErrorMessage(err: unknown): string {
   return msg.length > 800 ? msg.slice(0, 800) : msg;
 }
 
+/**
+ * Best-effort admin alert email for pipeline failures (AI analysis or Zapier).
+ * Never throws; safe to call from catch blocks.
+ */
+async function sendAdminFailureAlert(subject: string, body: string): Promise<void> {
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const adminTo = process.env.CONTACT_EMAIL?.trim();
+  const fromEmail =
+    process.env.CONTACT_FROM_EMAIL?.trim() || "onboarding@resend.dev";
+
+  if (!apiKey || !adminTo) return;
+
+  try {
+    const resend = new Resend(apiKey);
+    await resend.emails.send({
+      from: fromEmail,
+      to: adminTo,
+      subject,
+      text: body,
+    });
+  } catch {
+    // Never surface; this is a best-effort alert only
+  }
+}
+
 /** Stable label for Zapier / Sheets “Source” columns (not read from request body). */
 const ZAPIER_LEAD_SOURCE_LABEL = "McCarthy AI Automations";
 
@@ -259,16 +285,41 @@ async function sendZapierLeadEnrichmentWebhook(
       }
     } else {
       const text = await res.text().catch(() => "");
-      console.warn(
-        "[lead-ai] Zapier webhook non-OK:",
-        res.status,
-        text.slice(0, 300)
+      const errSummary = `HTTP ${res.status}: ${text.slice(0, 300)}`;
+      console.warn("[lead-ai] Zapier webhook non-OK:", errSummary);
+      await sendAdminFailureAlert(
+        "[McCarthy AI] Zapier lead webhook failed",
+        [
+          "The Zapier lead enrichment webhook returned a non-OK response.",
+          "",
+          `Lead payload source: ${payload.source}`,
+          `Lead ID: ${payload.lead_id}`,
+          `Name: ${payload.name}`,
+          `Email: ${payload.email ?? "(none)"}`,
+          "",
+          `Error: ${errSummary}`,
+          "",
+          "The lead has been saved to Supabase. Check /admin/support to review it.",
+          "Verify that ZAPIER_LEAD_WEBHOOK_URL is correct and the Zap is active.",
+        ].join("\n")
       );
     }
   } catch (e) {
-    console.warn(
-      "[lead-ai] Zapier webhook:",
-      e instanceof Error ? e.message : String(e)
+    const errMsg = e instanceof Error ? e.message : String(e);
+    console.warn("[lead-ai] Zapier webhook:", errMsg);
+    await sendAdminFailureAlert(
+      "[McCarthy AI] Zapier lead webhook error",
+      [
+        "The Zapier lead enrichment webhook threw an error (network/timeout).",
+        "",
+        `Lead ID: ${payload.lead_id}`,
+        `Name: ${payload.name}`,
+        `Email: ${payload.email ?? "(none)"}`,
+        "",
+        `Error: ${errMsg}`,
+        "",
+        "The lead has been saved to Supabase. Check /admin/support to review it.",
+      ].join("\n")
     );
   }
 }
@@ -468,6 +519,21 @@ export async function processPublicLeadAnalysis(
     if (failErr) {
       console.error("[lead-ai] persist failed status:", failErr.message);
     }
+
+    await sendAdminFailureAlert(
+      "[McCarthy AI] AI lead analysis failed",
+      [
+        "The AI lead classification failed for a new public consultation submission.",
+        "",
+        `Support request ID: ${requestId}`,
+        `Model: ${model}`,
+        "",
+        `Error: ${errMsg}`,
+        "",
+        "The lead has been saved to Supabase with status 'failed'.",
+        "Go to /admin/support to review it and re-run analysis if needed.",
+      ].join("\n")
+    );
   }
 
   revalidatePath("/admin/support");
