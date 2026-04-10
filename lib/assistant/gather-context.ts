@@ -248,9 +248,10 @@ export async function gatherAssistantContext(
     .select("description, status, due_date, paid_at, amount_cents")
     .eq("client_id", clientId)
     .order("due_date", { ascending: false })
-    .limit(20);
+    .limit(6);
 
-  for (const b of billing ?? []) {
+  const billingRows = billing ?? [];
+  for (const b of billingRows) {
     const br = b as {
       description: string;
       status: string;
@@ -258,20 +259,35 @@ export async function gatherAssistantContext(
       paid_at: string | null;
       amount_cents: number;
     };
-    const amt = (br.amount_cents / 100).toFixed(2);
+    const dollars = (br.amount_cents / 100).toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    });
     chunks.push({
       ref: "",
       kind: "billing",
       label: `Billing — ${br.description}`,
       content: [
         `Invoice: ${br.description}`,
-        `Amount (USD): ${amt}`,
+        `Amount: ${dollars}`,
         `Status: ${br.status}`,
         `Due: ${formatDisplayDate(br.due_date)}`,
         br.paid_at ? `Paid: ${formatDisplayDate(br.paid_at)}` : "",
       ]
         .filter(Boolean)
         .join("\n"),
+    });
+  }
+
+  if (billingRows.length === 0) {
+    chunks.push({
+      ref: "",
+      kind: "portal_snapshot",
+      label: "Portal snapshot — Billing",
+      content:
+        "No billing records appear in this assistant export for your account. " +
+        "This typically means no invoices have been issued yet, or billing has not been set up for this engagement. " +
+        "Billing is usually tied to completed milestones or ongoing service retainers.",
     });
   }
 
