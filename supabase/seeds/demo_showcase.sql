@@ -1,4 +1,4 @@
--- Demo showcase seed data
+-- Demo showcase seed data for Supabase
 -- Safe to re-run: this script removes/recreates only fixed demo IDs.
 -- Intended for sales demos/screenshots (not production seeding).
 
