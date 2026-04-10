@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { getAllProjects } from "@/lib/admin-data";
 import { CreateProjectUpdateForm } from "@/components/admin/CreateProjectUpdateForm";
+import { SeedDemoForm } from "@/components/admin/SeedDemoForm";
 import { PageHeader } from "@/components/dashboard/PageHeader";
 import { AdminSection, AdminCard } from "@/components/admin/AdminSection";
 
@@ -74,6 +75,16 @@ export default async function AdminOverviewPage() {
           ) : (
             <CreateProjectUpdateForm projects={projects} />
           )}
+        </AdminCard>
+      </AdminSection>
+
+      <AdminSection
+        eyebrow="Demo"
+        title="Demo portal setup"
+        description="Seeds the demo client dataset and links DEMO_CLERK_USER_ID so the portal demo shows a full, convincing dashboard. Idempotent — safe to run more than once."
+      >
+        <AdminCard>
+          <SeedDemoForm />
         </AdminCard>
       </AdminSection>
     </div>

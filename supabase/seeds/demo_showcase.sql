@@ -100,9 +100,9 @@ INSERT INTO clients (
   monthly_report_enabled
 ) VALUES (
   '72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77',
-  'Alex Rivera',
-  'demo@acmehome.example',
-  'Acme Home Services (Demo)',
+  'Jordan Mercer',
+  'demo@meridianhs.example',
+  'Meridian Home Services (Demo)',
   true
 );
 
@@ -222,29 +222,29 @@ VALUES
   (
     '3474371f-c6eb-4f19-92b0-1e6c53295d85',
     '9244d329-d9ea-4713-9f74-87c9a2548fa4',
-    'After-hours handoff improved',
-    'Updated transfer logic reduced missed escalations by 34% in the first week.',
+    'Peak weekend call volume handled',
+    'Bot managed 47 inbound calls Saturday with zero missed contacts and an average response time under 20 seconds. After-hours handoff is working exactly as designed.',
     now() - interval '14 days'
   ),
   (
     '4dd0643f-3520-4f9c-b8c4-2f8ec84e2d20',
     '19fda46e-6f6a-4fe5-b9ee-d208fdb48ee3',
-    'Lead form enrichment live',
-    'Added campaign source capture and qualification tags to scheduling payloads.',
+    'First 30-day result: 61 booked appointments',
+    'Lead capture rate improved 3x over manual intake. Campaign source tagging is now live — you can see exactly which marketing channels are driving bookings.',
     now() - interval '9 days'
   ),
   (
     'e6f6b720-4f15-41e8-9eb7-6a72f7c8fa62',
     '7c8e64bd-acbc-442e-b4ce-c8d4e0f6fcf4',
-    'Chat containment reached target',
-    'Bot now resolves 71% of tier-1 intents without human takeover.',
+    'Chatbot tier-1 containment at 78%',
+    'AI now resolves 4 in 5 visitor questions without escalating to a human. Common queries (service areas, pricing estimates, availability) are handled end-to-end.',
     now() - interval '6 days'
   ),
   (
     '93f30f89-9b74-48d1-b14b-7b0720f9935b',
     '9244d329-d9ea-4713-9f74-87c9a2548fa4',
-    'Weekend volume spike handled',
-    'Voice agent managed peak demand while maintaining <25s avg response.',
+    'Holiday scripts + fallback copy updated',
+    'Seasonal greeting and revised voicemail fallback are now live. The spring promotion mention was added to the after-hours message as requested.',
     now() - interval '2 days'
   );
 
@@ -350,8 +350,8 @@ INSERT INTO support_requests (
     '5f1b6f0e-bf88-44ef-bf5a-39ed58d949f7',
     '72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77',
     '9244d329-d9ea-4713-9f74-87c9a2548fa4',
-    'Adjust voicemail fallback copy',
-    'Can we update the fallback script to mention holiday scheduling?',
+    'Update intake script for spring promotions',
+    'Can we add a mention of our spring HVAC tune-up special in the call intro? Something like “Ask about our spring tune-up package” after the greeting.',
     'in_progress',
     'voice_agent',
     now() - interval '7 days',
@@ -361,8 +361,8 @@ INSERT INTO support_requests (
     'ea206cf4-6dc2-4628-99b4-cef656cf03f3',
     '72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77',
     '19fda46e-6f6a-4fe5-b9ee-d208fdb48ee3',
-    'Need extra lead source tagging',
-    'Please add “Direct Mail” as a source option in the booking flow.',
+    'Add Google Review link to booking confirmation',
+    'After a job is completed, could we send an automated follow-up with a Google Review link? We''ve been getting good feedback verbally but not capturing it online.',
     'open',
     'lead_capture',
     now() - interval '3 days',
@@ -373,7 +373,7 @@ INSERT INTO support_requests (
     '72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77',
     null,
     'Monthly report export format',
-    'Could we get a CSV export from the monthly impact report?',
+    'Could we get a CSV export from the monthly impact report? Would be helpful for our internal reporting.',
     'resolved',
     'reporting',
     now() - interval '18 days',
@@ -385,7 +385,7 @@ VALUES
   (
     '263fc57b-a404-41fd-81d5-20bd77f85e35',
     '5f1b6f0e-bf88-44ef-bf5a-39ed58d949f7',
-    'Absolutely — we will publish revised fallback copy with the holiday note by Friday.',
+    'On it — we''ll publish the updated script with the spring tune-up mention by end of week. I''ll send you a preview of the new intro copy for approval first.',
     'admin',
     now() - interval '2 days'
   );
