@@ -100,9 +100,9 @@ INSERT INTO clients (
   monthly_report_enabled
 ) VALUES (
   '72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77',
-  'Jordan Mercer',
-  'demo@meridianhs.example',
-  'Meridian Home Services (Demo)',
+  'Chris Hartwell',
+  'demo@hartwellhvac.example',
+  'Hartwell HVAC & Plumbing (Demo)',
   true
 );
 

@@ -142,9 +142,9 @@ export async function POST() {
     const { error: clientErr } = await supabase.from("clients").upsert(
       {
         id: DEMO_CLIENT_ID,
-        name: "Jordan Mercer",
-        email: "demo@meridianhs.example",
-        company: "Meridian Home Services (Demo)",
+        name: "Chris Hartwell",
+        email: "demo@hartwellhvac.example",
+        company: "Hartwell HVAC & Plumbing (Demo)",
         monthly_report_enabled: true,
         clerk_user_id: demoClerkUserId,
         is_archived: false,

@@ -1,7 +1,7 @@
 export const DEMO_DISPLAY_PROFILE = {
-  businessName: "Meridian Home Services",
-  contactName: "Jordan Mercer",
-  displayEmail: "demo@meridianhs.example",
+  businessName: "Hartwell HVAC & Plumbing",
+  contactName: "Chris Hartwell",
+  displayEmail: "demo@hartwellhvac.example",
   phone: "(555) 214-9087",
 } as const;
 
