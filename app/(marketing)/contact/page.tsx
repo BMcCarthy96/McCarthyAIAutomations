@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SectionHeading } from "@/components/home/SectionHeading";
+import { PageHero } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
@@ -10,12 +10,15 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-2xl">
-        <SectionHeading
-          title="Get in touch"
-          subtitle="Tell us what you want to automate—we’ll confirm by email and follow up personally, usually within one business day."
-        />
+    <div>
+      <PageHero
+        label="Free consultation"
+        title="Tell us what you want to"
+        titleAccent="automate."
+        subtitle="We'll confirm by email and follow up personally, usually within one business day."
+      />
+
+      <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
         <ContactForm />
       </div>
     </div>

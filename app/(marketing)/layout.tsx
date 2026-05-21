@@ -17,7 +17,8 @@ export default async function MarketingLayout({
     <>
       <MarketingAuthRefresh />
       <Navbar isAdmin={isAdmin} />
-      <main className="min-h-screen">{children}</main>
+      {/* pt-24 clears the fixed floating navbar (~72 px pill + 16 px top gap) */}
+      <main className="min-h-screen pt-24">{children}</main>
       <Footer />
     </>
   );

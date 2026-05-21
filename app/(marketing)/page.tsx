@@ -6,6 +6,7 @@ import { PortalPreview } from "@/components/home/PortalPreview";
 import { LiveAiSystemsSection } from "@/components/home/LiveAiSystemsSection";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { HowItWorks } from "@/components/home/HowItWorks";
+import { PhilosophySection } from "@/components/home/PhilosophySection";
 import { Testimonials } from "@/components/home/Testimonials";
 import { ConsultationBand } from "@/components/home/ConsultationBand";
 import { FAQ } from "@/components/home/FAQ";
@@ -27,6 +28,7 @@ export default function HomePage() {
       <LiveAiSystemsSection />
       <ServicesGrid />
       <HowItWorks />
+      <PhilosophySection />
       <Testimonials />
       <ConsultationBand />
       <FAQ />

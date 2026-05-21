@@ -24,12 +24,12 @@ export function CTABanner() {
             </Button>
           </div>
           <p className="mt-6 text-sm text-slate-600">
-            Prefer email? Use the{" "}
+            Prefer email?{" "}
             <a
               href="/contact"
               className="text-slate-400 underline-offset-2 hover:text-white hover:underline"
             >
-              contact form
+              Use the contact form.
             </a>{" "}
             Same team, same response time.
           </p>

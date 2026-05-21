@@ -38,7 +38,25 @@ body {
   min-height: 100vh;
 }
 
-/* Premium dark gradient background */
+/* ── Noise overlay — eliminates flat digital gradients ─────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.028;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* ── Drama (serif italic) font — used for cinematic type moments ──────── */
+.font-drama {
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+}
+
+/* ── Premium dark gradient background ────────────────────────────────── */
 .bg-premium {
   background: linear-gradient(
     180deg,
@@ -48,7 +66,7 @@ body {
   );
 }
 
-/* Glassmorphism card */
+/* ── Glassmorphism card ──────────────────────────────────────────────── */
 .glass {
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(12px);
@@ -59,6 +77,24 @@ body {
 .glass-hover:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Magnetic button feel ────────────────────────────────────────────── */
+.btn-magnetic {
+  transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: transform;
+}
+.btn-magnetic:hover {
+  transform: scale(1.03) translateY(-1px);
+}
+
+/* Nav link lift */
+.nav-link {
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.nav-link:hover {
+  transform: translateY(-1px);
 }
 
 /* ── Entrance & ambient animations ───────────────────────────────────── */
@@ -89,6 +125,17 @@ body {
   50%        { transform: translateY(-10px); }
 }
 
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* Status pulse */
+@keyframes statusPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.9); }
+}
+
 /* Animations only fire when the user has not opted for reduced motion */
 @media (prefers-reduced-motion: no-preference) {
   .hero-badge  { animation: fadeInUp 0.5s ease both; }
@@ -101,4 +148,5 @@ body {
 
   .glow-pulse  { animation: pulseGlow 4s   ease-in-out infinite; }
   .float-card  { animation: float    6s   ease-in-out infinite;  }
+  .status-dot  { animation: statusPulse 2.5s ease-in-out infinite; }
 }
