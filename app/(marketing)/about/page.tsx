@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "McCarthy AI Automations is a premium AI automation agency helping businesses scale with voice agents, chatbots, and custom integrations.",
+    "McCarthy AI Solutions builds high-touch AI workflow systems that recover lost revenue from missed leads, slow follow-up, and operational bottlenecks.",
 };
 
 export default function AboutPage() {
@@ -13,28 +13,20 @@ export default function AboutPage() {
     <div>
       <PageHero
         label="Our story"
-        title="We exist to help businesses"
-        titleAccent="grow without the chaos."
+        title="We focus on revenue recovery,"
+        titleAccent="not generic automation."
       />
 
       <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="space-y-6 text-zinc-300">
           <p className="text-lg leading-relaxed">
-            McCarthy AI Automations is a premium agency focused on AI-driven automation. We help
-            companies of all sizes, from startups to mid-market, implement voice agents, chatbots,
-            lead capture, CRM workflows, and custom integrations so they can scale operations and
-            revenue without proportionally scaling headcount.
+            McCarthy AI Solutions builds AI workflow systems for B2B businesses losing revenue to missed leads, slow follow-up, stale quotes, and broken handoffs.
           </p>
           <p className="leading-relaxed text-zinc-400">
-            Our approach is consultative and implementation-focused: we start with your goals and tech
-            stack, then design and build solutions that fit. We don&apos;t do one-size-fits-all; we scope
-            each engagement clearly and deliver with a structured process and ongoing support.
+            Our approach differs from a generic automation agency. We start with a free Revenue Leak Audit to find where your workflow is breaking down, before building anything. Then we run a 30-Day Pilot to prove one improvement works. If the results justify it, we recommend a managed system.
           </p>
           <p className="leading-relaxed text-zinc-400">
-            Whether you need a single automation (an AI phone agent, a website chatbot, or a CRM
-            integration) or a full-stack build, we&apos;re built to deliver. Clients get dedicated project
-            tracking, monthly impact reports, and a direct line to us through a client portal built
-            for the long term.
+            Every client gets a dedicated portal with workflow status, milestones, support, billing, and monthly impact reports. You see what changed, what&apos;s still running, and what the system recovered.
           </p>
         </div>
 
@@ -46,24 +38,21 @@ export default function AboutPage() {
             </div>
             <p className="mt-3 text-xl font-semibold text-white">Brandon McCarthy</p>
             <p className="mt-0.5 text-sm text-zinc-500">
-              Founder &amp; Lead Engineer, McCarthy AI Automations
+              Founder &amp; Lead Engineer, McCarthy AI Solutions
             </p>
             <div className="mt-6 space-y-4 leading-relaxed text-zinc-400">
               <p>
-                I&apos;m a full-stack software developer and AI automation builder focused on helping
-                businesses work smarter, not harder. My background is in JavaScript, Python,
-                databases, and modern web development. I apply all of that to one thing: building
-                real systems that solve real business problems.
+                I&apos;m a full-stack software developer and AI workflow systems builder focused on
+                revenue recovery for B2B businesses. My background is in JavaScript, Python,
+                databases, and modern web development, all applied to building systems that find and fix workflow gaps that cost businesses real money.
               </p>
               <p>
                 I specialize in designing and building custom AI-powered workflows: lead capture
-                systems, automated follow-ups, client portals, and intelligent assistants that help
-                businesses stay organized, respond faster, and stop missing opportunities.
+                and follow-up systems, speed-to-lead automation, quote recovery, pipeline
+                monitoring, and client portals that make workflow impact visible and measurable.
               </p>
               <p>
-                What makes my approach different is that I don&apos;t just build features. I build
-                systems that actually work in day-to-day operations. Everything is designed to be
-                simple, reliable, and tailored to how your business already runs.
+                I don&apos;t build features and call it done. I build systems that hold up in day-to-day operations and show what they recovered. I try to keep things simple, reliable, and shaped around how your team actually works.
               </p>
             </div>
           </div>
@@ -71,10 +60,10 @@ export default function AboutPage() {
 
         <div className="mt-12 flex flex-wrap gap-4">
           <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-            Get in touch
+            Book a Free Revenue Leak Audit
           </Button>
           <Button href="/services" variant="secondary" size="lg">
-            Explore services
+            Explore our services
           </Button>
         </div>
       </div>

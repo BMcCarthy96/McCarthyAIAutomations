@@ -10,17 +10,17 @@ export function Testimonials() {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           title="What to expect"
-          subtitle="Here's what working with us looks like, from day one through ongoing operations."
+          subtitle="Here's what working with us looks like, from the first audit through ongoing workflow management."
         />
         <p className="mt-4 text-center text-sm text-slate-500">
-          Ready to see it in action?{" "}
+          Ready to find your revenue gaps?{" "}
           <Link
             href="/contact"
             className="font-medium text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"
           >
-            Book a free consultation
+            Book a Free Revenue Leak Audit
           </Link>{" "}
-          and we&apos;ll map this to your specific stack.
+          and we&apos;ll map it to your specific workflow.
         </p>
         <div className="mt-12 grid gap-8 md:grid-cols-3">
           {testimonials.map((t) => (

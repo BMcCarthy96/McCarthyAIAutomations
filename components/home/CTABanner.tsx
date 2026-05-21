@@ -8,19 +8,19 @@ export function CTABanner() {
       <div className="mx-auto max-w-4xl">
         <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-blue-600/[0.14] via-blue-400/[0.07] to-transparent p-8 text-center backdrop-blur-xl sm:p-12">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Ready to stop losing revenue to slow follow-up and missed leads?
+            Ready to find out where revenue is slipping through?
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-400">
-            Book a free consultation. We&apos;ll map your revenue gaps, align on
-            goals and tools, then send a clear proposal so you know exactly
-            what ships, when, and how we&apos;ll measure recovery.
+            The audit is free. We&apos;ll review your lead capture, follow-up, and
+            pipeline workflow, then send back a clear map of the biggest
+            recovery opportunities and a recommended first step.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button href="/contact" variant="primary" size="lg">
-              Book your free consultation
+              Book a Free Revenue Leak Audit
             </Button>
             <Button href="/services" variant="secondary" size="lg">
-              Review services first
+              See what revenue leaks we fix
             </Button>
           </div>
           <p className="mt-6 text-sm text-slate-600">

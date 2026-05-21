@@ -10,8 +10,8 @@ export function ServicesGrid() {
     <section className="px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          title="What we build"
-          subtitle="From websites and voice agents to CRM automation and custom AI, every engagement is designed around outcomes you can track in your portal and monthly reports."
+          title="What revenue leaks we fix"
+          subtitle="Each offer targets a specific workflow gap: missed leads, slow follow-up, stale quotes, or stuck pipeline. We start with an audit to figure out which ones apply to you."
         />
         <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
@@ -35,13 +35,12 @@ export function ServicesGrid() {
         </div>
         <div className="mt-14 flex flex-col items-center justify-center gap-4 border-t border-white/10 pt-12 text-center">
           <p className="max-w-lg text-sm text-slate-400">
-            Want a tailored stack instead of picking from a menu? Tell us your
-            goals on a quick consultation and we&apos;ll map the shortest path to
-            ROI.
+            Not sure which gap to fix first? The audit is free. We&apos;ll review
+            your workflow and tell you exactly where to start.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button href="/contact" variant="primary" size="md">
-              Book free consultation
+              Book a Free Revenue Leak Audit
             </Button>
             <Button href="/pricing" variant="ghost" size="md">
               View pricing

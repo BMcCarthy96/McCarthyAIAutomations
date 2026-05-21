@@ -9,17 +9,17 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Explore our AI automation services: website revamps, voice agents, chatbots, lead capture, CRM automation, and custom integrations.",
+    "Revenue recovery workflow systems for missed leads, slow follow-up, stale quotes, and pipeline bottlenecks. Start with a free audit.",
 };
 
 export default function ServicesPage() {
   return (
     <div>
       <PageHero
-        label="What we build"
-        title="AI automation for"
-        titleAccent="every growth lever."
-        subtitle="End-to-end systems tailored to your business. Pick one or combine several for a connected automation stack."
+        label="What revenue leaks we fix"
+        title="Workflow systems for"
+        titleAccent="every revenue gap."
+        subtitle="Each offer targets a specific workflow breakdown. We start with a free audit to find which ones apply to your business."
       />
 
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -51,15 +51,15 @@ export default function ServicesPage() {
             Not sure what you need?
           </p>
           <h2 className="mt-3 text-2xl font-bold text-white sm:text-3xl">
-            Let&apos;s find your revenue gaps together.
+            Not sure which gap to fix first?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-400">
-            Book a free 30-minute consultation. We&apos;ll map your current workflow,
-            identify the biggest bottlenecks, and recommend where AI can recover
-            the most revenue. No pitch, no pressure.
+            The audit is free. We&apos;ll review your lead capture, follow-up, and
+            pipeline workflow, identify the biggest bottlenecks, and send a clear
+            recommendation. You decide what to do from there.
           </p>
           <Button href="/contact" variant="primary" size="lg" className="btn-magnetic mt-8">
-            Book a free consultation
+            Book a Free Revenue Leak Audit
           </Button>
         </div>
       </div>

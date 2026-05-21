@@ -19,7 +19,7 @@ const pillars = [
     iconBg: "bg-cyan-500/15",
     accentBorder: "hover:border-cyan-500/25",
     title: "Built Around Your Workflow",
-    body: "Custom AI systems designed around how your business actually operates, not generic tools forced into your process. We map your workflow, identify bottlenecks, then build and optimize.",
+    body: "We map how your business operates, find where it breaks, and build around your existing tools. You keep using what works.",
   },
   {
     icon: BarChart3,
@@ -27,7 +27,7 @@ const pillars = [
     iconBg: "bg-emerald-500/15",
     accentBorder: "hover:border-emerald-500/25",
     title: "Measurable, Ongoing Results",
-    body: "Track response times, follow-up rates, booked calls, recovered opportunities, and bottlenecks through clear reporting. Every system is built to show what changed.",
+    body: "Your client portal tracks response times, booked calls, and recovered deals. We build every system to show what changed.",
   },
 ] as const;
 
@@ -45,8 +45,7 @@ export function ValueProposition() {
               Why businesses choose McCarthy AI
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
-              We don&apos;t sell AI tools. We sell recovered revenue, found in the gaps
-              between your current operations and the growth you&apos;re leaving on the table.
+              We don&apos;t sell AI tools. We find where revenue is slipping and build systems to recover it.
             </p>
           </div>
         </AnimateIn>
@@ -69,10 +68,10 @@ export function ValueProposition() {
         <AnimateIn delay={0.1}>
           <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-              Book your free consultation
+              Book a Free Revenue Leak Audit
             </Button>
             <Button href="/services" variant="secondary" size="lg">
-              Browse services
+              See what revenue leaks we fix
             </Button>
           </div>
         </AnimateIn>

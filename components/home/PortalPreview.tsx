@@ -24,8 +24,8 @@ export function PortalPreview() {
     <section className="border-y border-white/10 bg-zinc-950/40 px-4 py-20 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          title="Your command center, not a black box"
-          subtitle="Clients get a premium portal: live project status, onboarding checkpoints, support threads, billing, and a rolling monthly impact view. You see the same rigor we bring to delivery."
+          title="Your revenue recovery command center"
+          subtitle="Every client gets a portal with live workflow status, milestones, support, billing, and a rolling monthly impact view. You can see what changed, what's still running, and what the system recovered."
         />
 
         <div className="mt-14 lg:mt-16">
@@ -58,7 +58,7 @@ export function PortalPreview() {
                     </p>
                     <p className="mt-1 max-w-md text-sm text-slate-400">
                       Same reporting your team gets after go-live, summarized
-                      for stakeholders who care about outcomes, not ticket counts.
+                      for anyone who cares about outcomes over activity counts.
                     </p>
                   </div>
                   <div className="flex items-center gap-1.5 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-300">
@@ -131,17 +131,17 @@ export function PortalPreview() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
             <Button href="/contact" variant="primary" size="lg">
-              Get your custom roadmap
+              Book a Free Revenue Leak Audit
             </Button>
             <p className="max-w-sm text-sm text-slate-500">
-              Tell us what you want to automate on the{" "}
+              Tell us where revenue may be slipping on the{" "}
               <Link
                 href="/contact"
                 className="font-medium text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"
               >
-                consultation form
-              </Link>
-              and we&apos;ll reply with next steps.
+                audit request form
+              </Link>{" "}
+              and we&apos;ll reply personally within one business day.
             </p>
           </div>
           <TryLiveDemoMarketingGate>

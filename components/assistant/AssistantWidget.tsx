@@ -354,7 +354,7 @@ export default function AssistantWidget() {
           {messages.filter((m) => m.role === "assistant").length >= 3 ? (
             <div className="border-t border-indigo-500/20 bg-indigo-500/[0.06] px-3 py-2.5">
               <p className="mb-2 text-[11px] font-medium text-indigo-200">
-                Ready to talk specifics? Get a free consultation.
+                Ready to find your workflow gaps? Book a free audit.
               </p>
               <div className="flex flex-wrap gap-2">
                 {bookingHref ? (

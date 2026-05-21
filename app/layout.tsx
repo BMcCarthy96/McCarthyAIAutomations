@@ -23,20 +23,21 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "McCarthy AI Automations | Premium AI Automation Agency",
-    template: "%s | McCarthy AI Automations",
+    default: "McCarthy AI Solutions | AI Workflow Systems That Recover Lost Revenue",
+    template: "%s | McCarthy AI Solutions",
   },
   description:
-    "McCarthy AI Automations helps businesses scale with AI: website revamps, voice agents, chatbots, lead capture, CRM automation, and custom integrations.",
+    "McCarthy AI Solutions identifies where your business loses revenue through missed leads, slow follow-up, and broken workflows — then builds high-touch AI systems to recover it.",
   keywords: [
+    "revenue recovery",
+    "AI workflow systems",
+    "missed leads",
+    "lead follow-up automation",
+    "pipeline bottleneck",
+    "revenue leak audit",
     "AI automation",
-    "AI voice agents",
-    "website chatbots",
-    "lead capture",
-    "CRM automation",
-    "AI integrations",
   ],
-  authors: [{ name: "McCarthy AI Automations" }],
+  authors: [{ name: "McCarthy AI Solutions" }],
   openGraph: {
     type: "website",
   },
@@ -55,6 +56,7 @@ export default function RootLayout({
     >
       <html lang="en" className="dark">
         <body className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} antialiased bg-premium min-h-screen`}>
+          <div aria-hidden className="noise-overlay" />
           {children}
           <AssistantWidgetRoot />
         </body>

@@ -40,6 +40,13 @@ const nextConfig: NextConfig = {
       { source: "/portal", destination: "/dashboard", permanent: false },
       { source: "/consultation", destination: "/contact", permanent: false },
       { source: "/get-started", destination: "/contact", permanent: false },
+      // Old service slugs redirected to their revenue-recovery equivalents
+      { source: "/services/website-revamp-ai", destination: "/services/revenue-leak-audit", permanent: true },
+      { source: "/services/ai-voice-agents", destination: "/services/speed-to-lead", permanent: true },
+      { source: "/services/lead-capture-appointment", destination: "/services/no-dropped-leads", permanent: true },
+      { source: "/services/website-ai-chatbots", destination: "/services/no-dropped-leads", permanent: true },
+      { source: "/services/crm-workflow-automation", destination: "/services/revenue-ops-buildout", permanent: true },
+      { source: "/services/custom-ai-integrations", destination: "/services/revenue-ops-buildout", permanent: true },
     ];
   },
 };

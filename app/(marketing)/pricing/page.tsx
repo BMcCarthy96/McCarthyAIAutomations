@@ -6,37 +6,37 @@ import { Check } from "lucide-react";
 
 const pricingFAQ = [
   {
-    q: "Are these starting prices or fixed prices?",
-    a: "Starting prices. The final number depends on your existing tools, integrations, and complexity. We give you a fixed-fee proposal after a short discovery call, with no open-ended billing and no surprises.",
+    q: "What's included in the Free Revenue Leak Audit?",
+    a: "We review your lead capture, follow-up, and pipeline workflow to identify where revenue may be slipping through. You get a workflow map with prioritized bottlenecks and a clear recommendation for where to start. No cost, no commitment.",
   },
   {
-    q: "Can I start with Essentials and scale up?",
-    a: "Yes, and most clients do. A common path is starting with a chatbot or lead capture system, seeing results, then expanding to voice agents or full CRM automation. Each phase is scoped and priced separately.",
+    q: "How is the 30-Day Pilot scoped and priced?",
+    a: "After the audit, we send a fixed-fee proposal for one targeted workflow fix. Pilots start at $750 depending on the complexity and tools involved. You know exactly what you're getting before any work begins.",
   },
   {
-    q: "What's included in post-launch support?",
-    a: "Essentials includes 30 days of bug fixes and minor adjustments. Growth includes 90 days plus bi-weekly check-ins and optimization. Partnership is fully ongoing. All tiers include documentation and a handoff session.",
+    q: "What happens after the pilot?",
+    a: "At the end of the pilot you get a simple impact report and a clear next-step recommendation. If the results justify expanding, we scope a managed system. There's no pressure to continue if the pilot doesn't prove the value.",
   },
   {
-    q: "How long does a typical project take?",
-    a: "Essentials projects (single chatbot, voice agent) typically launch in 2–4 weeks. Growth packages run 4–8 weeks depending on scope and integrations. We build with milestones so you always know what's next.",
+    q: "Do you work with our existing tools and CRM?",
+    a: "Yes. We design workflows around what you already use — HubSpot, Salesforce, GoHighLevel, Calendly, and most common CRM and ops tools. We'll tell you upfront if something requires a workaround.",
   },
 ];
 
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Transparent project-based pricing for AI automation. Essentials from $2,500, Growth from $5,500, and custom Partnership retainers.",
+    "Start with a free Revenue Leak Audit. Then a fixed-scope 30-Day Pilot from $750. Scale to a Managed AI Workflow System with ongoing support.",
 };
 
 export default function PricingPage() {
   return (
     <div>
       <PageHero
-        label="Investment"
-        title="Pricing built for"
-        titleAccent="real outcomes."
-        subtitle="Fixed-scope, fixed-fee projects with clear timelines. No hourly billing, no scope creep. Just results you can measure."
+        label="How we work together"
+        title="Start free. Prove value."
+        titleAccent="Then scale."
+        subtitle="A free audit, a fixed-scope pilot, and a managed system if the results justify it. No long-term commitment until you've seen it work."
       />
 
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -94,7 +94,7 @@ export default function PricingPage() {
         </div>
 
         <p className="mt-10 text-center text-sm text-zinc-600">
-          Not sure which tier fits? Start with a free discovery call and we&apos;ll recommend the right scope.
+          Not sure where to start? Start with the audit. It&apos;s free, and you decide what to do from the results.
         </p>
 
         {/* FAQ */}
@@ -122,10 +122,10 @@ export default function PricingPage() {
 
           <div className="mt-14 text-center">
             <p className="mb-6 text-base text-zinc-500">
-              Ready to see what a custom automation stack looks like for your business?
+              Ready to find out where revenue is slipping through?
             </p>
             <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-              Book a free discovery call
+              Book a Free Revenue Leak Audit
             </Button>
           </div>
         </div>

@@ -31,16 +31,16 @@ export function ContactForm() {
             />
           </div>
           <h3 className="mt-6 text-xl font-semibold tracking-tight text-white sm:text-2xl">
-            Your consultation request is in
+            Your Revenue Leak Audit request is in
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-[15px]">
-            We&apos;ve received your message and sent a confirmation to your inbox.
-            A member of our team will review your goals and reply personally—
+            We&apos;ve received your request and sent a confirmation to your inbox.
+            We&apos;ll review your workflow, look for missed follow-up or revenue
+            leakage opportunities, and reply personally,{" "}
             <span className="font-medium text-zinc-200">
-              {" "}
               typically within one business day
             </span>
-            , often sooner during business hours.
+            , sometimes sooner.
           </p>
           <div className="mt-8 space-y-3 rounded-xl border border-white/[0.07] bg-black/20 px-5 py-4 text-left text-sm text-zinc-400">
             <p className="flex gap-3">
@@ -50,8 +50,7 @@ export function ContactForm() {
               />
               <span>
                 Check your email for a copy of your submission. You can reply
-                directly to that thread to add context—no need to re-send the
-                form.
+                directly to that thread if you have more to add.
               </span>
             </p>
             <p className="flex gap-3">
@@ -61,13 +60,12 @@ export function ContactForm() {
               />
               <span>
                 Want to move faster? When we&apos;re ready, we may share a link to
-                book a short discovery call—optional, and only on your
-                timeline.
+                book a short discovery call, if you want one, on your timeline.
               </span>
             </p>
           </div>
           <p className="mt-6 text-xs text-zinc-500">
-            — McCarthy AI Automations
+            — McCarthy AI Solutions
           </p>
         </div>
       </div>
@@ -97,7 +95,7 @@ export function ContactForm() {
           type="text"
           maxLength={500}
           className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          placeholder="e.g. Free consultation — AI phone agent"
+          placeholder="e.g. Revenue Leak Audit — missed leads and slow follow-up"
         />
       </div>
       <div>
@@ -181,7 +179,7 @@ export function ContactForm() {
           required
           maxLength={10000}
           className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder-zinc-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          placeholder="What are you looking to achieve? Any services or timeline in mind?"
+          placeholder="Tell us where revenue may be slipping through the cracks. For example: missed leads, slow follow-up, stale quotes, no-show appointments, CRM gaps, unclear handoffs, current tools, and what outcome you want."
         />
       </div>
       {state?.success === false && state.error && (
@@ -193,7 +191,7 @@ export function ContactForm() {
         size="lg"
         className="w-full sm:w-auto"
       >
-        Send message
+        Request Free Audit
       </Button>
     </form>
   );

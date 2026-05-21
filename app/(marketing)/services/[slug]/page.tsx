@@ -83,7 +83,7 @@ export default async function ServiceDetailPage({ params }: Props) {
         </div>
         <div className="mt-12 flex flex-wrap gap-4">
           <Button href="/contact" variant="primary" size="lg">
-            Get a quote
+            Book a Free Revenue Leak Audit
           </Button>
           <Button href="/services" variant="ghost" size="lg">
             View all services

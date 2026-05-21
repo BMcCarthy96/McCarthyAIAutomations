@@ -14,7 +14,7 @@ const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Consultation" },
+  { href: "/contact", label: "Free Audit" },
 ];
 
 export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
@@ -25,6 +25,7 @@ export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
   const { isSignedIn, user } = useUser();
   const { sessionId } = useAuth();
   const showTryLiveDemo = useShowTryLiveDemoCta();
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 72);
@@ -110,6 +111,15 @@ export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
                 </>
               ) : (
                 <>
+                  {isHome && showTryLiveDemo && (
+                    <Link
+                      href="/demo"
+                      prefetch={false}
+                      className="nav-link text-sm font-medium text-zinc-400 hover:text-white"
+                    >
+                      Portal demo
+                    </Link>
+                  )}
                   <SignInButton mode="modal">
                     <Button variant="ghost" size="sm">
                       Sign in

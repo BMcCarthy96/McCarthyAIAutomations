@@ -94,21 +94,20 @@ export function Hero() {
                 size="lg"
                 className="btn-magnetic w-full min-w-[220px] sm:w-auto"
               >
-                Book your free consultation
+                Book a Free Revenue Leak Audit
               </Button>
               <Button
-                href="/#how-it-works"
+                href="/services"
                 variant="secondary"
                 size="lg"
                 className="w-full sm:w-auto"
               >
-                See how it works
+                See what revenue leaks we fix
               </Button>
             </div>
 
             <p className="mt-8 text-center text-sm text-slate-600 lg:text-left">
-              No obligation. We identify your revenue gaps and map the fix.
-              First call is free.
+              No cost, no commitment. We map your workflow gaps and recommend the first fix.
             </p>
           </div>
 
@@ -206,7 +205,7 @@ export function Hero() {
               Prefer to explore first?
             </p>
             <p className="mt-2 text-sm leading-relaxed text-slate-500">
-              Open the client portal with curated sample data. No forms, no pitch.
+              Open the client portal with sample data. No account needed.
             </p>
             <div className="mt-5 flex justify-center">
               <TryLiveDemoButton
