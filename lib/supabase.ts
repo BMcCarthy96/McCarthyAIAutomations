@@ -9,16 +9,12 @@ import type { Database } from "@/lib/database.types";
 let cachedAnonClient: SupabaseClient<Database> | null = null;
 let cachedServiceClient: SupabaseClient<Database> | null = null;
 
-function getEnv(name: string): string | undefined {
-  return process.env[name];
-}
-
 /** Anon key client (RLS applies). Use for client-side or when you rely on RLS. */
 export function getSupabaseClient(): SupabaseClient<Database> | null {
   if (cachedAnonClient) return cachedAnonClient;
 
-  const url = getEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anonKey = getEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
   if (!url || !anonKey) return null;
 
@@ -30,20 +26,31 @@ export function getSupabaseClient(): SupabaseClient<Database> | null {
 
 /**
  * Server-only client using the service role key. Bypasses RLS.
- * Use only in server code (e.g. API routes, server components). Never expose
- * SUPABASE_SERVICE_ROLE_KEY to the browser.
+ * Use only in server code (API routes, server actions, server components).
+ * Throws immediately if required env vars are absent so misconfiguration
+ * surfaces as a loud startup error rather than a silent null-client failure.
  */
-export function getSupabaseServiceClient(): SupabaseClient<Database> | null {
+export function getSupabaseServiceClient(): SupabaseClient<Database> {
   if (cachedServiceClient) return cachedServiceClient;
 
-  const url = getEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const serviceRoleKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
-  if (!url || !serviceRoleKey) return null;
+  if (!url || !serviceRoleKey) {
+    const missing = [
+      !url && "NEXT_PUBLIC_SUPABASE_URL",
+      !serviceRoleKey && "SUPABASE_SERVICE_ROLE_KEY",
+    ]
+      .filter(Boolean)
+      .join(", ");
+    throw new Error(
+      `[supabase] Missing required environment variable(s): ${missing}. ` +
+        "Set these in .env.local and in your Vercel project settings."
+    );
+  }
 
   cachedServiceClient = createClient<Database>(url, serviceRoleKey, {
     auth: { persistSession: false },
   });
   return cachedServiceClient;
 }
-

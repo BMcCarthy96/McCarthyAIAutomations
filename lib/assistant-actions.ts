@@ -47,7 +47,7 @@ export async function askAssistantAction(
     };
   }
 
-  const rl = checkAssistantRateLimit(userId);
+  const rl = await checkAssistantRateLimit(userId);
   if (!rl.ok) {
     return { success: false, error: rl.message };
   }

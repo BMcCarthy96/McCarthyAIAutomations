@@ -1,17 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #fafafa;
-  --muted: #71717a;
-  --muted-foreground: #a1a1aa;
-  --card: rgba(255, 255, 255, 0.05);
+  /* McCarthy AI brand palette — deep navy / blue / cyan */
+  --background: #050c1a;
+  --foreground: #f8fafc;
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+  --card: rgba(255, 255, 255, 0.04);
   --card-border: rgba(255, 255, 255, 0.08);
-  --accent: #6366f1;
+  --accent: #2563eb;
+  --accent-secondary: #06b6d4;
   --accent-foreground: #ffffff;
-  --gradient-start: #0f0f1a;
-  --gradient-mid: #1a1a2e;
-  --gradient-end: #16213e;
+  --gradient-start: #050c1a;
+  --gradient-mid: #071428;
+  --gradient-end: #0a1c3d;
 }
 
 @theme inline {
@@ -57,4 +59,46 @@ body {
 .glass-hover:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ── Entrance & ambient animations ───────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes pulseGlow {
+  0%,  100% { opacity: 0.45; transform: scale(1);    }
+  50%        { opacity: 0.75; transform: scale(1.07); }
+}
+
+@keyframes float {
+  0%,  100% { transform: translateY(0);     }
+  50%        { transform: translateY(-10px); }
+}
+
+/* Animations only fire when the user has not opted for reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-badge  { animation: fadeInUp 0.5s ease both; }
+  .hero-h1     { animation: fadeInUp 0.6s ease 0.10s both; }
+  .hero-sub    { animation: fadeInUp 0.6s ease 0.20s both; }
+  .hero-ctas   { animation: fadeInUp 0.6s ease 0.30s both; }
+  .hero-note   { animation: fadeInUp 0.6s ease 0.36s both; }
+  .hero-visual { animation: fadeInUp 0.8s ease 0.45s both; }
+  .hero-demo   { animation: fadeInUp 0.6s ease 0.52s both; }
+
+  .glow-pulse  { animation: pulseGlow 4s   ease-in-out infinite; }
+  .float-card  { animation: float    6s   ease-in-out infinite;  }
 }

@@ -45,7 +45,7 @@ export const services: Service[] = [
     name: "AI Voice Agents",
     tagline: "24/7 phone answering that never misses a lead",
     description: "Deploy AI voice agents that answer calls, qualify leads, and book appointments around the clock.",
-    longDescription: "Never miss a call again. Our AI voice agents handle inbound calls with natural conversation, capture lead details, schedule appointments, and escalate when needed—all without hiring extra staff.",
+    longDescription: "Never miss a call again. Our AI voice agents handle inbound calls with natural conversation, capture lead details, schedule appointments, and escalate when needed. All without hiring extra staff.",
     features: [
       "24/7 automated phone answering",
       "Natural conversation and lead qualification",
@@ -96,7 +96,7 @@ export const services: Service[] = [
     name: "CRM & Workflow Automation",
     tagline: "Automate repetitive tasks and keep pipelines moving",
     description: "Connect your CRM to email, calendar, and internal tools with smart workflows.",
-    longDescription: "We build automated workflows that update records, send sequences, assign tasks, and trigger actions based on behavior—so your team spends time selling, not data entry.",
+    longDescription: "We build automated workflows that update records, send sequences, assign tasks, and trigger actions based on behavior so your team spends time selling, not doing data entry.",
     features: [
       "CRM and tool integrations",
       "Trigger-based workflows",
@@ -180,7 +180,7 @@ export const testimonials: Testimonial[] = [
   {
     id: "1",
     headline: "Your leads stop falling through the cracks",
-    body: "Every inquiry gets captured, classified, and followed up automatically — whether it comes in at 2 pm or 2 am. No more manual triage, no missed opportunities.",
+    body: "Every inquiry gets captured, classified, and followed up automatically, whether it comes in at 2 pm or 2 am. No more manual triage, no missed opportunities.",
     metric: "24/7 lead capture & follow-up",
   },
   {
@@ -192,7 +192,7 @@ export const testimonials: Testimonial[] = [
   {
     id: "3",
     headline: "Your first system is live in weeks, not months",
-    body: "We scope, build, and launch your first AI automation in 2–4 weeks. You own the system — no lock-in, no black boxes, full documentation handed off at launch.",
+    body: "We scope, build, and launch your first AI automation in 2–4 weeks. You own the system. No lock-in, no black boxes, full documentation handed off at launch.",
     metric: "2–4 week typical delivery",
   },
 ];
@@ -221,10 +221,10 @@ export const faqs: FAQItem[] = [
 ];
 
 export const stats: Stat[] = [
-  { value: "2–4 wks", label: "Typical time to first live deployment" },
-  { value: "24/7", label: "Calls, chats & lead capture" },
-  { value: "Fixed", label: "Scope & price — no billable-hour surprises" },
-  { value: "1 portal", label: "Track every automation, metric & invoice" },
+  { value: "2–4 wks", label: "Time to first live revenue-recovering system" },
+  { value: "24/7", label: "Automated lead capture & follow-up" },
+  { value: "Fixed", label: "Scope and price, no billable-hour surprises" },
+  { value: "1 portal", label: "Dashboard for all automations & metrics" },
 ];
 
 /** Homepage “How it works” — three phases from first call to measurable outcomes. */
@@ -233,7 +233,7 @@ export const howItWorksSteps: HowItWorksStep[] = [
     step: 1,
     title: "Consultation",
     description:
-      "Free strategy call: we map your goals, tools, and bottlenecks, then recommend automations with a clear ROI story—no jargon, no pressure.",
+      "Free strategy call: we map your goals, tools, and bottlenecks, then recommend automations with a clear ROI story. No jargon, no pressure.",
   },
   {
     step: 2,
@@ -245,7 +245,7 @@ export const howItWorksSteps: HowItWorksStep[] = [
     step: 3,
     title: "Automation & reporting",
     description:
-      "Your systems run 24/7 while you track progress in a client portal—onboarding status, support, billing, and monthly impact reporting.",
+      "Your systems run 24/7 while you track progress in a client portal covering onboarding status, support, billing, and monthly impact reporting.",
   },
 ];
 

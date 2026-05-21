@@ -5,6 +5,7 @@
  */
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 import { Resend } from "resend";
 import { renderEmailTemplate } from "@/lib/email/template";
 import { getSupabaseServiceClient } from "@/lib/supabase";
@@ -27,12 +28,12 @@ function getAppBaseUrl(): string {
   );
 }
 
-const SUPPORT_REQUEST_STATUSES = [
-  "open",
-  "in_progress",
-  "resolved",
-  "closed",
-] as const;
+const SUPPORT_REQUEST_STATUSES = ["open", "in_progress", "resolved", "closed"] as const;
+
+const UpdateStatusSchema = z.object({
+  requestId: z.string().uuid("Invalid request ID."),
+  status: z.enum(SUPPORT_REQUEST_STATUSES, { message: "Invalid status." }),
+});
 
 export async function updateSupportRequestStatusAction(
   _prevState: UpdateSupportRequestStatusState | null,
@@ -43,33 +44,28 @@ export async function updateSupportRequestStatusAction(
     return { success: false, error: "Unauthorized." };
   }
 
-  const requestId = (formData.get("requestId") as string)?.trim();
-  const status = (formData.get("status") as string)?.trim();
+  const parsed = UpdateStatusSchema.safeParse({
+    requestId: (formData.get("requestId") as string)?.trim(),
+    status: (formData.get("status") as string)?.trim(),
+  });
 
-  if (!requestId) {
-    return { success: false, error: "Request is required." };
-  }
-  if (
-    !status ||
-    !(SUPPORT_REQUEST_STATUSES as readonly string[]).includes(status)
-  ) {
-    return { success: false, error: "Invalid status." };
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
   }
 
-  const statusValid = status as (typeof SUPPORT_REQUEST_STATUSES)[number];
+  const { requestId, status } = parsed.data;
 
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   const { error } = await supabase
     .from("support_requests")
-    .update({ status: statusValid, updated_at: new Date().toISOString() })
+    .update({ status, updated_at: new Date().toISOString() })
     .eq("id", requestId);
 
   if (error) {
-    return { success: false, error: error.message };
+    console.error("[updateSupportRequestStatusAction] db update failed:", error.message);
+    return { success: false, error: "Failed to update status. Please try again." };
   }
 
   revalidatePath("/admin/support");
@@ -78,7 +74,13 @@ export async function updateSupportRequestStatusAction(
   return { success: true };
 }
 
-const REPLY_BODY_MAX = 10000;
+const SendReplySchema = z.object({
+  requestId: z.string().uuid("Invalid request ID."),
+  body: z
+    .string()
+    .min(1, "Message is required.")
+    .max(10000, "Message must be 10000 characters or less."),
+});
 
 export async function sendSupportReplyAction(
   _prevState: SendSupportReplyState | null,
@@ -89,40 +91,29 @@ export async function sendSupportReplyAction(
     return { success: false, error: "Unauthorized." };
   }
 
-  const requestId = (formData.get("requestId") as string)?.trim();
-  const body = (formData.get("body") as string)?.trim() ?? "";
+  const parsed = SendReplySchema.safeParse({
+    requestId: (formData.get("requestId") as string)?.trim(),
+    body: (formData.get("body") as string)?.trim() ?? "",
+  });
 
-  if (!requestId) {
-    return { success: false, error: "Request is required." };
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
   }
-  if (!body) {
-    return { success: false, error: "Message is required." };
-  }
-  if (body.length > REPLY_BODY_MAX) {
-    return {
-      success: false,
-      error: `Message must be ${REPLY_BODY_MAX} characters or less.`,
-    };
-  }
+
+  const { requestId, body } = parsed.data;
 
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   const { data: row, error: fetchError } = await supabase
     .from("support_requests")
-    .select(
-      "id, subject, client_id, requester_email, clients(email)"
-    )
+    .select("id, subject, client_id, requester_email, clients(email)")
     .eq("id", requestId)
     .maybeSingle();
 
   if (fetchError || !row) {
-    return {
-      success: false,
-      error: fetchError?.message ?? "Support request not found.",
-    };
+    console.error("[sendSupportReplyAction] fetch failed:", fetchError?.message);
+    return { success: false, error: "Support request not found." };
   }
 
   const typed = row as {
@@ -152,7 +143,8 @@ export async function sendSupportReplyAction(
   });
 
   if (insertError) {
-    return { success: false, error: insertError.message };
+    console.error("[sendSupportReplyAction] insert failed:", insertError.message);
+    return { success: false, error: "Failed to save reply. Please try again." };
   }
 
   await supabase
@@ -199,10 +191,7 @@ export async function sendSupportReplyAction(
       });
 
       if (sendResult.error) {
-        console.warn(
-          "[sendSupportReplyAction] Resend failed:",
-          sendResult.error.message
-        );
+        console.warn("[sendSupportReplyAction] Resend failed:", sendResult.error.message);
       }
     } catch (e) {
       console.warn(
@@ -211,13 +200,16 @@ export async function sendSupportReplyAction(
       );
     }
   } else {
-    console.warn(
-      "[sendSupportReplyAction] RESEND_API_KEY missing; reply saved but email not sent"
-    );
+    console.warn("[sendSupportReplyAction] RESEND_API_KEY missing; reply saved but email not sent");
   }
 
   return { success: true };
 }
+
+const SuppressSchema = z.object({
+  requestId: z.string().uuid("Invalid request ID."),
+  suppressed: z.enum(["true", "false"], { message: "Invalid action." }).transform((v) => v === "true"),
+});
 
 /**
  * Per-lead opt-out for automated booking follow-up (public consultation rows only).
@@ -231,21 +223,19 @@ export async function setLeadFollowUpSuppressedAction(
     return { success: false, error: "Unauthorized." };
   }
 
-  const requestId = (formData.get("requestId") as string)?.trim();
-  const suppressedRaw = (formData.get("suppressed") as string)?.trim();
-  const suppressed = suppressedRaw === "true";
+  const parsed = SuppressSchema.safeParse({
+    requestId: (formData.get("requestId") as string)?.trim(),
+    suppressed: (formData.get("suppressed") as string)?.trim(),
+  });
 
-  if (!requestId) {
-    return { success: false, error: "Request is required." };
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
   }
-  if (suppressedRaw !== "true" && suppressedRaw !== "false") {
-    return { success: false, error: "Invalid action." };
-  }
+
+  const { requestId, suppressed } = parsed.data;
 
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   const { data: row, error: fetchError } = await supabase
     .from("support_requests")
@@ -254,10 +244,8 @@ export async function setLeadFollowUpSuppressedAction(
     .maybeSingle();
 
   if (fetchError || !row) {
-    return {
-      success: false,
-      error: fetchError?.message ?? "Support request not found.",
-    };
+    console.error("[setLeadFollowUpSuppressedAction] fetch failed:", fetchError?.message);
+    return { success: false, error: "Support request not found." };
   }
 
   const typed = row as { id: string; client_id: string | null };
@@ -277,13 +265,18 @@ export async function setLeadFollowUpSuppressedAction(
     .eq("id", requestId);
 
   if (updateError) {
-    return { success: false, error: updateError.message };
+    console.error("[setLeadFollowUpSuppressedAction] update failed:", updateError.message);
+    return { success: false, error: "Failed to update suppression. Please try again." };
   }
 
   revalidatePath("/admin/support");
   revalidatePath(`/admin/support/${requestId}`);
   return { success: true };
 }
+
+const RerunSchema = z.object({
+  requestId: z.string().uuid("Invalid request ID."),
+});
 
 /**
  * Admin-only: re-run structured AI classification for a public consultation lead.
@@ -297,15 +290,18 @@ export async function rerunLeadAiAnalysisAction(
     return { success: false, error: "Unauthorized." };
   }
 
-  const requestId = (formData.get("requestId") as string)?.trim();
-  if (!requestId) {
-    return { success: false, error: "Request is required." };
+  const parsed = RerunSchema.safeParse({
+    requestId: (formData.get("requestId") as string)?.trim(),
+  });
+
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
   }
 
+  const { requestId } = parsed.data;
+
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   const { data: row, error: fetchError } = await supabase
     .from("support_requests")
@@ -314,17 +310,11 @@ export async function rerunLeadAiAnalysisAction(
     .maybeSingle();
 
   if (fetchError || !row) {
-    return {
-      success: false,
-      error: fetchError?.message ?? "Support request not found.",
-    };
+    console.error("[rerunLeadAiAnalysisAction] fetch failed:", fetchError?.message);
+    return { success: false, error: "Support request not found." };
   }
 
-  const typed = row as {
-    id: string;
-    client_id: string | null;
-    category: string | null;
-  };
+  const typed = row as { id: string; client_id: string | null; category: string | null };
   if (typed.client_id !== null) {
     return {
       success: false,
@@ -343,8 +333,7 @@ export async function rerunLeadAiAnalysisAction(
   } catch (e) {
     return {
       success: false,
-      error:
-        e instanceof Error ? e.message : "AI analysis failed unexpectedly.",
+      error: e instanceof Error ? e.message : "AI analysis failed unexpectedly.",
     };
   }
 

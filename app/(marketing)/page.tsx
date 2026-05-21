@@ -12,9 +12,9 @@ import { FAQ } from "@/components/home/FAQ";
 import { CTABanner } from "@/components/home/CTABanner";
 
 export const metadata: Metadata = {
-  title: "Reclaim time, grow pipeline, prove ROI",
+  title: "AI Workflow Systems That Recover Lost Revenue",
   description:
-    "Premium AI automation: voice agents, chatbots, lead capture, and custom workflows—with a client portal, support, Stripe billing, and monthly impact reporting. Book a free consultation.",
+    "McCarthy AI Solutions identifies where your business loses revenue through slow follow-up, missed leads, and fragmented workflows, then builds high-touch AI systems to recover it.",
 };
 
 export default function HomePage() {

@@ -1,12 +1,15 @@
 "use server";
 
+import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { after } from "next/server";
+import { z } from "zod";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { getCurrentClientId } from "@/lib/portal-data";
 import { getPortalDemoMode } from "@/lib/demo-portal";
 import { sendPublicConsultationEmails } from "@/lib/email/public-consultation-emails";
 import { processPublicLeadAnalysis } from "@/lib/lead-ai/analyze-public-lead";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 /**
  * Portal actions: server actions for the client dashboard.
@@ -17,8 +20,11 @@ export type CreateSupportRequestState =
   | { success: false; error: string }
   | { success: true };
 
-const SUBJECT_MAX = 500;
-const BODY_MAX = 10000;
+const SupportRequestSchema = z.object({
+  subject: z.string().min(1, "Subject is required.").max(500, "Subject must be 500 characters or less."),
+  body: z.string().min(1, "Message is required.").max(10000, "Message must be 10000 characters or less."),
+  projectId: z.string().uuid("Invalid project selection.").nullish().transform((v) => v ?? null),
+});
 
 export async function createSupportRequestAction(
   _prevState: CreateSupportRequestState | null,
@@ -37,28 +43,20 @@ export async function createSupportRequestAction(
     };
   }
 
-  const subject = (formData.get("subject") as string)?.trim() ?? "";
-  const body = (formData.get("body") as string)?.trim() ?? "";
-  const projectIdRaw = (formData.get("projectId") as string)?.trim() ?? "";
-  const projectId = projectIdRaw || null;
+  const parsed = SupportRequestSchema.safeParse({
+    subject: (formData.get("subject") as string)?.trim() ?? "",
+    body: (formData.get("body") as string)?.trim() ?? "",
+    projectId: (formData.get("projectId") as string)?.trim() || null,
+  });
 
-  if (!subject) {
-    return { success: false, error: "Subject is required." };
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
   }
-  if (subject.length > SUBJECT_MAX) {
-    return { success: false, error: `Subject must be ${SUBJECT_MAX} characters or less.` };
-  }
-  if (!body) {
-    return { success: false, error: "Message is required." };
-  }
-  if (body.length > BODY_MAX) {
-    return { success: false, error: `Message must be ${BODY_MAX} characters or less.` };
-  }
+
+  const { subject, body, projectId } = parsed.data;
 
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   if (projectId) {
     const { data: allowedProjects } = await supabase
@@ -80,7 +78,8 @@ export async function createSupportRequestAction(
   });
 
   if (error) {
-    return { success: false, error: error.message };
+    console.error("[createSupportRequestAction] db insert failed:", error.message);
+    return { success: false, error: "Failed to submit your request. Please try again." };
   }
 
   revalidatePath("/dashboard/support");
@@ -91,17 +90,21 @@ export type CreatePublicSupportRequestState =
   | { success: false; error: string }
   | { success: true };
 
-const NAME_MAX = 200;
-const EMAIL_MAX = 320;
-const PHONE_MAX = 50;
-const PUBLIC_SUBJECT_MAX = 500;
-const PUBLIC_BODY_MAX = 10000;
-const WEBSITE_MAX = 512;
 const DEFAULT_PUBLIC_SUBJECT = "Free consultation";
 
-function looksLikeEmail(s: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-}
+const PublicSupportRequestSchema = z.object({
+  website: z.string().max(512).default(""),
+  name: z.string().min(1, "Name is required.").max(200, "Name must be 200 characters or less."),
+  email: z
+    .string()
+    .min(1, "Email is required.")
+    .max(320, "Email must be 320 characters or less.")
+    .email("Enter a valid email address."),
+  phone: z.string().max(50, "Phone must be 50 characters or less.").default(""),
+  company: z.string().max(200, "Company must be 200 characters or less.").default(""),
+  message: z.string().min(1, "Message is required.").max(10000, "Message must be 10000 characters or less."),
+  subject: z.string().max(500, "Subject must be 500 characters or less.").default(""),
+});
 
 /**
  * Public marketing-site submissions (no Clerk / no client record).
@@ -111,58 +114,42 @@ export async function createPublicSupportRequestAction(
   _prevState: CreatePublicSupportRequestState | null,
   formData: FormData
 ): Promise<CreatePublicSupportRequestState> {
-  const website = (formData.get("website") as string)?.trim() ?? "";
-  if (website.length > WEBSITE_MAX) {
-    return { success: false, error: "Invalid form input." };
+  // Rate limit by IP: 5 submissions per 10 minutes.
+  const ip =
+    (await headers()).get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+  const rateCheck = await checkRateLimit(ip, {
+    prefix: "contact-form",
+    max: 5,
+    windowSecs: 600,
+  });
+  if (!rateCheck.ok) {
+    return {
+      success: false,
+      error: rateCheck.message ?? "Too many submissions. Please try again later.",
+    };
   }
+
+  const parsed = PublicSupportRequestSchema.safeParse({
+    website: (formData.get("website") as string)?.trim() ?? "",
+    name: (formData.get("name") as string)?.trim() ?? "",
+    email: (formData.get("email") as string)?.trim() ?? "",
+    phone: (formData.get("phone") as string)?.trim() ?? "",
+    company: (formData.get("company") as string)?.trim() ?? "",
+    message: (formData.get("message") as string)?.trim() ?? "",
+    subject: (formData.get("subject") as string)?.trim() ?? "",
+  });
+
+  if (!parsed.success) {
+    const first = parsed.error.issues[0];
+    return { success: false, error: first?.message ?? "Invalid input." };
+  }
+
+  const { website, name, email, phone, company, message } = parsed.data;
+  const subject = parsed.data.subject || DEFAULT_PUBLIC_SUBJECT;
+
   if (website) {
     // Bot/honeypot submission: return success to avoid signaling defenses.
     return { success: true };
-  }
-
-  const name = (formData.get("name") as string)?.trim() ?? "";
-  const email = (formData.get("email") as string)?.trim() ?? "";
-  const phone = (formData.get("phone") as string)?.trim() ?? "";
-  const company = (formData.get("company") as string)?.trim() ?? "";
-  const message = (formData.get("message") as string)?.trim() ?? "";
-  const subjectRaw = (formData.get("subject") as string)?.trim() ?? "";
-  const subject = subjectRaw || DEFAULT_PUBLIC_SUBJECT;
-
-  if (!name) {
-    return { success: false, error: "Name is required." };
-  }
-  if (name.length > NAME_MAX) {
-    return { success: false, error: `Name must be ${NAME_MAX} characters or less.` };
-  }
-  if (!email) {
-    return { success: false, error: "Email is required." };
-  }
-  if (email.length > EMAIL_MAX) {
-    return { success: false, error: `Email must be ${EMAIL_MAX} characters or less.` };
-  }
-  if (!looksLikeEmail(email)) {
-    return { success: false, error: "Enter a valid email address." };
-  }
-  if (!message) {
-    return { success: false, error: "Message is required." };
-  }
-  if (message.length > PUBLIC_BODY_MAX) {
-    return {
-      success: false,
-      error: `Message must be ${PUBLIC_BODY_MAX} characters or less.`,
-    };
-  }
-  if (subject.length > PUBLIC_SUBJECT_MAX) {
-    return {
-      success: false,
-      error: `Subject must be ${PUBLIC_SUBJECT_MAX} characters or less.`,
-    };
-  }
-  if (phone.length > PHONE_MAX) {
-    return {
-      success: false,
-      error: `Phone must be ${PHONE_MAX} characters or less.`,
-    };
   }
 
   let body = message;
@@ -171,9 +158,6 @@ export async function createPublicSupportRequestAction(
   }
 
   const supabase = getSupabaseServiceClient();
-  if (!supabase) {
-    return { success: false, error: "Database unavailable." };
-  }
 
   const { data: inserted, error } = await supabase
     .from("support_requests")
@@ -194,9 +178,10 @@ export async function createPublicSupportRequestAction(
     .single();
 
   if (error || !inserted?.id) {
+    console.error("[createPublicSupportRequestAction] db insert failed:", error?.message);
     return {
       success: false,
-      error: error?.message ?? "Failed to save your request.",
+      error: "Failed to save your request. Please try again.",
     };
   }
 

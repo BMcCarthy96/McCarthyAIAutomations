@@ -31,7 +31,7 @@ export function GlassCard({
     default:
       "border border-white/[0.08] bg-gradient-to-b from-white/[0.06] to-white/[0.02] shadow-lg shadow-black/20",
     premium:
-      "border border-white/[0.09] bg-gradient-to-b from-white/[0.08] to-white/[0.025] shadow-xl shadow-indigo-950/20",
+      "border border-white/[0.09] bg-gradient-to-b from-white/[0.08] to-white/[0.025] shadow-xl shadow-blue-950/20",
     inset:
       "border border-white/[0.06] bg-white/[0.025] shadow-none",
   };
@@ -41,7 +41,7 @@ export function GlassCard({
     variantStyles[variant],
     hover &&
       variant !== "inset" &&
-      "transition-all duration-300 hover:border-white/15 hover:from-white/[0.09] hover:to-white/[0.04] hover:shadow-indigo-950/25",
+      "transition-all duration-300 hover:border-white/15 hover:from-white/[0.09] hover:to-white/[0.04] hover:shadow-blue-950/25",
     className
   );
 

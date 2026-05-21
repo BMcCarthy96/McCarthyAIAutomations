@@ -1,5 +1,5 @@
 /**
- * Homepage “Live AI Systems” cards — copy matches real product capabilities (portal assistant,
+ * Homepage "Live AI Systems" cards — copy matches real product capabilities (portal assistant,
  * public widget, lead analysis, booking/follow-up, email). CTAs use routes or the assistant widget.
  */
 
@@ -36,11 +36,11 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     problem:
       "Teams waste time hunting across updates, milestones, FAQs, and support threads for answers that should be instant.",
     solution:
-      "Ask questions about our services, workflows, or platform — our AI assistant is available anytime. It answers in real time grounded in McCarthy AI knowledge (marketing site, public widget). Signed-in clients get richer portal context in the dashboard.",
+      "Ask questions about our services, workflows, or platform and our AI assistant will answer in real time, grounded in McCarthy AI knowledge (marketing site, public widget). Signed-in clients get richer portal context in the dashboard.",
     capabilities: [
       "Real-time answers grounded in platform knowledge",
       "Cites sources and stays within scoped context",
-      "Always available via the floating assistant — no sign-in required to start on the marketing site",
+      "Always available via the floating assistant. No sign-in required to start on the marketing site",
     ],
     ctaLabel: "Try the assistant",
     ctaHref: "#",
@@ -54,7 +54,7 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     problem:
       "New inquiries often sit in inboxes without fast triage, clear summaries, or a consistent prioritization signal.",
     solution:
-      "An AI-assisted intake path behind the scenes that helps our team classify, summarize, and prioritize—paired with the same consultation entry point prospects use on the site.",
+      "An AI-assisted intake path behind the scenes that helps our team classify, summarize, and prioritize leads, paired with the same consultation entry point prospects use on the site.",
     capabilities: [
       "Analyzes incoming consultation-style requests",
       "Surfaces fit, urgency, and suggested next steps for human review",
@@ -71,7 +71,7 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     problem:
       "Momentum drops between first contact, scheduling, and the nudges that actually get calls on the calendar.",
     solution:
-      "Automation that connects lead capture to booking, reminders, and pipeline-style visibility. Full flows often use your calendar stack and ops tools—not a separate public “booking demo” page.",
+      "Automation that connects lead capture to booking, reminders, and pipeline-style visibility. Full flows often use your calendar stack and ops tools, not a separate public booking demo page.",
     capabilities: [
       "Tracks progress from request toward booked calls",
       "Updates pipeline-style state for operational visibility",
@@ -88,7 +88,7 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     problem:
       "Manual confirmations and follow-ups are slow, easy to forget, and hard to keep consistent at scale.",
     solution:
-      "Transactional and follow-up messaging wired into delivery workflows—confirmations, internal alerts, and nurture where it fits. Behavior is configured per engagement, not a single public playground.",
+      "Transactional and follow-up messaging wired into delivery workflows, including confirmations, internal alerts, and nurture where it fits. Behavior is configured per engagement, not a single public playground.",
     capabilities: [
       "Sends confirmations and handoff notifications",
       "Notifies the team when new leads need attention",

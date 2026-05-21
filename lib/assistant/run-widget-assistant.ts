@@ -113,14 +113,14 @@ export async function runWidgetAssistantQuery(input: {
   }
 
   if (userId) {
-    const rl = checkAssistantRateLimit(userId);
+    const rl = await checkAssistantRateLimit(userId);
     if (!rl.ok) {
       return { success: false, error: rl.message, openAiConfigured: true };
     }
   } else {
     const h = await headers();
     const ipKey = `public:${clientIpHint(h)}`;
-    const rl = checkWidgetPublicRateLimit(ipKey);
+    const rl = await checkWidgetPublicRateLimit(ipKey);
     if (!rl.ok) {
       return { success: false, error: rl.message, openAiConfigured: true };
     }
