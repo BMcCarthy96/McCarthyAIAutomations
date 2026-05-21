@@ -14,6 +14,11 @@ import type {
   AiUrgencyLevel,
 } from "@/lib/lead-ai/types";
 
+import {
+  callClaudeLeadClassifier,
+  CLAUDE_LEAD_CLASSIFIER_MODEL,
+} from "@/lib/lead-ai/claude-lead-classifier";
+
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
 const MAX_SUMMARY = 500;
@@ -93,6 +98,46 @@ function leadModel(): string {
     process.env.OPENAI_ASSISTANT_MODEL?.trim() ||
     "gpt-4o-mini"
   );
+}
+
+type ClaudeLeadMode = "off" | "shadow" | "replace";
+
+function claudeLeadMode(): ClaudeLeadMode {
+  const v = process.env.USE_CLAUDE_LEAD_CLASSIFIER?.trim().toLowerCase();
+  if (v === "shadow") return "shadow";
+  if (v === "true" || v === "1") return "replace";
+  return "off";
+}
+
+/**
+ * Fire-and-forget Claude shadow classification for comparison logging.
+ * Runs ONLY when USE_CLAUDE_LEAD_CLASSIFIER=shadow. Never throws to callers.
+ * Logs field-level diffs to server logs under the [lead-ai:shadow] prefix.
+ */
+async function runClaudeShadow(
+  requestId: string,
+  userContent: string,
+  openAiResult: NormalizedLeadAnalysis
+): Promise<void> {
+  try {
+    const claudeResult = await callClaudeLeadClassifier(userContent);
+    const keys = Object.keys(openAiResult) as (keyof NormalizedLeadAnalysis)[];
+    const diff: Record<string, { openai: unknown; claude: unknown }> = {};
+    for (const k of keys) {
+      if (openAiResult[k] !== claudeResult[k]) {
+        diff[k] = { openai: openAiResult[k], claude: claudeResult[k] };
+      }
+    }
+    const hasDiffs = Object.keys(diff).length > 0;
+    console.info("[lead-ai:shadow]", {
+      requestId,
+      match: !hasDiffs,
+      ...(hasDiffs ? { diff } : {}),
+    });
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.warn("[lead-ai:shadow] Claude classifier error:", msg);
+  }
 }
 
 function buildUserContent(input: {
@@ -451,10 +496,14 @@ export async function processPublicLeadAnalysis(
     body: body || "(empty)",
   });
 
-  const model = leadModel();
+  const mode = claudeLeadMode();
+  const model = mode === "replace" ? CLAUDE_LEAD_CLASSIFIER_MODEL : leadModel();
 
   try {
-    const normalized = await callOpenAiStructured(userContent);
+    const normalized =
+      mode === "replace"
+        ? await callClaudeLeadClassifier(userContent)
+        : await callOpenAiStructured(userContent);
     const now = new Date().toISOString();
     const { error: upErr } = await supabase
       .from("support_requests")
@@ -481,6 +530,11 @@ export async function processPublicLeadAnalysis(
     if (upErr) {
       console.error("[lead-ai] persist completed failed:", upErr.message);
     } else {
+      // Shadow mode: fire Claude classification in background for comparison logging.
+      // Non-blocking; never affects the official result or the Zapier webhook.
+      if (mode === "shadow") {
+        void runClaudeShadow(requestId, userContent, normalized);
+      }
       const createdAt = row.created_at as string;
       // Await so serverless / after() keeps the isolate alive until Zapier POST finishes.
       // sendZapierLeadEnrichmentWebhook swallows errors; lead data is already persisted.
