@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { SignInButton, SignUpButton, useAuth, useUser } from "@clerk/nextjs";
+import { SignInButton, useAuth, useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -121,9 +121,7 @@ export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {
                     </Link>
                   )}
                   <SignInButton mode="modal">
-                    <Button variant="ghost" size="sm">
-                      Sign in
-                    </Button>
+                    <Button variant="ghost" size="sm">Sign in</Button>
                   </SignInButton>
                   <Button
                     href="/contact"

@@ -34,7 +34,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative overflow-hidden px-4 pb-20 sm:px-6 sm:pb-28 lg:px-8">
+    <section className="relative overflow-hidden px-4 pb-14 sm:px-6 sm:pb-20 lg:px-8">
       {/* Ambient background glows */}
       <div
         className="glow-pulse pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_55%_at_50%_-10%,rgba(37,99,235,0.2),transparent)]"

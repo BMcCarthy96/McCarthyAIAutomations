@@ -7,13 +7,13 @@ import { SectionHeading } from "./SectionHeading";
 
 export function ServicesGrid() {
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8">
+    <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           title="What revenue leaks we fix"
           subtitle="Each offer targets a specific workflow gap: missed leads, slow follow-up, stale quotes, or stuck pipeline. We start with an audit to figure out which ones apply to you."
         />
-        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {services.map((service) => {
             const Icon = getServiceIcon(service.icon);
             return (
@@ -33,7 +33,7 @@ export function ServicesGrid() {
             );
           })}
         </div>
-        <div className="mt-14 flex flex-col items-center justify-center gap-4 border-t border-white/10 pt-12 text-center">
+        <div className="mt-10 flex flex-col items-center justify-center gap-4 border-t border-white/10 pt-8 text-center">
           <p className="max-w-lg text-sm text-slate-400">
             Not sure which gap to fix first? The audit is free. We&apos;ll review
             your workflow and tell you exactly where to start.

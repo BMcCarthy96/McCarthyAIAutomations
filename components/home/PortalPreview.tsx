@@ -21,14 +21,14 @@ const setupSteps = [
 
 export function PortalPreview() {
   return (
-    <section className="border-y border-white/10 bg-zinc-950/40 px-4 py-20 sm:px-6 lg:px-8">
+    <section className="border-y border-white/10 bg-zinc-950/40 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           title="Your revenue recovery command center"
           subtitle="Every client gets a portal with live workflow status, milestones, support, billing, and a rolling monthly impact view. You can see what changed, what's still running, and what the system recovered."
         />
 
-        <div className="mt-14 lg:mt-16">
+        <div className="mt-10 lg:mt-12">
           <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-zinc-900/90 to-zinc-950 shadow-2xl shadow-blue-950/40 ring-1 ring-white/5">
             {/* Window chrome */}
             <div className="flex items-center gap-2 border-b border-white/10 bg-black/40 px-4 py-3">

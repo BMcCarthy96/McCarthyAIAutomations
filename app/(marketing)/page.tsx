@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
 import { StatsStrip } from "@/components/home/StatsStrip";
-import { ValueProposition } from "@/components/home/ValueProposition";
-import { PortalPreview } from "@/components/home/PortalPreview";
-import { LiveAiSystemsSection } from "@/components/home/LiveAiSystemsSection";
-import { ServicesGrid } from "@/components/home/ServicesGrid";
 import { HowItWorks } from "@/components/home/HowItWorks";
-import { PhilosophySection } from "@/components/home/PhilosophySection";
+import { ServicesGrid } from "@/components/home/ServicesGrid";
+import { PortalPreview } from "@/components/home/PortalPreview";
 import { Testimonials } from "@/components/home/Testimonials";
-import { ConsultationBand } from "@/components/home/ConsultationBand";
 import { FAQ } from "@/components/home/FAQ";
 import { CTABanner } from "@/components/home/CTABanner";
 
@@ -23,14 +19,10 @@ export default function HomePage() {
     <>
       <Hero />
       <StatsStrip />
-      <ValueProposition />
-      <PortalPreview />
-      <LiveAiSystemsSection />
-      <ServicesGrid />
       <HowItWorks />
-      <PhilosophySection />
+      <ServicesGrid />
+      <PortalPreview />
       <Testimonials />
-      <ConsultationBand />
       <FAQ />
       <CTABanner />
     </>

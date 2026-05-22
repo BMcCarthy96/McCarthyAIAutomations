@@ -4,7 +4,7 @@ import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketing
 
 export function CTABanner() {
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8">
+    <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-blue-600/[0.14] via-blue-400/[0.07] to-transparent p-8 text-center backdrop-blur-xl sm:p-12">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">

@@ -6,7 +6,7 @@ import { CheckCircle } from "lucide-react";
 
 export function Testimonials() {
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8">
+    <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           title="What to expect"
@@ -22,7 +22,7 @@ export function Testimonials() {
           </Link>{" "}
           and we&apos;ll map it to your specific workflow.
         </p>
-        <div className="mt-12 grid gap-8 md:grid-cols-3">
+        <div className="mt-8 grid gap-8 md:grid-cols-3">
           {testimonials.map((t) => (
             <GlassCard key={t.id} hover>
               <CheckCircle className="h-8 w-8 text-blue-400" aria-hidden />

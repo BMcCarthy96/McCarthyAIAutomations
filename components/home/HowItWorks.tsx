@@ -8,7 +8,7 @@ const stepIcons = [CalendarClock, Rocket, LineChart] as const;
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="scroll-mt-28 px-4 py-20 sm:px-6 lg:px-8">
+    <section id="how-it-works" className="scroll-mt-28 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <AnimateIn>
           <div className="text-center">
@@ -25,7 +25,7 @@ export function HowItWorks() {
           </div>
         </AnimateIn>
 
-        <StaggerIn className="mt-14 grid gap-6 md:grid-cols-3" stagger={0.15}>
+        <StaggerIn className="mt-10 grid gap-6 md:grid-cols-3" stagger={0.15}>
           {howItWorksSteps.map((step, i) => {
             const Icon = stepIcons[i] ?? CalendarClock;
             return (

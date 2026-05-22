@@ -11,7 +11,7 @@ export function FAQ() {
   const [openId, setOpenId] = useState<string | null>(faqs[0]?.id ?? null);
 
   return (
-    <section className="px-4 py-20 sm:px-6 lg:px-8">
+    <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           title="Frequently asked questions"
@@ -25,7 +25,7 @@ export function FAQ() {
             Book a Free Revenue Leak Audit →
           </Link>
         </p>
-        <div className="mt-10 space-y-2">
+        <div className="mt-8 space-y-2">
           {faqs.map((item) => (
             <div
               key={item.id}
