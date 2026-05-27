@@ -25,19 +25,21 @@ export const services: Service[] = [
   {
     id: "1",
     slug: "revenue-leak-audit",
-    name: "Revenue Leak Audit & Workflow Map",
-    tagline: "Find where revenue is slipping before you build anything",
-    description: "We review your lead capture, follow-up, and pipeline workflow to identify where revenue may be leaking, then map the highest-value fix.",
-    longDescription: "Before investing in a system, you need to know where the real gaps are. We audit your inbound lead flow, follow-up sequences, quote or proposal handling, and pipeline visibility. You get a clear workflow map with prioritized bottlenecks and a recommended first step. The map and recommendation are yours to keep, whether or not you move forward.",
+    name: "AI Revenue Leak Audit & Automation Roadmap",
+    tagline: "A paid diagnostic for lead handling, follow-up, booking handoffs and related operational workflows.",
+    description: "A paid review of lead handling, follow-up, booking handoffs and related operational bottlenecks. Identify potential revenue-leak points, prioritize practical automation opportunities, and receive a phased implementation plan.",
+    longDescription: "I review your lead handling, follow-up sequences, booking handoffs and related operational workflows to identify potential revenue-leak points and practical automation opportunities. You receive prioritized recommendations, human-review and risk boundaries, and a phased implementation roadmap. New engagements begin with a brief no-cost fit conversation before any paid audit starts.",
     features: [
-      "Review of lead capture and follow-up workflow",
-      "Identification of missed revenue opportunities",
+      "Current workflow review",
+      "Potential revenue-leak point analysis",
       "Pipeline and handoff gap analysis",
-      "Workflow map with prioritized bottlenecks",
-      "Recommended pilot scope and next steps",
+      "Prioritized automation opportunities",
+      "Human-review and risk boundaries",
+      "Phased implementation roadmap",
+      "One findings review discussion",
     ],
     icon: "Search",
-    highlights: ["Free audit", "Workflow map", "No obligation"],
+    highlights: ["Paid diagnostic", "Phased roadmap", "Implementation optional"],
   },
   {
     id: "2",
@@ -128,53 +130,52 @@ export const services: Service[] = [
 
 export const pricingTiers: PricingTier[] = [
   {
-    id: "starter",
-    name: "Free Revenue Leak Audit",
-    price: "$0",
-    period: "no obligation",
-    description: "We review your lead capture, follow-up, and pipeline workflow to find where revenue may be slipping through the cracks.",
+    id: "audit",
+    name: "AI Revenue Leak Audit & Automation Roadmap",
+    price: "Starting at $495",
+    period: "one-time",
+    description: "A paid diagnostic and prioritized automation roadmap for lead handling, follow-up and related workflow gaps.",
     features: [
-      "Review of lead capture and follow-up process",
-      "Identification of missed revenue opportunities",
-      "Pipeline and handoff gap analysis",
-      "Workflow map with prioritized bottlenecks",
-      "Recommended pilot scope and next steps",
+      "Current workflow review",
+      "Potential revenue-leak point analysis",
+      "Prioritized automation opportunities",
+      "Recommended workflow and tool approach",
+      "Human-review and risk boundaries",
+      "Phased implementation roadmap",
+      "One findings review discussion",
     ],
-    cta: "Request free audit",
-    highlighted: false,
-  },
-  {
-    id: "growth",
-    name: "30-Day Revenue Recovery Pilot",
-    price: "Starting at $750",
-    period: "fixed scope",
-    description: "We scope and build one targeted workflow fix to prove recovery before committing to a full system.",
-    features: [
-      "Workflow map and recovery plan",
-      "One targeted AI-assisted workflow fix",
-      "Follow-up or re-engagement automation",
-      "Weekly check-ins during the pilot",
-      "Simple ROI and impact report at close",
-      "Clear next-step recommendation",
-    ],
-    cta: "Start a pilot",
+    cta: "Request an audit",
     highlighted: true,
   },
   {
-    id: "enterprise",
-    name: "Managed AI Workflow System",
-    price: "Custom",
-    period: "ongoing monthly",
-    description: "Ongoing monitoring, optimization, reporting, and expansion of your revenue recovery workflows.",
+    id: "pilot",
+    name: "Automation Pilot Implementation",
+    price: "Starting at $1,000",
+    period: "one-time",
+    description: "One approved workflow implemented after the roadmap identifies a worthwhile first build.",
     features: [
-      "Managed AI-assisted workflows",
-      "Client portal with project and billing visibility",
-      "Monthly impact reports",
-      "Dedicated support and optimization",
-      "Ongoing integrations and expansions",
-      "Direct access to your team",
+      "One scoped approved workflow",
+      "Testing and validation",
+      "Documentation and handoff",
+      "Follow-on recommendation summary",
     ],
-    cta: "Contact sales",
+    cta: "Request an audit",
+    highlighted: false,
+  },
+  {
+    id: "advisory",
+    name: "AI Workflow Advisory Retainer",
+    price: "Starting at $1,500",
+    period: "per month",
+    description: "Recurring strategic guidance after an audit or completed pilot, when ongoing advisory is justified.",
+    features: [
+      "Monthly strategy and review session",
+      "Review of one scoped workflow or system",
+      "Prioritized written recommendations",
+      "Limited async advisory support",
+      "Implementation quoted separately",
+    ],
+    cta: "Contact for advisory",
     highlighted: false,
   },
 ];
@@ -182,73 +183,73 @@ export const pricingTiers: PricingTier[] = [
 export const testimonials: Testimonial[] = [
   {
     id: "1",
-    headline: "Leads stop falling through the cracks",
-    body: "Every inquiry gets captured, classified, and followed up automatically, whether it comes in at 2 pm or 2 am. Your team stops managing inboxes. The follow-up runs itself.",
-    metric: "Designed for 24/7 lead coverage",
+    headline: "Inquiries handled consistently",
+    body: "Every inquiry gets captured, classified, and routed automatically, whether it comes in at 2 pm or 2 am. The follow-up runs without manual intervention.",
+    metric: "Designed for 24/7 lead handling",
   },
   {
     id: "2",
-    headline: "You see the impact, not just the activity",
-    body: "Your client portal tracks response times, captured leads, and recovered deals. Monthly impact reports land in your inbox and show what the system changed.",
+    headline: "Visibility into what is happening",
+    body: "Your client portal tracks workflow activity, response patterns, and project progress. Monthly reporting surfaces what changed and what is still running.",
     metric: "Monthly reporting included",
   },
   {
     id: "3",
-    headline: "The first fix ships in weeks, not months",
-    body: "We scope, build, and deliver the first workflow improvement in a 30-day pilot. You get clear milestones and weekly check-ins, with an impact report when the pilot wraps.",
-    metric: "30-day pilot delivery",
+    headline: "Implementation scoped before it starts",
+    body: "I scope and build the first approved workflow with clear milestones and documented handoff. Implementation begins only after the audit confirms a worthwhile opportunity.",
+    metric: "Audit-first approach",
   },
 ];
 
 export const faqs: FAQItem[] = [
   {
     id: "1",
-    question: "What's included in the Free Revenue Leak Audit?",
-    answer: "We review your current lead capture, follow-up, and pipeline workflow to identify where revenue may be slipping through. You get a workflow map with prioritized bottlenecks and a clear recommendation for where to start. No cost, no commitment.",
+    question: "What's included in the AI Revenue Leak Audit & Automation Roadmap?",
+    answer: "This paid engagement reviews lead handling, follow-up, booking handoffs or related operational workflows to identify potential revenue-leak points and practical automation opportunities. You receive prioritized recommendations, implementation options and a phased roadmap. New engagements begin with a short no-cost fit conversation before any paid audit starts.",
   },
   {
     id: "2",
     question: "What happens after the audit?",
-    answer: "If there's a clear workflow gap worth fixing, we'll recommend a 30-Day Revenue Recovery Pilot. The pilot is a fixed-scope, fixed-fee engagement focused on one targeted fix. You can review the proposal and decide from there.",
+    answer: "If the audit identifies a worthwhile first build, I can scope and implement one approved workflow as a second phase. The Automation Pilot Implementation starts at $1,000 and includes testing, documentation and handoff support. Implementation is optional and separately scoped.",
   },
   {
     id: "3",
-    question: "How is the 30-Day Pilot scoped and priced?",
-    answer: "Pilots start at $750 depending on the workflow and tools involved. After the audit, we send a clear proposal with the specific fix, what's included, and a fixed price. What we quote is what you pay.",
+    question: "How is the Automation Pilot Implementation scoped and priced?",
+    answer: "After the audit, I send a clear proposal for one targeted workflow build. Pilots start at $1,000 depending on the complexity and tools involved. You know exactly what is included before any work begins. What we quote is what you pay.",
   },
   {
     id: "4",
-    question: "Do you work with our existing tools and CRM?",
-    answer: "Yes. I can design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional CRM or platform integration, I will confirm feasibility and scope before work begins.",
+    question: "Do you work with existing tools and workflows?",
+    answer: "Yes. I design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional integration, I will confirm feasibility and scope before work begins.",
   },
 ];
 
 export const stats: Stat[] = [
-  { value: "$0", label: "Cost of the initial Revenue Leak Audit" },
-  { value: "30 days", label: "Pilot duration for your first targeted workflow fix" },
-  { value: "Fixed", label: "Pilot scope and price. What we quote is what you pay." },
-  { value: "1 portal", label: "Dashboard for all workflows, billing & impact reporting" },
+  { value: "$0", label: "Initial fit conversation — no cost, no obligation" },
+  { value: "Starting at $495", label: "AI Revenue Leak Audit & Automation Roadmap" },
+  { value: "Fixed", label: "Audit and pilot scope and price — what we quote is what you pay" },
+  { value: "1 portal", label: "Dashboard for all workflows, billing and impact reporting" },
 ];
 
-/** Homepage "How it works" -- three phases from revenue leak audit to managed system. */
+/** Homepage "How it works" -- three phases: fit conversation, audit/roadmap, optional implementation. */
 export const howItWorksSteps: HowItWorksStep[] = [
   {
     step: 1,
-    title: "Free Revenue Leak Audit",
+    title: "Brief Fit Conversation",
     description:
-      "We review your lead capture, follow-up, and pipeline workflow to find where revenue may be slipping. You get a clear workflow map and a recommended first fix. The map and recommendation are yours to keep.",
+      "A short no-cost conversation to understand your current process and confirm whether a paid audit is the right next step.",
   },
   {
     step: 2,
-    title: "30-Day Recovery Pilot",
+    title: "Audit and Automation Roadmap",
     description:
-      "We scope and build one targeted workflow fix: a follow-up system, speed-to-lead automation, or quote recovery flow. The scope and price are fixed up front, and you get an impact report when the 30 days are up.",
+      "I review where valuable opportunities may be stalling, identify practical automation improvements, and deliver prioritized recommendations with a phased implementation plan.",
   },
   {
     step: 3,
-    title: "Managed Workflow System",
+    title: "Optional Implementation",
     description:
-      "Once the pilot proves the approach, we build it into a managed system with ongoing optimization, monthly reporting, and a client portal where you can track everything.",
+      "If the roadmap identifies a worthwhile first build, I can implement one approved workflow with testing, documentation and handoff support.",
   },
 ];
 

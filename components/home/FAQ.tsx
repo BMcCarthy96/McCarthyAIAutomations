@@ -15,14 +15,14 @@ export function FAQ() {
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           title="Frequently asked questions"
-          subtitle="Quick answers about how the audit, pilot, and managed system work. Still have questions? The audit is a good place to start."
+          subtitle="Quick answers about how the audit, pilot and advisory engagement work. Still have questions? Start with a brief fit conversation."
         />
         <p className="mt-4 text-center text-sm">
           <Link
             href="/contact"
             className="font-semibold text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"
           >
-            Book a Free Revenue Leak Audit →
+            Request an AI Revenue Leak Audit →
           </Link>
         </p>
         <div className="mt-8 space-y-2">

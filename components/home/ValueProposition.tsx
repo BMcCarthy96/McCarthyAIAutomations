@@ -10,8 +10,8 @@ const pillars = [
     iconColor: "text-blue-300",
     iconBg: "bg-blue-500/15",
     accentBorder: "hover:border-blue-500/25",
-    title: "Recover Lost Revenue",
-    body: "Find and fix the missed leads, slow follow-ups, stale deals, and workflow gaps quietly costing your business money. We identify the leaks and build systems to close them.",
+    title: "Identify Where Opportunities Stall",
+    body: "I identify where slow follow-up, disconnected tools and unclear handoffs may be allowing valuable opportunities to stall, then map practical AI workflow improvements.",
   },
   {
     icon: Workflow,
@@ -45,7 +45,7 @@ export function ValueProposition() {
               Why businesses choose McCarthy AI
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
-              We don&apos;t sell AI tools. We find where revenue is slipping and build systems to recover it.
+              I map where slow follow-up, disconnected tools, and workflow gaps may be limiting opportunities, and outline what to address first.
             </p>
           </div>
         </AnimateIn>
@@ -68,7 +68,7 @@ export function ValueProposition() {
         <AnimateIn delay={0.1}>
           <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
             </Button>
             <Button href="/services" variant="secondary" size="lg">
               See what revenue leaks we fix

@@ -24,8 +24,8 @@ export function PortalPreview() {
     <section className="border-y border-white/10 bg-zinc-950/40 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          title="Your revenue recovery command center"
-          subtitle="Every client gets a portal with live workflow status, milestones, support, billing, and a rolling monthly impact view. You can see what changed, what's still running, and what the system recovered."
+          title="Your active workflow project portal"
+          subtitle="Clients in active projects get a portal with live workflow status, milestones, support, billing, and a rolling monthly impact view. You can see what changed and what is still running."
         />
 
         <div className="mt-10 lg:mt-12">
@@ -134,10 +134,10 @@ export function PortalPreview() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
             <Button href="/contact" variant="primary" size="lg">
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
             </Button>
             <p className="max-w-sm text-sm text-slate-500">
-              Tell us where revenue may be slipping on the{" "}
+              Share your workflow on the{" "}
               <Link
                 href="/contact"
                 className="font-medium text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"

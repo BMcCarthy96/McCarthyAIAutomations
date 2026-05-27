@@ -1,5 +1,32 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+---
+
+## About This Project
+
+**McCarthy AI Automations** is a live SaaS platform built to demonstrate end-to-end AI workflow consulting and automation implementation. This repo is the production codebase powering the public marketing site, client portal, admin dashboard, and demo system.
+
+### What's live and demonstrable
+
+| System | What it does |
+|--------|-------------|
+| **Demo client portal** (`/dashboard`) | Project tracking, milestones, support inbox, Stripe billing, and a RAG-powered AI assistant grounded in client context |
+| **AI lead intake** | OpenAI classification of consultation requests → Supabase insert → Resend email → Zapier webhook relay |
+| **n8n workflow demo** | Webhook intake → OpenAI lead classification → CRM-style Google Sheets record management → human-approval checkpoint — running on fictional sample data ([view walkthrough](https://mccarthyaiautomations.com/demos/n8n-lead-workflow)) |
+| **Admin dashboard** (`/admin`) | Client management, billing, support inbox, demo data seed |
+| **Scheduled reporting workflow** | Automated Vercel cron → demonstration email report with 30-day sample metrics |
+
+### Consulting and implementation services
+
+- **AI Revenue Leak Audit & Automation Roadmap** — paid scoped analysis of lead handling, follow-up, booking handoffs, workflow bottlenecks, potential revenue-leak points, automation opportunities, human-review boundaries, and a phased implementation plan
+- **Lead-intake and process automation planning** — workflow design for inquiry handling, classification, routing, and follow-up using n8n, Zapier, OpenAI, and webhook-based pipelines
+- **RAG / internal knowledge workflow design** — knowledge assistant architecture, grounded retrieval systems, and tool-connected context layers
+- **Optional implementation** — n8n, Zapier, API integration, database-backed tooling, or custom dashboard build available as a second phase after the roadmap is approved
+
+**Stack:** Next.js 16 · React 19 · TypeScript · Supabase (Postgres) · Clerk (auth) · Stripe (payments) · OpenAI (assistants + lead analysis) · n8n · Zapier · Resend · Vercel
+
+---
+
 ## Getting Started
 
 First, run the development server:

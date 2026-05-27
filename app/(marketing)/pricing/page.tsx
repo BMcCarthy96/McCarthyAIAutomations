@@ -6,27 +6,27 @@ import { Check } from "lucide-react";
 
 const pricingFAQ = [
   {
-    q: "What's included in the Free Revenue Leak Audit?",
-    a: "We review your lead capture, follow-up, and pipeline workflow to identify where revenue may be slipping through. You get a workflow map with prioritized bottlenecks and a clear recommendation for where to start. No cost, no commitment.",
+    q: "What's included in the AI Revenue Leak Audit & Automation Roadmap?",
+    a: "This paid engagement reviews lead handling, follow-up, booking handoffs or related operational workflows to identify potential revenue-leak points and practical automation opportunities. You receive prioritized recommendations, implementation options and a phased roadmap. New engagements begin with a short no-cost fit conversation before any paid audit starts.",
   },
   {
-    q: "How is the 30-Day Pilot scoped and priced?",
-    a: "After the audit, we send a fixed-fee proposal for one targeted workflow fix. Pilots start at $750 depending on the complexity and tools involved. You know exactly what you're getting before any work begins.",
+    q: "How is the Automation Pilot Implementation scoped and priced?",
+    a: "After the audit, I send a clear proposal for one targeted workflow build. Pilots start at $1,000 depending on the complexity and tools involved. You know exactly what is included before any work begins. What we quote is what you pay.",
   },
   {
     q: "What happens after the pilot?",
-    a: "At the end of the pilot you get a simple impact report and a clear next-step recommendation. If the results justify expanding, we scope a managed system. There's no pressure to continue if the pilot doesn't prove the value.",
+    a: "At the end of the pilot you receive a documented handoff and a follow-on recommendation summary. If ongoing advisory or further optimization is justified, that is available as a separately scoped engagement. There is no automatic continuation.",
   },
   {
-    q: "Do you work with our existing tools and CRM?",
-    a: "Yes. I can design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional CRM or platform integration, I will confirm feasibility and scope before work begins.",
+    q: "Do you work with existing tools and workflows?",
+    a: "Yes. I design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional integration, I will confirm feasibility and scope before work begins.",
   },
 ];
 
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Start with a free Revenue Leak Audit. Then a fixed-scope 30-Day Pilot from $750. Scale to a Managed AI Workflow System with ongoing support.",
+    "Paid AI Revenue Leak Audit and Automation Roadmap starting at $495. Optional workflow implementation pilot starting at $1,000. Advisory retainer from $1,500/month.",
 };
 
 export default function PricingPage() {
@@ -34,9 +34,9 @@ export default function PricingPage() {
     <div>
       <PageHero
         label="How we work together"
-        title="Start free. Prove value."
-        titleAccent="Then scale."
-        subtitle="A free audit, a fixed-scope pilot, and a managed system if the results justify it. No long-term commitment until you've seen it work."
+        title="Audit first."
+        titleAccent="Build when ready."
+        subtitle="Start with a paid workflow audit. Add implementation only when the roadmap confirms it makes sense. Advisory guidance is available after an initial engagement."
       />
 
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -94,7 +94,7 @@ export default function PricingPage() {
         </div>
 
         <p className="mt-10 text-center text-sm text-zinc-600">
-          Not sure where to start? Start with the audit. It&apos;s free, and you decide what to do from the results.
+          New engagements begin with a brief no-cost fit conversation before any paid audit starts.
         </p>
 
         {/* FAQ */}
@@ -122,10 +122,10 @@ export default function PricingPage() {
 
           <div className="mt-14 text-center">
             <p className="mb-6 text-base text-zinc-500">
-              Ready to find out where revenue is slipping through?
+              Ready to identify the workflow gaps worth addressing first?
             </p>
             <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
             </Button>
           </div>
         </div>

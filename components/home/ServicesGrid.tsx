@@ -35,12 +35,12 @@ export function ServicesGrid() {
         </div>
         <div className="mt-10 flex flex-col items-center justify-center gap-4 border-t border-white/10 pt-8 text-center">
           <p className="max-w-lg text-sm text-slate-400">
-            Not sure which gap to fix first? The audit is free. We&apos;ll review
-            your workflow and tell you exactly where to start.
+            Not sure which gap to address first? New engagements begin with a
+            brief fit conversation before any paid audit starts.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button href="/contact" variant="primary" size="md">
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
             </Button>
             <Button href="/pricing" variant="ghost" size="md">
               View pricing

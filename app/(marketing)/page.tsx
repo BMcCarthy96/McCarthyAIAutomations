@@ -10,9 +10,9 @@ import { FAQ } from "@/components/home/FAQ";
 import { CTABanner } from "@/components/home/CTABanner";
 
 export const metadata: Metadata = {
-  title: "AI Workflow Systems That Recover Lost Revenue",
+  title: "AI Workflow Consulting & Revenue Leak Audits | McCarthy AI",
   description:
-    "McCarthy AI Solutions identifies where your business loses revenue through slow follow-up, missed leads, and fragmented workflows, then builds high-touch AI systems to recover it.",
+    "Identify potential lead-handling, follow-up, and workflow gaps through a paid AI Revenue Leak Audit and Automation Roadmap, with optional implementation.",
 };
 
 export default function HomePage() {

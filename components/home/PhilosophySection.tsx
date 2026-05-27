@@ -63,7 +63,7 @@ export function PhilosophySection() {
         <AnimateIn delay={0.2}>
           <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-8 border-t border-white/[0.06] pt-16">
             {[
-              { value: "2–4 wks", label: "First system live" },
+              { value: "2–4 wks", label: "First roadmap delivered" },
               { value: "24/7", label: "Automated coverage" },
               { value: "100%", label: "Outcome-focused" },
             ].map(({ value, label }) => (

@@ -19,8 +19,7 @@ export function HowItWorks() {
               How it works
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
-              From first conversation to automation in production, with a measurable
-              reporting loop your team can trust.
+              Confirm fit, diagnose the workflow, then build only when the opportunity is clear.
             </p>
           </div>
         </AnimateIn>

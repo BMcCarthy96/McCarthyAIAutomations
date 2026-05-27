@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Revenue recovery workflow systems for missed leads, slow follow-up, stale quotes, and pipeline bottlenecks. Start with a free audit.",
+    "AI workflow consulting for lead handling, follow-up, booking handoffs and operational bottlenecks. Starting with a paid AI Revenue Leak Audit and Automation Roadmap.",
 };
 
 export default function ServicesPage() {
@@ -17,9 +17,9 @@ export default function ServicesPage() {
     <div>
       <PageHero
         label="What revenue leaks we fix"
-        title="Workflow systems for"
+        title="Workflow consulting for"
         titleAccent="every revenue gap."
-        subtitle="Each offer targets a specific workflow breakdown. We start with a free audit to find which ones apply to your business."
+        subtitle="Each service addresses a specific workflow gap. Start with a paid AI Revenue Leak Audit to identify which ones apply to your situation."
       />
 
       <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
@@ -54,12 +54,12 @@ export default function ServicesPage() {
             Not sure which gap to fix first?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-400">
-            The audit is free. We&apos;ll review your lead capture, follow-up, and
-            pipeline workflow, identify the biggest bottlenecks, and send a clear
-            recommendation. You decide what to do from there.
+            New engagements begin with a brief fit conversation. If there is a worthwhile
+            workflow gap to address, the paid AI Revenue Leak Audit and Automation Roadmap
+            defines the right approach before any build begins.
           </p>
           <Button href="/contact" variant="primary" size="lg" className="btn-magnetic mt-8">
-            Book a Free Revenue Leak Audit
+            Request an AI Revenue Leak Audit
           </Button>
         </div>
       </div>

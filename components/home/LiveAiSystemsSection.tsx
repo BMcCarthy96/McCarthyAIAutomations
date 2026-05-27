@@ -148,7 +148,7 @@ export function LiveAiSystemsSection() {
               />
             </TryLiveDemoMarketingGate>
             <Button href="/contact" variant="secondary" size="md">
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
             </Button>
             <Button href="/services" variant="ghost" size="md">
               Browse all services

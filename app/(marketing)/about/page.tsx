@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "McCarthy AI Solutions builds high-touch AI workflow systems that recover lost revenue from missed leads, slow follow-up, and operational bottlenecks.",
+    "AI workflow consulting for lead handling, follow-up and operational handoffs. Paid audits, optional implementation, and advisory guidance.",
 };
 
 export default function AboutPage() {
@@ -20,13 +20,13 @@ export default function AboutPage() {
       <div className="mx-auto max-w-3xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="space-y-6 text-zinc-300">
           <p className="text-lg leading-relaxed">
-            McCarthy AI Solutions builds AI workflow systems for B2B businesses losing revenue to missed leads, slow follow-up, stale quotes, and broken handoffs.
+            I focus on practical AI workflow consulting: identifying where lead handling, follow-up and operational handoffs may be limiting opportunities, then defining a clear automation roadmap before any build begins.
           </p>
           <p className="leading-relaxed text-zinc-400">
-            Our approach differs from a generic automation agency. We start with a free Revenue Leak Audit to find where your workflow is breaking down, before building anything. Then we run a 30-Day Pilot to prove one improvement works. If the results justify it, we recommend a managed system.
+            New engagements begin with a brief no-cost fit conversation. If there is a worthwhile problem to address, the next step is a paid AI Revenue Leak Audit and Automation Roadmap. Implementation is available as a second phase after the roadmap is approved.
           </p>
           <p className="leading-relaxed text-zinc-400">
-            Every client gets a dedicated portal with workflow status, milestones, support, billing, and monthly impact reports. You see what changed, what&apos;s still running, and what the system recovered.
+            Clients in active projects get a dedicated portal with workflow status, milestones, support, billing, and monthly impact reporting.
           </p>
         </div>
 
@@ -52,7 +52,7 @@ export default function AboutPage() {
                 monitoring, and client portals that make workflow impact visible and measurable.
               </p>
               <p>
-                I don&apos;t build features and call it done. I build systems that hold up in day-to-day operations and show what they recovered. I try to keep things simple, reliable, and shaped around how your team actually works.
+                I don&apos;t build features and call it done. I build practical workflow systems shaped around how your team actually operates, and document them clearly for handoff.
               </p>
             </div>
           </div>
@@ -60,7 +60,7 @@ export default function AboutPage() {
 
         <div className="mt-12 flex flex-wrap gap-4">
           <Button href="/contact" variant="primary" size="lg" className="btn-magnetic">
-            Book a Free Revenue Leak Audit
+            Request an AI Revenue Leak Audit
           </Button>
           <Button href="/services" variant="secondary" size="lg">
             Explore our services

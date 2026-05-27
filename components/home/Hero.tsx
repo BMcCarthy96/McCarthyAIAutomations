@@ -57,7 +57,7 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.08] px-4 py-1.5">
             <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-cyan-400" aria-hidden />
             <span className="text-xs font-semibold uppercase tracking-wider text-blue-300">
-              AI Workflow Systems · Revenue Recovery
+              AI Workflow Consulting · Revenue Leak Audits
             </span>
           </div>
         </div>
@@ -67,23 +67,25 @@ export function Hero() {
           <div ref={leftRef} className="text-center lg:text-left">
             {/* H1 */}
             <h1 className="text-[2.75rem] font-bold leading-[1.06] tracking-tight text-white sm:text-6xl lg:text-[3.75rem]">
-              AI Systems That<br />
-              Recover{" "}
+              Find where valuable<br />
+              opportunities are{" "}
               <em className="font-drama not-italic italic text-transparent"
                 style={{
                   backgroundImage: "linear-gradient(135deg, #60a5fa 0%, #38bdf8 50%, #a5f3fc 100%)",
                   WebkitBackgroundClip: "text",
                   backgroundClip: "text",
                 }}>
-                Lost Revenue.
+                stalling.
               </em>
             </h1>
 
             {/* Subhead */}
             <p className="mx-auto mt-7 max-w-xl text-lg leading-relaxed text-slate-400 lg:mx-0">
-              We identify where your business is losing revenue through slow
-              follow-up, missed leads, stale opportunities, and fragmented
-              workflows. Then we build AI-powered systems to recover it.
+              I help businesses identify where slow follow-up, disconnected
+              tools, and unclear handoffs may be allowing leads or customer
+              opportunities to stall. Start with an AI Revenue Leak Audit
+              and Automation Roadmap. If implementation makes sense, I can
+              build the approved system as a second phase.
             </p>
 
             {/* CTAs */}
@@ -94,7 +96,7 @@ export function Hero() {
                 size="lg"
                 className="btn-magnetic w-full min-w-[220px] sm:w-auto"
               >
-                Book a Free Revenue Leak Audit
+                Request an AI Revenue Leak Audit
               </Button>
               <Button
                 href="/services"
@@ -107,7 +109,7 @@ export function Hero() {
             </div>
 
             <p className="mt-8 text-center text-sm text-slate-600 lg:text-left">
-              No cost, no commitment. We map your workflow gaps and recommend the first fix.
+              New engagements begin with a brief no-cost fit conversation before any paid audit starts.
             </p>
           </div>
 

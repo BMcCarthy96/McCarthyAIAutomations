@@ -4,19 +4,19 @@ import { PageHero } from "@/components/ui/PageHero";
 import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Book a Free Revenue Leak Audit",
+  title: "AI Revenue Leak Audit & Automation Roadmap",
   description:
-    "Tell us where leads, follow-ups, quotes, or workflows may be slipping through the cracks. We'll review your process and map the biggest recovery opportunities.",
+    "Share the lead-handling, follow-up or operational workflow you want to improve. New engagements begin with a brief no-cost fit conversation before any paid audit starts.",
 };
 
 export default function ContactPage() {
   return (
     <div>
       <PageHero
-        label="Free Revenue Leak Audit"
-        title="Tell us where revenue may be"
-        titleAccent="slipping through."
-        subtitle="We'll review your workflow, identify the biggest gaps, and respond personally within one business day."
+        label="AI Revenue Leak Audit"
+        title="Request an AI"
+        titleAccent="Revenue Leak Audit."
+        subtitle="Share the lead-handling, follow-up or operational workflow you want to improve. New engagements begin with a brief no-cost fit conversation. If there is a worthwhile problem to investigate, the paid audit provides prioritized recommendations and implementation options."
       />
 
       <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
