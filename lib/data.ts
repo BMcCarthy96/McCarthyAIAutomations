@@ -50,11 +50,11 @@ export const services: Service[] = [
       "Unified lead capture across key channels",
       "Automatic lead classification and routing",
       "Triggered follow-up sequences",
-      "CRM integration and pipeline visibility",
+      "Zapier-connected lead tracking and pipeline visibility",
       "Alert and escalation rules for high-priority leads",
     ],
     icon: "UserCheck",
-    highlights: ["24/7 capture", "Auto follow-up", "CRM sync"],
+    highlights: ["24/7 capture", "Auto follow-up", "Zapier lead & booking tracking"],
   },
   {
     id: "3",
@@ -219,13 +219,13 @@ export const faqs: FAQItem[] = [
   {
     id: "4",
     question: "Do you work with our existing tools and CRM?",
-    answer: "Yes. We design workflows around what you already use: HubSpot, Salesforce, GoHighLevel, Calendly, and most common CRM and ops tools. If you're using something less common, we'll tell you upfront what's possible.",
+    answer: "Yes. I can design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional CRM or platform integration, I will confirm feasibility and scope before work begins.",
   },
 ];
 
 export const stats: Stat[] = [
   { value: "$0", label: "Cost of the initial Revenue Leak Audit" },
-  { value: "30 days", label: "Time to first revenue recovery workflow" },
+  { value: "30 days", label: "Pilot duration for your first targeted workflow fix" },
   { value: "Fixed", label: "Pilot scope and price. What we quote is what you pay." },
   { value: "1 portal", label: "Dashboard for all workflows, billing & impact reporting" },
 ];
@@ -314,7 +314,7 @@ export const projectUpdates: ProjectUpdate[] = [
     id: "u1",
     projectId: "proj-1",
     title: "Chatbot live and connected",
-    body: "Chatbot is now live on homepage and contact page. Lead capture form is connected to HubSpot. You can review conversations in your HubSpot pipeline.",
+    body: "Lead capture is connected to an automated intake workflow. AI-enriched lead information is routed through Zapier for follow-up and booking tracking, with activity available for review in the dashboard.",
     createdAt: "2025-03-01",
   },
   {

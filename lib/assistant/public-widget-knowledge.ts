@@ -101,7 +101,7 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
     label: "Email automation (product area — public description)",
     lines: [
       "Email automation can include transactional messages (confirmations, handoffs) and nurture-style follow-ups where appropriate and compliant.",
-      "We integrate with the email and CRM tools the customer already uses when possible.",
+      "I design workflows around your existing tools and APIs, including email, databases and webhook-compatible services. Current platform demonstrations include Zapier-connected lead intake and booking tracking.",
     ],
   },
 ];

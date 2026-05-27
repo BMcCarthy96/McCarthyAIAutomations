@@ -3,6 +3,7 @@ import { Hero } from "@/components/home/Hero";
 import { StatsStrip } from "@/components/home/StatsStrip";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { ServicesGrid } from "@/components/home/ServicesGrid";
+import { LiveAiSystemsSection } from "@/components/home/LiveAiSystemsSection";
 import { PortalPreview } from "@/components/home/PortalPreview";
 import { Testimonials } from "@/components/home/Testimonials";
 import { FAQ } from "@/components/home/FAQ";
@@ -21,6 +22,7 @@ export default function HomePage() {
       <StatsStrip />
       <HowItWorks />
       <ServicesGrid />
+      <LiveAiSystemsSection />
       <PortalPreview />
       <Testimonials />
       <FAQ />

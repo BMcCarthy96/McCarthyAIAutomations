@@ -18,6 +18,7 @@ import { AutomationMetrics } from "@/components/dashboard/AutomationMetrics";
 import { SectionTitle } from "@/components/dashboard/SectionTitle";
 import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
 import { DemoHint } from "@/components/dashboard/DemoHint";
+import { isDemoClientId } from "@/lib/demo-config";
 import { EmptyState } from "@/components/dashboard/EmptyState";
 import { ProjectTimeline } from "@/components/dashboard/ProjectTimeline";
 import {
@@ -62,6 +63,7 @@ export default async function DashboardOverviewPage() {
       getUpcomingMilestonesForClient(clientId, 4),
     ]);
 
+  const isDemo = isDemoClientId(clientId);
   const recentUpdates = allUpdates.slice(0, 3);
   const overviewProjects = projects.slice(0, 2);
   const latestActivity = activity.slice(0, 5);
@@ -192,6 +194,11 @@ export default async function DashboardOverviewPage() {
                   <span className="font-bold tabular-nums text-amber-200">{estimatedRevenue}</span>{" "}
                   in the last 30 days.
                 </p>
+                {isDemo && (
+                  <p className="mt-2 text-center text-xs text-zinc-500">
+                    Sample data shown for demonstration only. These figures do not represent verified client outcomes.
+                  </p>
+                )}
               </GlassCard>
 
               <AutomationMetrics metrics={metrics} />
