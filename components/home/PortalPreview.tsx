@@ -41,8 +41,8 @@ export function PortalPreview() {
                   Client portal · preview
                 </span>
               </div>
-              <span className="hidden rounded-md bg-blue-500/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-300 sm:inline">
-                Live metrics
+              <span className="inline rounded-md bg-zinc-700/40 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+                Sample data
               </span>
             </div>
 
@@ -80,6 +80,9 @@ export function PortalPreview() {
                     </div>
                   ))}
                 </div>
+                <p className="mt-2 text-center text-[10px] leading-relaxed text-slate-600">
+                  Illustrative sample metrics for product demonstration only. These figures do not represent verified client outcomes.
+                </p>
 
                 {/* Mini bar visualization */}
                 <div className="rounded-xl border border-white/10 bg-black/20 p-4">

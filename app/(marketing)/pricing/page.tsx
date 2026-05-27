@@ -19,7 +19,7 @@ const pricingFAQ = [
   },
   {
     q: "Do you work with our existing tools and CRM?",
-    a: "Yes. We design workflows around what you already use — HubSpot, Salesforce, GoHighLevel, Calendly, and most common CRM and ops tools. We'll tell you upfront if something requires a workaround.",
+    a: "Yes. I can design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional CRM or platform integration, I will confirm feasibility and scope before work begins.",
   },
 ];
 

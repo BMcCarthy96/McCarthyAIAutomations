@@ -7,7 +7,8 @@ export type LiveAiSystemIconId =
   | "knowledge"
   | "leadEngine"
   | "booking"
-  | "email";
+  | "email"
+  | "n8nWorkflow";
 
 /** Sets visitor expectations: live product vs descriptive service / touchpoint. */
 export type LiveAiSystemCardBadge = "live_system" | "workflow_overview";
@@ -80,6 +81,23 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     ctaLabel: "Read service overview",
     ctaHref: "/services/no-dropped-leads",
     iconId: "booking",
+    cardBadge: "workflow_overview",
+  },
+  {
+    id: "n8n-lead-workflow",
+    title: "n8n AI Lead Intake and CRM-Style Tracking",
+    problem:
+      "Lead submissions often arrive without consistent classification, duplicate detection, or an approval gate before any follow-up reaches the contact.",
+    solution:
+      "A reusable n8n workflow template demonstrating webhook intake, OpenAI classification, CRM-style Google Sheets record management, and a human-approval checkpoint — running on fictional sample data.",
+    capabilities: [
+      "Classifies each lead by temperature, urgency, and business type using OpenAI",
+      "Creates a structured 21-column record in Google Sheets on every valid submission",
+      "Pauses at an approval checkpoint — human review required before status advances to Ready to Send",
+    ],
+    ctaLabel: "View workflow walkthrough",
+    ctaHref: "/demos/n8n-lead-workflow",
+    iconId: "n8nWorkflow",
     cardBadge: "workflow_overview",
   },
   {

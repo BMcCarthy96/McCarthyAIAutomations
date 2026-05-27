@@ -5,6 +5,7 @@ import {
   BookOpen,
   CalendarClock,
   Mail,
+  Network,
   Zap,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -39,6 +40,7 @@ const ICONS: Record<LiveAiSystemIconId, LucideIcon> = {
   leadEngine: Zap,
   booking: CalendarClock,
   email: Mail,
+  n8nWorkflow: Network,
 };
 
 export function LiveAiSystemsSection() {
@@ -51,7 +53,7 @@ export function LiveAiSystemsSection() {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_0%,rgba(37,99,235,0.1),transparent)]" />
       <div className="relative mx-auto max-w-7xl">
         <p className="text-center text-xs font-semibold uppercase tracking-wider text-blue-300/90">
-          Production systems
+          AI Systems and Workflow Demonstrations
         </p>
         <h2
           id="live-ai-systems-heading"
@@ -60,10 +62,9 @@ export function LiveAiSystemsSection() {
           Live AI systems in action
         </h2>
         <p className="mx-auto mt-4 max-w-3xl text-center text-lg leading-relaxed text-slate-400">
-          These aren&apos;t mockups or generic service blurbs. They&apos;re real
-          systems built into our platform, using LLMs, APIs, workflows, scoped
-          knowledge, and product UX to automate lead intake, booking and
-          follow-up, client knowledge retrieval, and communication.
+          Explore live platform features and independent workflow demonstrations
+          built to show how AI, automation, and human review can support
+          practical business processes.
         </p>
 
         <div className="mt-14 grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
