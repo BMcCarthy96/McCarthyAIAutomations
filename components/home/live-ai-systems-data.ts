@@ -7,7 +7,6 @@ export type LiveAiSystemIconId =
   | "knowledge"
   | "leadEngine"
   | "booking"
-  | "email"
   | "n8nWorkflow";
 
 /** Sets visitor expectations: live product vs descriptive service / touchpoint. */
@@ -98,23 +97,6 @@ export const LIVE_AI_SYSTEM_CARDS: LiveAiSystemCard[] = [
     ctaLabel: "View workflow walkthrough",
     ctaHref: "/demos/n8n-lead-workflow",
     iconId: "n8nWorkflow",
-    cardBadge: "workflow_overview",
-  },
-  {
-    id: "email-automation",
-    title: "Email automation",
-    problem:
-      "Manual confirmations and follow-ups are slow, easy to forget, and hard to keep consistent at scale.",
-    solution:
-      "Transactional and follow-up messaging wired into delivery workflows, including confirmations, internal alerts, and nurture where it fits. Behavior is configured per engagement, not a single public playground.",
-    capabilities: [
-      "Sends confirmations and handoff notifications",
-      "Notifies the team when new leads need attention",
-      "Supports structured follow-up alongside CRM and calendar tools",
-    ],
-    ctaLabel: "Read workflow overview",
-    ctaHref: "/services/revenue-ops-buildout",
-    iconId: "email",
     cardBadge: "workflow_overview",
   },
 ];

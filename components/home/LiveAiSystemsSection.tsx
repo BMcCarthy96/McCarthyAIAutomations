@@ -4,7 +4,6 @@ import {
   ArrowRight,
   BookOpen,
   CalendarClock,
-  Mail,
   Network,
   Zap,
 } from "lucide-react";
@@ -39,7 +38,6 @@ const ICONS: Record<LiveAiSystemIconId, LucideIcon> = {
   knowledge: BookOpen,
   leadEngine: Zap,
   booking: CalendarClock,
-  email: Mail,
   n8nWorkflow: Network,
 };
 
@@ -147,9 +145,6 @@ export function LiveAiSystemsSection() {
                 className="justify-center"
               />
             </TryLiveDemoMarketingGate>
-            <Button href="/contact" variant="secondary" size="md">
-              Request an AI Revenue Leak Audit
-            </Button>
             <Button href="/services" variant="ghost" size="md">
               Browse all services
             </Button>

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { BarChart3, Check, Circle, LayoutDashboard, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/Button";
 import { TryLiveDemoButton } from "@/components/home/TryLiveDemoButton";
 import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketingGate";
 import { SectionHeading } from "./SectionHeading";
@@ -132,34 +131,24 @@ export function PortalPreview() {
             </div>
           </div>
 
-          <div className="mt-10 flex flex-col items-center justify-center gap-6 text-center sm:flex-row sm:items-start sm:text-left">
-            <Button href="/contact" variant="primary" size="lg">
-              Request an AI Revenue Leak Audit
-            </Button>
-            <p className="max-w-sm text-sm text-slate-500">
-              Share your workflow on the{" "}
-              <Link
-                href="/contact"
-                className="font-medium text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"
-              >
-                audit request form
-              </Link>{" "}
-              and we&apos;ll reply personally within one business day.
-            </p>
-          </div>
           <TryLiveDemoMarketingGate>
-            <div className="mx-auto mt-8 max-w-md border-t border-white/[0.06] pt-8 text-center">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-500">
-                See it live
+            <div className="mt-10 flex flex-col items-center gap-4 text-center">
+              <TryLiveDemoButton
+                gated={false}
+                variant="ghost"
+                size="md"
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-semibold text-blue-200/90 ring-1 ring-white/[0.04] transition-colors hover:border-blue-400/20 hover:bg-blue-500/10 hover:text-blue-100"
+              />
+              <p className="max-w-sm text-sm text-slate-500">
+                To get portal access, start with an{" "}
+                <Link
+                  href="/contact"
+                  className="font-medium text-blue-400 underline-offset-2 hover:text-blue-300 hover:underline"
+                >
+                  AI Revenue Leak Audit
+                </Link>
+                {" "}and we&apos;ll reply personally within one business day.
               </p>
-              <div className="mt-3 flex justify-center">
-                <TryLiveDemoButton
-                  gated={false}
-                  variant="ghost"
-                  size="md"
-                  className="rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-semibold text-blue-200/90 ring-1 ring-white/[0.04] transition-colors hover:border-blue-400/20 hover:bg-blue-500/10 hover:text-blue-100"
-                />
-              </div>
             </div>
           </TryLiveDemoMarketingGate>
         </div>
