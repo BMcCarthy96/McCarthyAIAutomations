@@ -26,7 +26,7 @@ export function getSharedOperationalKnowledgeChunks(): AssistantContextChunk[] {
         "3) The team reviews what you shared.",
         "4) Assistive steps may summarize or categorize the request internally to speed triage—this does not replace a human reply.",
         "5) Someone usually follows up by email within about one business day (often sooner in business hours); timing can vary by volume.",
-        "6) Next steps are often a short discovery conversation and, when appropriate, a link to book a call.",
+        "6) Next steps are often a brief fit conversation when appropriate, or a continued email discussion.",
         "For account-specific changes or delivery questions after you are a client, use **Support** in this portal instead of the marketing consultation form.",
       ].join("\n")
     ),

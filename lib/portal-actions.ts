@@ -90,7 +90,7 @@ export type CreatePublicSupportRequestState =
   | { success: false; error: string }
   | { success: true };
 
-const DEFAULT_PUBLIC_SUBJECT = "Free consultation";
+const DEFAULT_PUBLIC_SUBJECT = "AI Revenue Leak Audit request";
 
 const PublicSupportRequestSchema = z.object({
   website: z.string().max(512).default(""),

@@ -291,7 +291,7 @@ export const clientServices: ClientService[] = [
     id: "cs-3",
     clientId: "client-1",
     serviceId: "2",
-    engagementName: "AI Voice Agent",
+    engagementName: "Lead Intake Approval Workflow",
     status: "pending",
     progress: 10,
   },
@@ -300,14 +300,14 @@ export const clientServices: ClientService[] = [
 export const projects: Project[] = [
   { id: "proj-1", clientServiceId: "cs-1", name: "Website AI Chatbot", status: "active", progress: 100 },
   { id: "proj-2", clientServiceId: "cs-2", name: "Lead Capture & Scheduling", status: "in_progress", progress: 65 },
-  { id: "proj-3", clientServiceId: "cs-3", name: "AI Voice Agent", status: "pending", progress: 10 },
+  { id: "proj-3", clientServiceId: "cs-3", name: "Lead Intake Approval Workflow", status: "pending", progress: 10 },
 ];
 
 export const milestones: Milestone[] = [
   { id: "m1", projectId: "proj-1", title: "Monthly performance review", dueDate: "2025-04-15" },
   { id: "m2", projectId: "proj-2", title: "Calendar sync and reminder automation", dueDate: "2025-03-22" },
   { id: "m3", projectId: "proj-2", title: "Go-live and training", dueDate: "2025-04-05" },
-  { id: "m4", projectId: "proj-3", title: "Kickoff and script design", dueDate: "2025-04-01" },
+  { id: "m4", projectId: "proj-3", title: "Kickoff and approval-flow design", dueDate: "2025-04-01" },
 ];
 
 export const projectUpdates: ProjectUpdate[] = [
@@ -329,7 +329,7 @@ export const projectUpdates: ProjectUpdate[] = [
     id: "u3",
     projectId: "proj-3",
     title: "Kickoff scheduled",
-    body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover script design and call flows.",
+    body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover intake rules, review steps, and handoff boundaries.",
     createdAt: "2025-03-10",
   },
   {

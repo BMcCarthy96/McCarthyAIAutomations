@@ -19,10 +19,10 @@ function clip(s: string, max: number): string {
 function pageHint(pathname: string): string {
   const p = pathname.split("?")[0] ?? "/";
   if (p === "/" || p === "")
-    return "Visitor is on the homepage — emphasize breadth of AI automation services and free consultation.";
-  if (p.startsWith("/pricing")) return "Visitor is on pricing — be clear we scope custom quotes after discovery; avoid inventing prices.";
+    return "Visitor is on the homepage - emphasize the paid AI Revenue Leak Audit, brief no-cost fit conversation, and optional separately scoped implementation.";
+  if (p.startsWith("/pricing")) return "Visitor is on pricing - be clear about listed starting prices and do not invent custom quotes.";
   if (p.startsWith("/services")) return "Visitor is browsing services — map questions to service catalog capabilities.";
-  if (p.startsWith("/contact")) return "Visitor is on contact — encourage submitting the consultation form or booking a call.";
+  if (p.startsWith("/contact")) return "Visitor is on contact - encourage submitting an audit request and clarify that the brief fit conversation precedes paid work.";
   if (p.startsWith("/demo")) return "Visitor is on live demo — explain demo is a safe sample portal, not their real data.";
   if (p.startsWith("/about")) return "Visitor is on about — company positioning and trust.";
   if (p.startsWith("/dashboard"))
@@ -41,9 +41,9 @@ export function gatherPublicWidgetChunks(pathname: string): AssistantContextChun
     kind: "public_info",
     label: "McCarthy AI Automations — overview",
     content: [
-      "McCarthy AI Automations is a premium AI automation agency.",
-      "Offerings include: website revamps with AI, AI voice agents (24/7 phone), lead capture and appointment automation, website AI chatbots, CRM and workflow automation, and custom integrations.",
-      "Engagement starts with discovery / free consultation; scopes and timelines are customized.",
+      "McCarthy AI Automations is an AI workflow consulting practice focused on revenue leak audits and scoped implementation.",
+      "Public proof includes AI-assisted lead intake, an n8n fictional-data workflow with a human-review checkpoint, Zapier-connected workflow proof where shown, knowledge-assistant functionality, API and workflow integrations, dashboard functionality, and database-backed workflow tools.",
+      "Engagement starts with a brief no-cost fit conversation. The AI Revenue Leak Audit & Automation Roadmap is a paid service starting at $495; implementation is optional and separately scoped.",
     ].join("\n"),
   });
 
@@ -65,8 +65,8 @@ export function gatherPublicWidgetChunks(pathname: string): AssistantContextChun
     kind: "public_info",
     label: "How to engage (quick reference)",
     content: [
-      "Free consultation: Contact page form — see CONTEXT blocks about consultation flow for what happens next.",
-      "Booking: use any scheduling link shown in the marketing site or widget; if none is configured in the visitor’s view, suggest Contact.",
+      "Audit request: Contact page form - see CONTEXT blocks about the fit conversation and paid audit flow for what happens next.",
+      "Do not describe the full audit, roadmap, implementation plan, or workflow map as free.",
       "This chat on public pages uses only public CONTEXT — never private client records unless the user is signed into their own portal (client mode).",
     ].join("\n"),
   });

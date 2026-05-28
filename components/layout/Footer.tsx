@@ -6,7 +6,7 @@ const footerLinks = {
   company: [
     { href: "/about", label: "About" },
     { href: "/pricing", label: "Pricing" },
-    { href: "/contact", label: "Free Audit" },
+    { href: "/contact", label: "Request Audit" },
   ],
   legal: [
     { href: "/privacy", label: "Privacy Policy" },
@@ -41,7 +41,7 @@ export function Footer() {
               href="/contact"
               className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-blue-400 transition-all hover:-translate-y-px hover:text-blue-300"
             >
-              Book a Free Revenue Leak Audit
+              Request an AI Revenue Leak Audit
               <span aria-hidden>→</span>
             </Link>
           </div>

@@ -18,13 +18,13 @@ import { getSupabaseServiceClient } from "@/lib/supabase";
 const DEMO_CLIENT_ID = "72b8a4b0-9e83-4f39-a5b2-3f3589fb2c77";
 
 const DEMO_CLIENT_SERVICE_IDS = [
-  "52c53e5e-3dce-47f4-a0ea-1434de5e4fd6", // AI Voice Agent
+  "52c53e5e-3dce-47f4-a0ea-1434de5e4fd6", // Lead Intake Approval Workflow
   "4fe28f4f-4d95-487a-aa41-cbe37d08914f", // Lead Capture
   "cce7ea37-2f2a-46fe-ba54-3122bc3ee9e8", // Website Chatbot
 ];
 
 const DEMO_PROJECT_IDS = [
-  "9244d329-d9ea-4713-9f74-87c9a2548fa4", // Voice Agent Rollout
+  "9244d329-d9ea-4713-9f74-87c9a2548fa4", // Lead Intake Approval Rollout
   "19fda46e-6f6a-4fe5-b9ee-d208fdb48ee3", // Lead Funnel Automation
   "7c8e64bd-acbc-442e-b4ce-c8d4e0f6fcf4", // Chatbot Conversion Upgrade
 ];
@@ -77,22 +77,22 @@ export async function POST() {
       [
         {
           id: "2",
-          slug: "ai-voice-agents",
-          name: "AI Voice Agents",
-          tagline: "24/7 phone answering that never misses a lead",
+          slug: "no-dropped-leads",
+          name: "No-Dropped-Leads Follow-Up System",
+          tagline: "Every inquiry captured, assigned, and followed up consistently",
           description:
-            "Deploy AI voice agents that answer calls, qualify leads, and book appointments around the clock.",
+            "Capture inbound inquiries, classify them consistently, and route follow-up through clear human-review boundaries.",
           long_description:
-            "Never miss a call again. Our AI voice agents handle inbound calls with natural conversation, capture lead details, schedule appointments, and escalate when needed.",
+            "Lead opportunities go cold when intake, ownership, and follow-up are scattered. This workflow keeps inquiries organized, summarizes key details, and gives the team a review checkpoint before the next action.",
           features: JSON.stringify([
-            "24/7 automated phone answering",
-            "Natural language call handling",
-            "Lead capture and qualification",
-            "Calendar and CRM integration",
-            "Escalation to human agents",
+            "Unified inquiry capture",
+            "AI-assisted lead classification",
+            "Human-review checkpoints",
+            "Zapier-connected tracking",
+            "Escalation rules for high-priority leads",
           ]),
-          icon: "Phone",
-          highlights: JSON.stringify(["Voice AI", "24/7", "Bookings"]),
+          icon: "UserCheck",
+          highlights: JSON.stringify(["Lead intake", "Human review", "Follow-up"]),
         },
         {
           id: "3",
@@ -161,7 +161,7 @@ export async function POST() {
           id: DEMO_CLIENT_SERVICE_IDS[0],
           client_id: DEMO_CLIENT_ID,
           service_id: "2",
-          engagement_name: "AI Voice Agent – Inbound Calls",
+          engagement_name: "Lead Intake & Human Review Workflow",
           status: "active",
           progress: 88,
           started_at: daysAgo(72),
@@ -196,7 +196,7 @@ export async function POST() {
         {
           id: DEMO_PROJECT_IDS[0],
           client_service_id: DEMO_CLIENT_SERVICE_IDS[0],
-          name: "Inbound Voice Agent Rollout",
+          name: "Lead Intake Approval Rollout",
           status: "active",
           progress: 88,
           started_at: daysAgo(72),
@@ -266,18 +266,18 @@ export async function POST() {
     // ── 6. Milestones ────────────────────────────────────────────────────────
     const { error: msErr } = await supabase.from("milestones").upsert(
       [
-        // Voice agent
+        // Lead intake approval workflow
         {
           id: "57cdb6b8-78dd-49f8-9fbf-8c95730380c0",
           project_id: DEMO_PROJECT_IDS[0],
-          title: "Call routing intents approved",
+          title: "Intake routing rules approved",
           due_date: dateOnly(daysAgo(12)),
           completed_at: daysAgo(11),
         },
         {
           id: "d7f084cc-ceea-41ad-84e4-1ee7e0da08f8",
           project_id: DEMO_PROJECT_IDS[0],
-          title: "After-hours escalation playbook live",
+          title: "Human review handoff live",
           due_date: daysFromNow(4),
           completed_at: null,
         },
@@ -323,8 +323,8 @@ export async function POST() {
         {
           id: "3474371f-c6eb-4f19-92b0-1e6c53295d85",
           project_id: DEMO_PROJECT_IDS[0],
-          title: "Peak weekend call volume handled",
-          body: "Bot managed 47 inbound calls Saturday with zero missed contacts and an average response time under 20 seconds. After-hours handoff is working exactly as designed.",
+          title: "Peak weekend inquiry volume triaged",
+          body: "The intake workflow organized 47 inbound inquiries Saturday with clear priority labels and no unreviewed outbound action. Human-review handoff is working as designed.",
           created_at: daysAgo(14),
         },
         {
@@ -344,8 +344,8 @@ export async function POST() {
         {
           id: "93f30f89-9b74-48d1-b14b-7b0720f9935b",
           project_id: DEMO_PROJECT_IDS[0],
-          title: "Holiday scripts + fallback copy updated",
-          body: "Seasonal greeting and revised voicemail fallback are now live. The spring promotion mention was added to the after-hours message as requested.",
+          title: "Review notes and fallback copy updated",
+          body: "Reviewer notes and fallback response guidance are now live. The updated handoff copy gives the team clearer context before any follow-up is sent.",
           created_at: daysAgo(2),
         },
       ],
@@ -362,7 +362,7 @@ export async function POST() {
           client_id: DEMO_CLIENT_ID,
           amount_cents: 240000,
           currency: "USD",
-          description: "AI Voice Agent — Month 3 Retainer",
+          description: "Workflow Advisory Retainer — Month 3",
           status: "paid",
           due_date: dateOnly(daysAgo(30)),
           paid_at: daysAgo(27),

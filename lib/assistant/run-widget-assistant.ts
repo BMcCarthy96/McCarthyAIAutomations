@@ -94,7 +94,7 @@ export async function runWidgetAssistantQuery(input: {
     return {
       success: false,
       error:
-        "The assistant is not configured yet. Please use Contact or Book a Call—we’ll respond personally.",
+        "The assistant is not configured yet. Please use Contact to submit an audit request and we’ll respond personally.",
       openAiConfigured: false,
     };
   }

@@ -19,16 +19,16 @@ const chunk = (
 /** Spec order = default prompt order for process blocks (before service catalog). */
 const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
   {
-    label: "Consultation request — what happens after you submit",
+    label: "Audit request - what happens after you submit",
     lines: [
-      "When someone submits the free consultation form on the website:",
+      "When someone submits an AI Revenue Leak Audit request on the website:",
       "1) The request is received and stored so the team can act on it.",
       "2) The submitter typically receives a confirmation email acknowledging the message (when email is configured for the site).",
       "3) Our team reviews the goals and details you shared.",
       "4) Automated assistive steps may run in the background to help categorize and summarize the request so the team can respond faster—this supports triage only and does not replace a human follow-up.",
       "5) A team member usually follows up by email within about one business day (often sooner during business hours)—exact timing can vary by volume.",
-      "6) Next steps often include a short discovery conversation and, when it makes sense, a link to book a call or continue over email.",
-      "Users can also open Support from the client portal after they are onboarded, or use the Contact page / booking link on the marketing site anytime.",
+      "6) Next steps often include a brief no-cost fit conversation to confirm whether the workflow problem is worth a paid audit, or a continued email discussion if that is more appropriate.",
+      "Users can also open Support from the client portal after they are onboarded, or use the Contact page on the marketing site anytime.",
     ],
   },
   {
@@ -43,18 +43,17 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
   {
     label: "Follow-up, booking, and reminders (public overview)",
     lines: [
-      "After a consultation request, teams may send a booking link for a discovery call when appropriate.",
-      "Some engagements include automated email follow-ups or reminders (for example, a nudge to book if someone asked for a call)—wording and timing are configured per project and should match your policies.",
-      "If the site advertises a public scheduling URL, visitors can book directly without waiting for email.",
+      "After an audit request, the team may suggest a brief no-cost fit conversation when appropriate.",
+      "Some engagements include automated email follow-ups or reminders where appropriate and compliant - wording and timing are configured per project and should match your policies.",
+      "The detailed audit, roadmap, and any implementation plan are paid engagements, not free deliverables.",
     ],
   },
   {
-    label: "After you book a call — what to expect (public)",
+    label: "Brief fit conversation - what to expect (public)",
     lines: [
-      "You should receive a calendar confirmation and may get reminder messages depending on how scheduling is configured.",
-      "Use the meeting link or instructions in that confirmation to join on time.",
-      "If plans change, reschedule or cancel through the same booking flow when available, or reply to the confirmation email if that is how your host handles changes.",
-      "Discovery calls are for understanding goals and fit; detailed scopes and proposals come after that conversation.",
+      "A brief fit conversation is used to understand goals, current workflow pain, and whether a paid audit is appropriate.",
+      "It is not a free full audit, workflow map, implementation plan, or guarantee of business results.",
+      "Detailed scopes and paid recommendations come through the AI Revenue Leak Audit & Automation Roadmap or a separately agreed implementation engagement.",
     ],
   },
   {
@@ -70,14 +69,14 @@ const PROCESS_CHUNKS_SPEC: ReadonlyArray<{ label: string; lines: string[] }> = [
     lines: [
       "On the marketing website, this floating assistant always uses public marketing and FAQ-style CONTEXT only—even if you are logged in. It does not load your private portal projects, milestones, invoices, or support history in this widget on public pages.",
       "In the client dashboard, the dedicated Knowledge Assistant page can answer from your organization’s delivery context when you are signed in there.",
-      "Here on the public site, we can: explain our services and how AI automations work at a high level; walk through consultation and booking flow; compare solution types (voice, chat, lead capture, CRM workflows); and point you to Contact or a Book-a-call link.",
+      "Here on the public site, we can: explain our services and how AI automations work at a high level; walk through the audit request and fit-conversation flow; explain lead intake, knowledge-assistant, API, dashboard, and workflow-integration capabilities; and point you to Contact.",
       "It does not change settings, send emails, or book meetings for you; it explains options and next steps.",
     ],
   },
   {
     label: "How to contact us or get support",
     lines: [
-      "Marketing visitors: use the Contact page to send a consultation request, or use any “Book a call” / scheduling link shown on the site.",
+      "Marketing visitors: use the Contact page to submit an audit request.",
       "Existing clients: use the client portal Support area to thread messages with the team when that has been enabled for their account.",
       "For urgent legal or security issues, use the contact channels your contract or onboarding materials describe.",
     ],
@@ -120,7 +119,7 @@ export const PUBLIC_WIDGET_INTENT_MATCHERS: ReadonlyArray<{
   {
     pattern:
       /\b(consultation|consult)\b.*\b(request|submit|submitted)\b|\b(submit|submitted)\b.*\b(request|consultation)\b|\bwhat\s+happens\s+after\b|\bafter\s+i\s+submit\b|\bconsultation\s+request\b/i,
-    labelIncludes: "Consultation request",
+    labelIncludes: "Audit request",
   },
   {
     pattern: /\b(lead\s*qualif|lead\s*engine|ai\s+lead|qualification\s+system)\b/i,
@@ -129,7 +128,7 @@ export const PUBLIC_WIDGET_INTENT_MATCHERS: ReadonlyArray<{
   {
     pattern:
       /\bafter\s+i\s+book\b|\bwhat\s+happens\s+after\b.*\bbook\b|\bbooked\s+(a\s+)?call\b|\bafter\s+booking\b/i,
-    labelIncludes: "After you book a call",
+    labelIncludes: "Brief fit conversation",
   },
   {
     pattern:
