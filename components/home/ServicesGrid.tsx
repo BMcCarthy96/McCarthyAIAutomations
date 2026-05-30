@@ -10,7 +10,7 @@ export function ServicesGrid() {
     <section className="px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          title="What revenue leaks we fix"
+          title="Workflow gaps we address"
           subtitle="Each offer targets a specific workflow gap: missed leads, slow follow-up, stale quotes, or stuck pipeline. We start with an audit to figure out which ones apply to you."
         />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">

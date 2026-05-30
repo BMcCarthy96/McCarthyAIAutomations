@@ -10,9 +10,9 @@ import { FAQ } from "@/components/home/FAQ";
 import { CTABanner } from "@/components/home/CTABanner";
 
 export const metadata: Metadata = {
-  title: "AI Workflow Consulting & Revenue Leak Audits | McCarthy AI",
+  title: "AI Workflow Consulting & Automation Roadmaps | McCarthy AI Automations",
   description:
-    "Identify potential lead-handling, follow-up, and workflow gaps through a paid AI Revenue Leak Audit and Automation Roadmap, with optional implementation.",
+    "Audit-first AI workflow consulting for lead handling, follow-up, and operational handoffs. Diagnose bottlenecks, map deterministic automation and bounded AI steps, then implement only when the roadmap confirms it makes sense.",
 };
 
 export default function HomePage() {

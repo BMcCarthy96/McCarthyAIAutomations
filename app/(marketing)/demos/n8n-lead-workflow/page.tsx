@@ -8,11 +8,6 @@ export const metadata: Metadata = {
     "A reusable n8n workflow template demonstrating AI-assisted lead intake, CRM-style Google Sheets record management, and a human-approval checkpoint using fictional sample data.",
 };
 
-const bookingUrl =
-  process.env.NEXT_PUBLIC_BOOKING_URL ??
-  process.env.BOOKING_URL ??
-  "/contact";
-
 const TOOLS = [
   "n8n (workflow automation platform)",
   "OpenAI gpt-4o-mini (AI classification and draft generation)",
@@ -175,7 +170,7 @@ export default function N8nLeadWorkflowPage() {
               WF1 Lead Intake
             </p>
             <p className="mt-2 text-xs text-zinc-600">
-              The demonstrated workflows in this walkthrough are WF1 (lead intake) and WF2 (approval handler). WF3 and WF4 are included in the template package for full deployment.
+              This public walkthrough demonstrates WF1 lead intake and WF2 human approval. Additional booking-update and error-handling workflow concepts remain outside the validated public demo until separately tested and documented.
             </p>
           </div>
         </section>
@@ -243,15 +238,15 @@ export default function N8nLeadWorkflowPage() {
             Let&apos;s map out your intake and approval flow.
           </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-zinc-400">
-            Book a free consultation to walk through your current lead or
-            inquiry process and see where a structured intake and approval
-            workflow could reduce manual work.
+            Request an AI Revenue Leak Audit to review your current lead or
+            inquiry process and determine whether a structured intake and
+            approval workflow is worth scoping.
           </p>
           <Link
-            href={bookingUrl}
+            href="/contact"
             className="mt-8 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-blue-500"
           >
-            Book a free consultation
+            Request an AI Revenue Leak Audit
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

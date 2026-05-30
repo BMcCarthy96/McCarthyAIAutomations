@@ -17,7 +17,6 @@ import {
   Loader2,
   AlertCircle,
   Trash2,
-  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -131,8 +130,6 @@ export default function AssistantWidget() {
     [mode, pathname]
   );
 
-  const bookingHref = process.env.NEXT_PUBLIC_BOOKING_URL?.trim() || "";
-
   const sendQuestion = useCallback(
     async (text: string) => {
       const q = text.trim();
@@ -157,7 +154,7 @@ export default function AssistantWidget() {
               role: "assistant",
               content:
                 data.openAiConfigured === false
-                  ? "The AI assistant isn’t enabled on the server yet. You can still reach us via Contact or book a call below."
+                  ? "The AI assistant isn’t enabled on the server yet. You can still reach us through Contact to submit an audit request."
                   : "Something went wrong. Please try again or use Contact below.",
               sources: [],
               insufficientContext: false,
@@ -269,7 +266,7 @@ export default function AssistantWidget() {
                     <Link href="/contact" className="text-indigo-300 underline">
                       Contact
                     </Link>{" "}
-                    or book a call.
+                    to submit an audit request.
                   </span>
                 ) : (
                   <>
@@ -354,45 +351,20 @@ export default function AssistantWidget() {
           {messages.filter((m) => m.role === "assistant").length >= 3 ? (
             <div className="border-t border-indigo-500/20 bg-indigo-500/[0.06] px-3 py-2.5">
               <p className="mb-2 text-[11px] font-medium text-indigo-200">
-                Ready to find your workflow gaps? Book a free audit.
+                Ready to find workflow gaps? Submit an audit request.
               </p>
               <div className="flex flex-wrap gap-2">
-                {bookingHref ? (
-                  <Link
-                    href={bookingHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-500 px-3 py-1.5 text-[11px] font-semibold text-white transition hover:bg-indigo-400"
-                  >
-                    Book a free call
-                    <ExternalLink className="h-3 w-3 opacity-80" aria-hidden />
-                  </Link>
-                ) : null}
                 <Link
                   href="/contact"
                   className="inline-flex items-center gap-1 rounded-lg border border-indigo-400/30 px-3 py-1.5 text-[11px] font-medium text-indigo-200 transition hover:bg-indigo-500/10"
                 >
-                  Send us a message
+                  Submit Audit Request
                 </Link>
               </div>
             </div>
           ) : (
             <div className="border-t border-white/10 px-3 py-2">
               <div className="flex flex-wrap gap-2">
-                {bookingHref ? (
-                  <Link
-                    href={bookingHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => {
-                      /* TODO(analytics): assistant_cta_clicked book_call */
-                    }}
-                    className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1.5 text-[11px] font-medium text-emerald-100 transition hover:bg-emerald-500/15"
-                  >
-                    Book a call
-                    <ExternalLink className="h-3 w-3 opacity-70" aria-hidden />
-                  </Link>
-                ) : null}
                 <Link
                   href="/contact"
                   onClick={() => {
@@ -400,7 +372,7 @@ export default function AssistantWidget() {
                   }}
                   className="inline-flex items-center gap-1 rounded-lg border border-indigo-500/25 bg-indigo-500/10 px-2.5 py-1.5 text-[11px] font-medium text-indigo-100 transition hover:bg-indigo-500/15"
                 >
-                  Contact us
+                  Request Audit
                 </Link>
               </div>
             </div>

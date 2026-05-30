@@ -134,8 +134,8 @@ export function LiveAiSystemsSection() {
           <p className="max-w-xl text-sm text-slate-400">
             You can interact with our AI assistant anytime using the chat in the
             bottom right. No sign-in required. For a signed-in sample portal
-            with dashboard context, use Portal demo below. Book a consultation
-            or browse services to map real workflows to your tools.
+            with dashboard context, use Portal demo below. Request an audit or
+            browse services to map real workflows to your tools.
           </p>
           <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center">
             <TryLiveDemoMarketingGate>

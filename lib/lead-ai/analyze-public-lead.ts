@@ -146,7 +146,7 @@ function buildUserContent(input: {
   body: string;
 }): string {
   return [
-    "Analyze this inbound business inquiry for an AI automation consultancy (workflows, voice agents, chatbots, integrations).",
+    "Analyze this inbound business inquiry for an AI workflow consultancy (workflow audits, lead intake, knowledge assistants, API integrations, and dashboard-backed workflow tools).",
     "",
     "Rules:",
     "- Use ONLY the text below. Do not invent company facts, budgets, or timelines.",

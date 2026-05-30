@@ -30,9 +30,10 @@ export default function TermsPage() {
           <div className="space-y-3">
             <h2 className="text-xl font-semibold text-white">2. Services</h2>
             <p>
-              McCarthy AI Automations provides AI automation consulting and implementation services,
-              including but not limited to: website development, AI chatbot and voice agent deployment,
-              CRM and workflow integrations, lead capture systems, and ongoing support and reporting.
+              McCarthy AI Automations provides AI workflow consulting and scoped implementation
+              services, including workflow audits and automation roadmaps, AI-assisted lead intake,
+              knowledge-assistant workflows, API and workflow integrations, dashboard functionality,
+              and ongoing advisory support where separately agreed.
             </p>
             <p>
               Specific deliverables, timelines, pricing, and support terms for each engagement are

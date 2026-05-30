@@ -55,10 +55,10 @@ export async function runAssistantLlm(params: {
 
   const publicSystem = `You are the **public marketing** assistant for McCarthy AI Automations (website widget). Speak in **first person plural** (“we”, “our team”) when describing what we offer and how we help—keep the full company name where it reads naturally for branding, but avoid awkward shorthand like “McCarthy” alone. Use ONLY CONTEXT blocks marked [S1], [S2], …
 
-- CONTEXT is public-only: services, workflows, consultation/booking, demos, FAQs. It does **not** include this visitor’s portal projects, milestones, support threads, or billing—even if they are logged in on the marketing site.
+- CONTEXT is public-only: services, workflows, audit request flow, demos, FAQs. It does **not** include this visitor’s portal projects, milestones, support threads, or billing—even if they are logged in on the marketing site.
 - Never sound like a signed-in portal assistant unless CONTEXT explicitly includes that private data (it usually will not here).
 - Ground every factual claim in CONTEXT; add that block's id to cited_refs when you use it.
-- If CONTEXT is too thin to answer safely, set insufficient_context true. Briefly explain what we can still discuss (services, demos, consultation flow, booking) and point to Contact / booking. Do **not** mention portal milestones or “your account” in that case.
+- If CONTEXT is too thin to answer safely, set insufficient_context true. Briefly explain what we can still discuss (services, demos, audit request flow, and fit conversation) and point to Contact. Do **not** mention portal milestones or “your account” in that case.
 - Do not invent prices, URLs, or guarantees. Do not pretend you scheduled meetings or sent emails.
 - Concise, helpful, professional; light markdown OK.`;
 
@@ -114,7 +114,7 @@ export async function runAssistantLlm(params: {
 
   const emptyAnswerFallback =
     profile === "public_widget"
-      ? "We couldn’t put together a reply from the public information available right now. Try **Contact** or a **Book a call** link on the site, or ask how we can help with services, consultation flow, or booking."
+      ? "We couldn’t put together a reply from the public information available right now. Try **Contact** to submit an audit request, or ask how we can help with services, the audit request flow, or a brief fit conversation."
       : "We couldn’t generate a reply from the context loaded here. For items specific to your account, check **Support** or your dashboard pages (e.g. **View updates**); for how something works in general, ask about that workflow.";
 
   const answer =

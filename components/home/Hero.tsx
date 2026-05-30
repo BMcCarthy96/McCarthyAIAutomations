@@ -7,7 +7,7 @@ import { TryLiveDemoMarketingGate } from "@/components/home/TryLiveDemoMarketing
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
-const revenueGaps = [
+const workflowGaps = [
   { label: "Lead response time > 24 hrs", impact: "High" },
   { label: "Off-hours inquiries going unanswered", impact: "High" },
   { label: "Stale pipeline deals with no follow-up", impact: "Medium" },
@@ -57,7 +57,7 @@ export function Hero() {
           <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/25 bg-blue-500/[0.08] px-4 py-1.5">
             <span className="glow-pulse h-1.5 w-1.5 rounded-full bg-cyan-400" aria-hidden />
             <span className="text-xs font-semibold uppercase tracking-wider text-blue-300">
-              AI Workflow Consulting · Revenue Leak Audits
+              AI Workflow Consulting · Audit-First Systems
             </span>
           </div>
         </div>
@@ -104,7 +104,7 @@ export function Hero() {
                 size="lg"
                 className="w-full sm:w-auto"
               >
-                See what revenue leaks we fix
+                Explore our services
               </Button>
             </div>
 
@@ -122,7 +122,7 @@ export function Hero() {
                 <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" aria-hidden />
                 <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" aria-hidden />
                 <span className="ml-3 text-xs font-medium text-slate-500">
-                  Revenue Gap Analysis
+                  Workflow Gap Analysis
                 </span>
                 <span className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-300">
                   <span className="glow-pulse h-1 w-1 rounded-full bg-emerald-400" aria-hidden />
@@ -136,11 +136,11 @@ export function Hero() {
                   <div className="mb-3 flex items-center gap-2">
                     <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-400" aria-hidden />
                     <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
-                      Revenue gaps identified
+                      Workflow gaps identified
                     </span>
                   </div>
                   <div className="space-y-2">
-                    {revenueGaps.map((gap) => (
+                    {workflowGaps.map((gap) => (
                       <div
                         key={gap.label}
                         className="flex items-center justify-between rounded-lg border border-white/[0.06] bg-white/[0.03] px-3 py-2"

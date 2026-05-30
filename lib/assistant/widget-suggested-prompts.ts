@@ -25,10 +25,10 @@ export function getWidgetSuggestedPrompts(
 
   const publicByPath: Record<string, string[]> = {
     home: [
-      "What happens after I submit a consultation request?",
+      "What happens after I submit an audit request?",
       "How does your AI lead qualification system work?",
       "What can the assistant help me with?",
-      "What’s the difference between voice agents and website chatbots?",
+      "How does your n8n lead intake demo work?",
     ],
     pricing: [
       "Which service tier or package is right for me?",
@@ -37,13 +37,13 @@ export function getWidgetSuggestedPrompts(
     ],
     services: [
       "Which service fits a business that misses phone leads?",
-      "Can you connect AI to our existing CRM?",
+      "Can you connect AI to our existing tools?",
       "How do lead capture automations work with our calendar?",
     ],
     contact: [
-      "What happens after I submit a consultation request?",
+      "What happens after I submit an audit request?",
       "How quickly do you usually respond?",
-      "What happens after I book a call?",
+      "What does the fit conversation cover?",
     ],
     demo: [
       "What can I try in the live demo?",
@@ -57,10 +57,10 @@ export function getWidgetSuggestedPrompts(
       "What kinds of businesses do you work with?",
     ],
     other: [
-      "What happens after I submit a consultation request?",
+      "What happens after I submit an audit request?",
       "What can the assistant help me with?",
       "How does your AI lead qualification system work?",
-      "How do I book a discovery call?",
+      "How do I request an audit?",
     ],
   };
 

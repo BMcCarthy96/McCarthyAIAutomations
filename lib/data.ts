@@ -115,7 +115,7 @@ export const services: Service[] = [
     name: "Revenue Operations Workflow Buildout",
     tagline: "A custom AI-assisted workflow system built around how you actually work",
     description: "Full-stack revenue operations system designed around your tools, team, and process, so recovery becomes repeatable.",
-    longDescription: "When you’ve identified the gaps and proven a pilot works, the next step is building something that runs reliably at scale. We design and build custom AI-assisted workflow systems around your actual tech stack, sales process, and team structure, connecting lead capture, follow-up, pipeline management, and reporting into one managed system.",
+    longDescription: "When the audit confirms a worthwhile build, the next step is a system that runs reliably at scale. We design and build custom AI-assisted workflow systems around your actual tech stack, process, and team structure, connecting lead capture, follow-up, pipeline management, and reporting into one managed system.",
     features: [
       "Full workflow design and implementation",
       "Integration across CRM, email, calendar, and ops tools",
@@ -222,6 +222,11 @@ export const faqs: FAQItem[] = [
     question: "Do you work with existing tools and workflows?",
     answer: "Yes. I design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional integration, I will confirm feasibility and scope before work begins.",
   },
+  {
+    id: "5",
+    question: "When do you use deterministic automation vs. bounded agentic steps?",
+    answer: "Deterministic automation handles steps where the path is predictable and repeatable — routing a lead, triggering a follow-up sequence, updating a record. Bounded AI steps are useful where judgment adds value: classifying an inquiry, summarizing context, or flagging an anomaly. The output still feeds into a defined downstream action, not an open-ended agent. Most builds combine both: deterministic orchestration for the known path, bounded AI where it genuinely helps, and human-review checkpoints before anything irreversible happens.",
+  },
 ];
 
 export const stats: Stat[] = [
@@ -291,7 +296,7 @@ export const clientServices: ClientService[] = [
     id: "cs-3",
     clientId: "client-1",
     serviceId: "2",
-    engagementName: "AI Voice Agent",
+    engagementName: "Lead Intake Approval Workflow",
     status: "pending",
     progress: 10,
   },
@@ -300,14 +305,14 @@ export const clientServices: ClientService[] = [
 export const projects: Project[] = [
   { id: "proj-1", clientServiceId: "cs-1", name: "Website AI Chatbot", status: "active", progress: 100 },
   { id: "proj-2", clientServiceId: "cs-2", name: "Lead Capture & Scheduling", status: "in_progress", progress: 65 },
-  { id: "proj-3", clientServiceId: "cs-3", name: "AI Voice Agent", status: "pending", progress: 10 },
+  { id: "proj-3", clientServiceId: "cs-3", name: "Lead Intake Approval Workflow", status: "pending", progress: 10 },
 ];
 
 export const milestones: Milestone[] = [
   { id: "m1", projectId: "proj-1", title: "Monthly performance review", dueDate: "2025-04-15" },
   { id: "m2", projectId: "proj-2", title: "Calendar sync and reminder automation", dueDate: "2025-03-22" },
   { id: "m3", projectId: "proj-2", title: "Go-live and training", dueDate: "2025-04-05" },
-  { id: "m4", projectId: "proj-3", title: "Kickoff and script design", dueDate: "2025-04-01" },
+  { id: "m4", projectId: "proj-3", title: "Kickoff and approval-flow design", dueDate: "2025-04-01" },
 ];
 
 export const projectUpdates: ProjectUpdate[] = [
@@ -329,7 +334,7 @@ export const projectUpdates: ProjectUpdate[] = [
     id: "u3",
     projectId: "proj-3",
     title: "Kickoff scheduled",
-    body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover script design and call flows.",
+    body: "Contract signed. Kickoff call scheduled for Apr 1. We'll cover intake rules, review steps, and handoff boundaries.",
     createdAt: "2025-03-10",
   },
   {

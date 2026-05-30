@@ -20,7 +20,7 @@ export function CTABanner() {
               Request an AI Revenue Leak Audit
             </Button>
             <Button href="/services" variant="secondary" size="lg">
-              See what revenue leaks we fix
+              Explore our services
             </Button>
           </div>
           <p className="mt-6 text-sm text-slate-600">

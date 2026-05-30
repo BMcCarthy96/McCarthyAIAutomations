@@ -14,7 +14,7 @@ const navLinks = [
   { href: "/services", label: "Services" },
   { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Free Audit" },
+  { href: "/contact", label: "Request Audit" },
 ];
 
 export function Navbar({ isAdmin = false }: { isAdmin?: boolean }) {

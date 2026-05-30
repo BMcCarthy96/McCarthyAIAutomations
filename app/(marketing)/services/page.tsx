@@ -16,9 +16,9 @@ export default function ServicesPage() {
   return (
     <div>
       <PageHero
-        label="What revenue leaks we fix"
-        title="Workflow consulting for"
-        titleAccent="every revenue gap."
+        label="Workflow gaps we address"
+        title="Workflow consulting for lead handling,"
+        titleAccent="follow-up, and operational handoffs."
         subtitle="Each service addresses a specific workflow gap. Start with a paid AI Revenue Leak Audit to identify which ones apply to your situation."
       />
 
