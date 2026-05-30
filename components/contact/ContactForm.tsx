@@ -65,7 +65,7 @@ export function ContactForm() {
             </p>
           </div>
           <p className="mt-6 text-xs text-zinc-500">
-            — McCarthy AI Solutions
+            — McCarthy AI Automations
           </p>
         </div>
       </div>
