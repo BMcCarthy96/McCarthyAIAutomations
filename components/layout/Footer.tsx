@@ -35,7 +35,7 @@ export function Footer() {
               McCarthy<span className="text-blue-400"> AI</span>
             </Link>
             <p className="mt-3 max-w-sm text-sm leading-relaxed text-zinc-500">
-              High-touch AI workflow systems that recover lost revenue from missed leads, slow follow-up, stale opportunities, and operational bottlenecks.
+              AI workflow consulting for lead handling, follow-up, and operational handoffs — audit-first, with human review where it counts.
             </p>
             <Link
               href="/contact"
@@ -107,7 +107,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-8 sm:flex-row">
           <p className="text-xs text-zinc-600">
-            © {new Date().getFullYear()} McCarthy AI Solutions. All rights reserved.
+            © {new Date().getFullYear()} McCarthy AI Automations. All rights reserved.
           </p>
 
           {/* System status indicator */}

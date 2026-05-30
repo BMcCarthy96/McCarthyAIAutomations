@@ -12,8 +12,8 @@ export default function AboutPage() {
   return (
     <div>
       <PageHero
-        label="Our story"
-        title="We focus on revenue recovery,"
+        label="Our approach"
+        title="We design workflow systems around real operational bottlenecks,"
         titleAccent="not generic automation."
       />
 
@@ -38,21 +38,11 @@ export default function AboutPage() {
             </div>
             <p className="mt-3 text-xl font-semibold text-white">Brandon McCarthy</p>
             <p className="mt-0.5 text-sm text-zinc-500">
-              Founder &amp; Lead Engineer, McCarthy AI Solutions
+              Founder &amp; Lead Engineer, McCarthy AI Automations
             </p>
             <div className="mt-6 space-y-4 leading-relaxed text-zinc-400">
               <p>
-                I&apos;m a full-stack software developer and AI workflow systems builder focused on
-                revenue recovery for B2B businesses. My background is in JavaScript, Python,
-                databases, and modern web development, all applied to building systems that find and fix workflow gaps that cost businesses real money.
-              </p>
-              <p>
-                I specialize in designing and building custom AI-powered workflows: lead capture
-                and follow-up systems, speed-to-lead automation, quote recovery, pipeline
-                monitoring, and client portals that make workflow impact visible and measurable.
-              </p>
-              <p>
-                I don&apos;t build features and call it done. I build practical workflow systems shaped around how your team actually operates, and document them clearly for handoff.
+                My background is in JavaScript, Python, databases, and modern web development — applied to designing practical workflow systems that help businesses handle inquiries, follow-up, and operational handoffs more reliably.
               </p>
             </div>
           </div>

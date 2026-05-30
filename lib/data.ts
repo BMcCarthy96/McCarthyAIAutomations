@@ -115,7 +115,7 @@ export const services: Service[] = [
     name: "Revenue Operations Workflow Buildout",
     tagline: "A custom AI-assisted workflow system built around how you actually work",
     description: "Full-stack revenue operations system designed around your tools, team, and process, so recovery becomes repeatable.",
-    longDescription: "When you’ve identified the gaps and proven a pilot works, the next step is building something that runs reliably at scale. We design and build custom AI-assisted workflow systems around your actual tech stack, sales process, and team structure, connecting lead capture, follow-up, pipeline management, and reporting into one managed system.",
+    longDescription: "When the audit confirms a worthwhile build, the next step is a system that runs reliably at scale. We design and build custom AI-assisted workflow systems around your actual tech stack, process, and team structure, connecting lead capture, follow-up, pipeline management, and reporting into one managed system.",
     features: [
       "Full workflow design and implementation",
       "Integration across CRM, email, calendar, and ops tools",
@@ -221,6 +221,11 @@ export const faqs: FAQItem[] = [
     id: "4",
     question: "Do you work with existing tools and workflows?",
     answer: "Yes. I design workflows around your existing tools and APIs. McCarthy AI Automations currently demonstrates Zapier-connected lead intake and booking-tracking workflows, along with AI classification, database-backed records, email automation and dashboard review. For any additional integration, I will confirm feasibility and scope before work begins.",
+  },
+  {
+    id: "5",
+    question: "When do you use deterministic automation vs. bounded agentic steps?",
+    answer: "Deterministic automation handles steps where the path is predictable and repeatable — routing a lead, triggering a follow-up sequence, updating a record. Bounded AI steps are useful where judgment adds value: classifying an inquiry, summarizing context, or flagging an anomaly. The output still feeds into a defined downstream action, not an open-ended agent. Most builds combine both: deterministic orchestration for the known path, bounded AI where it genuinely helps, and human-review checkpoints before anything irreversible happens.",
   },
 ];
 
