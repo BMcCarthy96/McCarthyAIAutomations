@@ -23,11 +23,11 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "McCarthy AI Solutions | AI Workflow Systems That Recover Lost Revenue",
-    template: "%s | McCarthy AI Solutions",
+    default: "AI Workflow Consulting & Automation Roadmaps | McCarthy AI Automations",
+    template: "%s | McCarthy AI Automations",
   },
   description:
-    "McCarthy AI Solutions identifies where your business loses revenue through missed leads, slow follow-up, and broken workflows — then builds high-touch AI systems to recover it.",
+    "Audit-first AI workflow consulting for lead handling, follow-up, and operational handoffs. Diagnose bottlenecks, map deterministic automation and bounded AI steps, then implement only when the roadmap confirms it makes sense.",
   keywords: [
     "revenue recovery",
     "AI workflow systems",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     "revenue leak audit",
     "AI automation",
   ],
-  authors: [{ name: "McCarthy AI Solutions" }],
+  authors: [{ name: "McCarthy AI Automations" }],
   openGraph: {
     type: "website",
   },
